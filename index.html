@@ -889,7 +889,7 @@ function kakaoMap(r){
       const fit=()=>{if(my!==mapToken)return;map.setSize(new N.Size(el.offsetWidth,el.offsetHeight||320));map.fitBounds(bounds)};
       fit();
       setTimeout(fit,300); // 한 번 더 크기를 맞춰서 회색 화면 방지
-      drawKakaoAds(r);
+      drawKakaoAds(r);drawKakaoFoods(r);
     }).catch(()=>{});
 }
 
