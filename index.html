@@ -685,16 +685,16 @@ function plan(){
 function seeded(str){let h=2166136261;for(const ch of str){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%10000)/10000}}
 
 /* ---------- 지도 ----------
-   KAKAO_JS_KEY: 카카오 개발자센터(developers.kakao.com)에서 발급한 JavaScript 키.
-   키를 넣고 이 파일을 키에 등록한 도메인에 올리면 실제 카카오 지도 위에 동선이 그려집니다.
+   NAVER_KEY_ID: 네이버 클라우드 플랫폼 Maps의 Client ID(ncpKeyId).
+   이 파일을 키에 등록한 도메인(Web 서비스 URL)에 올리면 실제 네이버 지도 위에 동선이 그려집니다.
    키가 없거나 지도 SDK를 불러올 수 없는 곳(예: Claude 아티팩트)에서는 영도 약도(SVG)로 대신 그립니다. */
-const CONFIG={KAKAO_JS_KEY:""};
+const CONFIG={NAVER_KEY_ID:"yre6gldlbd"};
 const TERM_NAME={ko:"크루즈터미널",en:"Cruise Terminal",ja:"クルーズターミナル",zh:"邮轮码头"};
 const MAPT={
-ko:{full:"전체 보기",zoom:"동선 확대",sketch:"영도 약도 · 위치는 대략적이에요",real:"지도 데이터 © Kakao",legend:"숫자 = 방문 순서"},
-en:{full:"Whole island",zoom:"Zoom to route",sketch:"Sketch map of Yeongdo · positions approximate",real:"Map data © Kakao",legend:"Numbers = visit order"},
-ja:{full:"全体表示",zoom:"ルート拡大",sketch:"影島の略図・位置はおおよそです",real:"地図データ © Kakao",legend:"数字＝訪問順"},
-zh:{full:"查看全岛",zoom:"放大路线",sketch:"影岛示意图·位置为大致",real:"地图数据 © Kakao",legend:"数字＝游览顺序"}};
+ko:{full:"전체 보기",zoom:"동선 확대",sketch:"영도 약도 · 위치는 대략적이에요",real:"지도 데이터 © NAVER Corp.",legend:"숫자 = 방문 순서"},
+en:{full:"Whole island",zoom:"Zoom to route",sketch:"Sketch map of Yeongdo · positions approximate",real:"Map data © NAVER Corp.",legend:"Numbers = visit order"},
+ja:{full:"全体表示",zoom:"ルート拡大",sketch:"影島の略図・位置はおおよそです",real:"地図データ © NAVER Corp.",legend:"数字＝訪問順"},
+zh:{full:"查看全岛",zoom:"放大路线",sketch:"影岛示意图·位置为大致",real:"地图数据 © NAVER Corp.",legend:"数字＝游览顺序"}};
 /* ---------- 광고(제휴) 식당 ----------
    아래는 시연용 가상 가게입니다. 실제 광고주를 받으면 이 목록만 바꾸면 지도·목록에 반영됩니다.
    cat: food(식당) / seafood(해산물) / cafe(카페)   promo: drink / pct10 / dessert / menu */
@@ -837,41 +837,47 @@ function sketchMap(r){
       <text x="18" y="22" font-size="11.5" font-weight="700" fill="#0d4a5c" stroke="#fff" stroke-width="3.5" paint-order="stroke">${esc(TERM_NAME[L])}</text></g>
   </svg>`;
 }
-let kakaoP=null,kmapObj=null,kAds=[];
+/* 네이버 지도 (함수 이름은 기존 코드와 맞추려고 그대로 둠) */
+let naverP=null,kmapObj=null,kAds=[];
+// 키 인증이 실패하면 약도로 되돌림
+window.navermap_authFailure=()=>{
+  const k=document.getElementById("kmap"),s=document.getElementById("smap"),c=document.getElementById("mapCap");
+  if(k)k.style.display="none";if(s)s.style.display="block";if(c)c.textContent=MAPT[state.lang].sketch;kmapObj=null;
+};
 function drawKakaoAds(r){
   kAds.forEach(o=>o.setMap(null));kAds=[];
   if(!state.adsOn||!kmapObj)return;
-  const K=kakao.maps,L=state.lang;
+  const N=naver.maps,L=state.lang;
   ADS.forEach(a=>{
-    const el=document.createElement("div");el.className="kad";el.setAttribute("role","button");el.tabIndex=0;
-    el.innerHTML=`<span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">${ICON[a.cat]}</svg><i>AD</i></span><span class="nm">${esc(adName(a,L))}</span>`;
-    el.onclick=()=>{state.adSel=a.id;refreshMap(r)};
-    kAds.push(new K.CustomOverlay({map:kmapObj,position:new K.LatLng(...a.ll),yAnchor:.3,content:el,zIndex:1}));
+    const html=`<div class="kad"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">${ICON[a.cat]}</svg><i>AD</i></span><span class="nm">${esc(adName(a,L))}</span></div>`;
+    const mk=new N.Marker({map:kmapObj,position:new N.LatLng(...a.ll),icon:{content:html,anchor:new N.Point(15,15)},zIndex:1});
+    N.Event.addListener(mk,"click",()=>{state.adSel=a.id;refreshMap(r)});
+    kAds.push(mk);
   });
 }
 function loadKakao(){
-  if(!CONFIG.KAKAO_JS_KEY)return Promise.reject("no key");
-  if(kakaoP)return kakaoP;
-  kakaoP=new Promise((res,rej)=>{
+  if(!CONFIG.NAVER_KEY_ID)return Promise.reject("no key");
+  if(naverP)return naverP;
+  naverP=new Promise((res,rej)=>{
+    if(window.naver&&naver.maps){res();return}
     const sc=document.createElement("script");
-    sc.src="https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey="+encodeURIComponent(CONFIG.KAKAO_JS_KEY);
-    sc.onload=()=>{try{kakao.maps.load(res)}catch(e){rej(e)}};
-    sc.onerror=rej;document.head.appendChild(sc);setTimeout(()=>rej("timeout"),6000);
+    sc.src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId="+encodeURIComponent(CONFIG.NAVER_KEY_ID);
+    sc.onload=()=>res();sc.onerror=rej;document.head.appendChild(sc);setTimeout(()=>rej("timeout"),6000);
   });
-  return kakaoP;
+  return naverP;
 }
 function kakaoMap(r){
   loadKakao().then(()=>{
     const el=document.getElementById("kmap");if(!el)return;
     el.style.display="block";document.getElementById("smap").style.display="none";
     document.getElementById("mapCap").textContent=MAPT[state.lang].real;
-    const K=kakao.maps,path=["T",...r.sim.stops.map(st=>st.p.id)].map(id=>new K.LatLng(...COORD[id]));
-    const map=new K.Map(el,{center:path[0],level:6});kmapObj=map;
-    new K.Polyline({map,path,strokeWeight:5,strokeColor:"#e5533b",strokeOpacity:.9});
-    new K.Polyline({map,path:[path[path.length-1],path[0]],strokeWeight:3,strokeColor:"#0d4a5c",strokeOpacity:.7,strokeStyle:"dash"});
-    const b=new K.LatLngBounds();
-    path.forEach((p,i)=>{b.extend(p);new K.CustomOverlay({map,position:p,yAnchor:.5,content:`<div class="kpin${i?"":" t"}">${i||"T"}</div>`})});
-    map.setBounds(b,40,40,40,40);
+    const N=naver.maps,path=["T",...r.sim.stops.map(st=>st.p.id)].map(id=>new N.LatLng(...COORD[id]));
+    const map=new N.Map(el,{center:path[0],zoom:14});kmapObj=map;
+    new N.Polyline({map,path,strokeWeight:5,strokeColor:"#e5533b",strokeOpacity:.9});
+    new N.Polyline({map,path:[path[path.length-1],path[0]],strokeWeight:3,strokeColor:"#0d4a5c",strokeOpacity:.7,strokeStyle:"shortdash"});
+    path.forEach((p,i)=>new N.Marker({map,position:p,icon:{content:`<div class="kpin${i?"":" t"}">${i||"T"}</div>`,anchor:new N.Point(13,13)},zIndex:2}));
+    const lats=path.map(p=>p.lat()),lngs=path.map(p=>p.lng());
+    map.fitBounds(new N.LatLngBounds(new N.LatLng(Math.min(...lats),Math.min(...lngs)),new N.LatLng(Math.max(...lats),Math.max(...lngs))));
     drawKakaoAds(r);drawKakaoFoods(r);
   }).catch(()=>{});
 }
@@ -998,9 +1004,9 @@ function foodSvg(r){
     return `<g transform="translate(${x} ${y}) scale(${(1/ZK).toFixed(3)})"><title>${esc(f.n)}</title><circle r="5.5" fill="#2f8a5b" stroke="#fff" stroke-width="1.8"/></g>`}).join("");
 }
 function drawKakaoFoods(r){
-  kFoods.forEach(o=>o.setMap(null));kFoods=[];if(!kmapObj)return;const K=kakao.maps;
-  nearFoodsLL(r).forEach(({f})=>kFoods.push(new K.CustomOverlay({map:kmapObj,position:new K.LatLng(...f.ll),yAnchor:.5,zIndex:0,
-    content:`<div title="${esc(f.n)}" style="width:12px;height:12px;border-radius:50%;background:#2f8a5b;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)"></div>`})));
+  kFoods.forEach(o=>o.setMap(null));kFoods=[];if(!kmapObj)return;const N=naver.maps;
+  nearFoodsLL(r).forEach(({f})=>kFoods.push(new N.Marker({map:kmapObj,position:new N.LatLng(...f.ll),zIndex:0,
+    icon:{content:`<div title="${esc(f.n)}" style="width:12px;height:12px;border-radius:50%;background:#2f8a5b;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)"></div>`,anchor:new N.Point(8,8)}})));
 }
 async function loadFoods(){
   try{
