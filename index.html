@@ -117,7 +117,9 @@ select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:10p
 .stars button{flex:1;border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:10px 0;font-size:18px;cursor:pointer;color:var(--warn);min-height:44px}
 .stars button[aria-pressed="true"]{background:#fbefd9;border-color:var(--warn)}
 .mapbox{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#dcebee}
-.mapbox svg{display:block;width:100%;height:auto}
+#smap svg{display:block;width:100%;height:auto}
+.adtoggle svg{flex:none}
+.adtoggle{white-space:nowrap}
 #kmap{width:100%;height:320px;display:none}
 .map-cap{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:var(--paper);border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
 .kpin{background:var(--buoy);color:#fff;border:2px solid #fff;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;font:700 13px var(--body);box-shadow:0 1px 4px rgba(0,0,0,.35)}
@@ -138,10 +140,26 @@ select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:10p
 .adcard strong{font-size:16px}
 .adcard .promo{color:#a7341f;font-weight:700;font-size:14px}
 .adlist{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.adgroups{display:flex;flex-direction:column;gap:10px}
+.adgroup{display:flex;flex-direction:column;gap:5px}
+.adg-h{font-size:13.5px;font-weight:700;color:var(--sea-deep);display:flex;align-items:center;gap:6px}
+.adg-h .num{width:20px;height:20px;border-radius:50%;background:var(--buoy);color:#fff;display:grid;place-items:center;font-size:11.5px}
+.adlist small{color:var(--muted);font-size:11.5px}
+.adnear{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px;font-size:12.5px}
+.adnear b{color:#a7341f;font-size:12px}
+.adnear button{border:1px solid #f3c6bd;background:#fff7f5;border-radius:999px;padding:4px 10px;font:500 12.5px var(--body);color:#7a2a1c;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.adnear button:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.adnear .dot{width:7px;height:7px;border-radius:2px;background:#e0442d}
 .adlist button{flex:none;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;font:500 13px var(--body);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .adlist button[aria-pressed="true"]{border-color:#e0442d;color:#a7341f;background:#fff7f5}
 .adlist button:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
 .adlist .dot{width:8px;height:8px;border-radius:2px;background:#e0442d}
+.envb{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;padding:0 5px;margin-right:2px;vertical-align:1px}
+.envb.in{background:#e3eef6;color:#1f5f8b}.envb.semi{background:#efeadf;color:#7a6234}.envb.out{background:#e4f1e6;color:#2f6b3d}
+.wxbar{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;border-radius:10px;padding:8px 12px;font-size:13.5px;background:#e8f1f2;color:var(--sea-deep)}
+.wxbar.rain{background:#e3eef6;color:#1f4f73}.wxbar.hot{background:#fbefd9;color:#7a4e12}.wxbar.cold{background:#eceff3;color:#3a4a5a}
+.alert .spare{display:block;margin-top:4px;font-size:13.5px;color:var(--good)}
+.alert .spare b{font-weight:700}
 .course-name{font-family:var(--display);font-size:24px;color:var(--sea-deep)}
 .link{background:none;border:0;color:var(--sea);text-decoration:underline;font:14px var(--body);cursor:pointer;padding:8px 0;min-height:44px}
 label.f{display:grid;gap:4px;font-size:14px;color:var(--muted)}
@@ -168,6 +186,23 @@ label.f{display:grid;gap:4px;font-size:14px;color:var(--muted)}
 .rv{border-top:1px solid var(--line);padding-top:10px;font-size:14.5px}
 .rv .meta{font-size:13px;color:var(--muted)}
 .todo{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14.5px}
+/* 영도 맛집 목록 */
+.fcats{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.fcats button{flex:none;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;font:500 13px var(--body);color:var(--ink);cursor:pointer;min-height:34px}
+.fcats button[aria-pressed="true"]{border-color:var(--sea);background:#e8f1f2;color:var(--sea);font-weight:700}
+.fcats button:focus-visible,.fmore:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.flist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.fd{border-top:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:2px}
+.fd:first-child{border-top:0}
+.fd .nm{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.fd strong{font-size:15.5px}
+.fd .meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.fd .meta .st{color:var(--warn);font-weight:700}
+.fd .ds{font-size:13.5px;color:var(--ink)}
+.nearb{font-size:11.5px;font-weight:700;background:#dff1e6;color:#21653f;border-radius:4px;padding:1px 6px;display:inline-flex;align-items:center;gap:4px}
+.nearb .num{width:15px;height:15px;border-radius:50%;background:var(--buoy);color:#fff;display:grid;place-items:center;font-size:9.5px}
+.fbadge{font-size:11.5px;border:1px solid #c9d9db;color:var(--sea);border-radius:4px;padding:0 5px}
+.fmore{border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:10px;font:600 14px var(--body);color:var(--sea);cursor:pointer;min-height:44px}
 @media (prefers-reduced-motion:no-preference){
   main>*{animation:rise .28s ease both}
   @keyframes rise{from{transform:translateY(6px)}to{transform:none}}
@@ -201,15 +236,15 @@ age:{a20:"20대",a30:"30~40대",a50:"50~60대",a70:"70대 이상"},
 comp:{solo:"혼자",couple:"커플·부부",friends:"친구",family:"가족 (아이 동반)",group:"단체"},
 int:{food:"음식",cafe:"카페",photo:"사진",view:"바다 풍경",culture:"문화·예술",beauty:"쇼핑·뷰티"},
 intS:{food:"해산물, 시장",cafe:"바다 전망 카페",photo:"포토 스팟",view:"해안 절경",culture:"박물관, 예술마을",beauty:"다이소·올리브영·롯데백화점"},
-wx:{sun:"맑음",rain:"비",hot:"더움",cold:"추움·바람"},
+wx:{sun:"맑음",rain:"비",hot:"더움",cold:"추움·바람"},env:{in:"실내",semi:"지붕 있음",out:"야외"},cnt:"곳",wxDay:"날씨 반영",wxCut:{rain:n=>`비 오는 날 미끄럽고 위험해서 뺀 곳: ${n}. 야외는 한 곳까지만 넣었어요.`,cold:n=>`바닷바람을 바로 맞는 곳이라 뺀 곳: ${n}. 야외는 두 곳까지만 넣었어요.`},wxTip:{rain:"우산을 챙기고, 장소 사이는 택시로 이동하세요.",hot:"물을 챙기고, 한낮에는 실내에서 쉬어 가세요.",cold:"바닷바람이 차요. 겉옷을 챙기세요."},
 arr:"입항",dep:"출항",pax:"명",crowd:{high:"혼잡",mid:"보통",low:"여유"},
-resultT:"AI 추천 동선",returnBy:"귀선 마감",leaveBy:"출발 권장",alertP:"이 시각에 터미널로 출발하면 마감 15분 전에 도착해요.",aiSays:"AI 한마디",
-move:"이동",min:"분",disembark:"하선",terminal:"크루즈터미널 복귀",
+resultT:"AI 추천 동선",returnBy:"터미널 도착 기한",leaveBy:"터미널로 출발",spare:t=>`여유 시간 ${t}`,spareTip:"관심 있는 곳에서 더 머물러도 늦지 않아요.",alertP:"출항 2시간 전까지 크루즈터미널에 돌아오도록 코스를 짰어요.",aiSays:"AI 한마디",
+move:"이동",min:"분",disembark:"터미널 출발 (입항 1시간 뒤)",terminal:"크루즈터미널 복귀",
 statsT:"비슷한 관광객 통계",sN:"같은 조건 관광객",sPct:"이 코스 선택",sRate:"만족도",
 whyT:"이렇게 추천한 이유",fbT:"다녀오신 뒤 후기를 남겨주세요",fbP:"후기와 머문 시간이 쌓일수록 다음 관광객의 추천이 정확해져요.",fbLong:"가장 오래 머문 곳",fbText:"한 줄 후기 (선택)",fbSave:"후기 보내기",fbThanks:"감사합니다! 후기가 통계에 반영돼요.",
 rtAria:"별점",rtSrc:"★ 별점은 영도 루트 이용자 후기 평균이에요. 괄호 안은 후기 수.",modes:{walk:"도보",taxi:"택시",bus:"버스"},recLbl:"추천",why:{near:"가까워서 걸어가요",rain:"비가 와서 택시가 편해요",comfort:"걷기 부담 없이 택시로 가요",cheap:"버스가 저렴하고 시간도 비슷해요",fast:"시간을 아끼려면 택시가 좋아요"},modeNote:"이동시간은 거리로 계산한 예상치예요. 초록색이 추천 교통수단이에요.",again:"처음부터",demo:"표시된 통계는 시연용 가상 데이터입니다.",outside:"영도 밖",ops:"운영자용 체류·소비 분석 보기",
 course:{E:"영도 동쪽 해안 코스",W:"영도 서쪽 감성 코스",EW:"영도 한 바퀴 코스",WE:"영도 한 바퀴 코스",O:"영도 + 롯데백화점 쇼핑 코스"},
-r:{int:i=>`고르신 관심사(${i})와 맞는 곳 위주로 골랐어요.`,stairs:"계단이 많은 흰여울문화마을과 해안산책로는 뺐어요.",family:"아이와 함께 즐기기 좋은 실내 장소를 넣었어요.",crowd:"오늘 입항 인원이 많아 태종대는 붐비는 하선 직후를 피해 뒤로 배치했어요.",beauty:"쇼핑을 좋아하셔서 영도대교 건너 롯데백화점 광복점도 넣었어요. 이 코스에서 유일하게 영도 밖이에요.",shopYd:"쇼핑을 고르셔서 영도 안의 다이소와 올리브영을 넣었어요.",short:"정박 시간이 짧아 터미널 가까운 곳만 넣었어요.",meal:"점심은 동선 중간의 해산물 식당으로 잡았어요.",oneWay:"동쪽과 서쪽을 오가지 않게 한 방향으로 묶었어요.",rain:"비가 와서 실내 장소 위주로 바꿨어요.",hot:"더운 날이라 실내·카페에서 쉬어가도록 넣었어요.",cold:"바람이 차서 바닷가 산책로는 줄였어요."},
+r:{int:i=>`고르신 관심사(${i})와 맞는 곳 위주로 골랐어요.`,stairs:"계단이 많은 흰여울문화마을과 해안산책로는 뺐어요.",family:"아이와 함께 즐기기 좋은 실내 장소를 넣었어요.",crowd:"오늘 입항 인원이 많아 태종대는 붐비는 하선 직후를 피해 뒤로 배치했어요.",beauty:"쇼핑을 좋아하셔서 영도대교 건너 롯데백화점 광복점도 넣었어요. 이 코스에서 유일하게 영도 밖이에요.",shopYd:"쇼핑을 고르셔서 영도 안의 다이소와 올리브영을 넣었어요.",tooShort:"출항 2시간 전까지 돌아오려면 오늘은 다녀올 시간이 부족해요. 터미널 주변에서 쉬어 가세요.",short:"정박 시간이 짧아 터미널 가까운 곳만 넣었어요.",meal:"점심은 동선 중간의 해산물 식당으로 잡았어요.",oneWay:"동쪽과 서쪽을 오가지 않게 한 방향으로 묶었어요.",rain:"비가 와서 실내 장소 위주로 바꿨어요.",hot:"더운 날이라 실내·카페에서 쉬어가도록 넣었어요.",cold:"바람이 차서 바닷가 산책로는 줄였어요."},
 pick:"하나를 골라주세요"},
 en:{brand:"Yeongdo Route",qr:"Opened from the terminal QR",heroT:"Make the most of Yeongdo before you sail",heroP:"Tell us what you'd like in your own words, or answer a few questions, and AI plans a Yeongdo route that fits your time ashore. No name or contact needed.",
 ai_h:"Ask AI in your own words",ai_ph:"e.g. Three of us with my parents. We love seafood but can't walk much. It's raining. We came on Sea Aurora.",ai_btn:"Get my AI route",ai_wait:"AI is planning your route…",ai_fail:"AI isn't reachable, so we planned from the words you typed.",or:"or answer step by step",
@@ -220,15 +255,15 @@ age:{a20:"20s",a30:"30s–40s",a50:"50s–60s",a70:"70+"},
 comp:{solo:"Solo",couple:"Couple",friends:"Friends",family:"Family with kids",group:"Tour group"},
 int:{food:"Food",cafe:"Cafés",photo:"Photos",view:"Sea views",culture:"Culture & art",beauty:"Shopping & beauty"},
 intS:{food:"Seafood, markets",cafe:"Ocean-view cafés",photo:"Photo spots",view:"Coastal cliffs",culture:"Museum, art village",beauty:"Daiso, Olive Young, Lotte"},
-wx:{sun:"Sunny",rain:"Rain",hot:"Hot",cold:"Cold & windy"},
+wx:{sun:"Sunny",rain:"Rain",hot:"Hot",cold:"Cold & windy"},env:{in:"Indoor",semi:"Covered",out:"Outdoor"},cnt:"",wxDay:"Weather-adjusted",wxCut:{rain:n=>`Left out because they get slippery and unsafe in rain: ${n}. At most one outdoor stop.`,cold:n=>`Left out because they face the open sea wind: ${n}. At most two outdoor stops.`},wxTip:{rain:"Bring an umbrella and take a taxi between stops.",hot:"Carry water and rest indoors at midday.",cold:"The sea wind is cold. Bring a jacket."},
 arr:"Arrives",dep:"Departs",pax:"pax",crowd:{high:"Busy",mid:"Moderate",low:"Quiet"},
-resultT:"Your AI route",returnBy:"All aboard",leaveBy:"Leave by",alertP:"Leave for the terminal at this time to arrive 15 min before all-aboard.",aiSays:"A note from AI",
-move:"Travel",min:"min",disembark:"Disembark",terminal:"Back to cruise terminal",
+resultT:"Your AI route",returnBy:"Back by",leaveBy:"Head back at",spare:t=>`Free time ${t}`,spareTip:"You can linger longer anywhere you like and still be on time.",alertP:"Your route gets you back to the cruise terminal 2 hours before departure.",aiSays:"A note from AI",
+move:"Travel",min:"min",disembark:"Leave terminal (1 h after arrival)",terminal:"Back to cruise terminal",
 statsT:"Travellers like you",sN:"Similar travellers",sPct:"Chose this route",sRate:"Rating",
 whyT:"Why this route",fbT:"Leave a review when you're back",fbP:"Reviews and time spent make the next traveller's route more accurate.",fbLong:"Where you stayed longest",fbText:"One-line review (optional)",fbSave:"Send review",fbThanks:"Thank you! Your review feeds the stats.",
 rtAria:"Rating",rtSrc:"★ Ratings are the average of Yeongdo Route traveller reviews; the number in brackets is the review count.",modes:{walk:"Walk",taxi:"Taxi",bus:"Bus"},recLbl:"Best:",why:{near:"Close enough to walk",rain:"Raining, so a taxi is easier",comfort:"Taxi saves your legs",cheap:"Bus is cheap and about as quick",fast:"Taxi saves the most time"},modeNote:"Travel times are estimates from distance. Green marks the suggested way to go.",again:"Start over",demo:"Statistics shown are sample data for this demo.",outside:"Outside Yeongdo",ops:"Operator view: stay & spending analysis",
 course:{E:"East Yeongdo Coast",W:"West Yeongdo Village Walk",EW:"Yeongdo Loop",WE:"Yeongdo Loop",O:"Yeongdo + Lotte Shopping"},
-r:{int:i=>`Stops match your interests (${i}).`,stairs:"Steep stairs at Huinnyeoul Village and the coastal trail are left out.",family:"An indoor stop kids enjoy is included.",crowd:"Many passengers today, so Taejongdae comes later to skip the post-disembark rush.",beauty:"You love shopping, so Lotte Department Store Gwangbok, just across Yeongdo Bridge, is added. It's the only stop outside Yeongdo.",shopYd:"You chose shopping, so Daiso and Olive Young in Yeongdo are on the route.",short:"Short stay, so only spots near the terminal.",meal:"Lunch is a seafood stop mid-route.",oneWay:"The route runs one way so you don't cross the island twice.",rain:"It's raining, so indoor stops come first.",hot:"It's hot, so there's an indoor café break.",cold:"It's windy, so the seaside trail is cut back."},
+r:{int:i=>`Stops match your interests (${i}).`,stairs:"Steep stairs at Huinnyeoul Village and the coastal trail are left out.",family:"An indoor stop kids enjoy is included.",crowd:"Many passengers today, so Taejongdae comes later to skip the post-disembark rush.",beauty:"You love shopping, so Lotte Department Store Gwangbok, just across Yeongdo Bridge, is added. It's the only stop outside Yeongdo.",shopYd:"You chose shopping, so Daiso and Olive Young in Yeongdo are on the route.",tooShort:"To be back 2 hours before departure, there isn't time for a stop today. Relax around the terminal.",short:"Short stay, so only spots near the terminal.",meal:"Lunch is a seafood stop mid-route.",oneWay:"The route runs one way so you don't cross the island twice.",rain:"It's raining, so indoor stops come first.",hot:"It's hot, so there's an indoor café break.",cold:"It's windy, so the seaside trail is cut back."},
 pick:"Choose one"},
 ja:{brand:"影島ルート",qr:"クルーズターミナルのQRから",heroT:"出航まで、影島をたっぷり",heroP:"やりたいことを言葉で書くか、いくつかの質問に答えると、AIが滞在時間に合わせて影島のルートを作ります。名前や連絡先は不要です。",
 ai_h:"AIに言葉で聞く",ai_ph:"例：両親と3人です。海鮮が好きで、あまり歩けません。雨です。Sea Auroraで来ました。",ai_btn:"AIルートを作る",ai_wait:"AIがルートを作成中…",ai_fail:"AIにつながらないため、入力された言葉からおすすめしました。",or:"または質問に答える",
@@ -239,15 +274,15 @@ age:{a20:"20代",a30:"30〜40代",a50:"50〜60代",a70:"70代以上"},
 comp:{solo:"ひとり",couple:"カップル・夫婦",friends:"友人",family:"家族（子ども連れ）",group:"団体"},
 int:{food:"グルメ",cafe:"カフェ",photo:"写真",view:"海の景色",culture:"文化・アート",beauty:"ショッピング・美容"},
 intS:{food:"海鮮・市場",cafe:"オーシャンビュー",photo:"フォトスポット",view:"海岸の絶景",culture:"博物館・アート村",beauty:"ダイソー・オリーブヤング・ロッテ"},
-wx:{sun:"晴れ",rain:"雨",hot:"暑い",cold:"寒い・風"},
+wx:{sun:"晴れ",rain:"雨",hot:"暑い",cold:"寒い・風"},env:{in:"屋内",semi:"屋根あり",out:"屋外"},cnt:"か所",wxDay:"天気を反映",wxCut:{rain:n=>`雨の日は滑りやすく危ないため外した場所：${n}。屋外は1か所までです。`,cold:n=>`海風を直接受けるため外した場所：${n}。屋外は2か所までです。`},wxTip:{rain:"傘を持ち、移動はタクシーがおすすめです。",hot:"水分を持ち、日中は屋内で休みましょう。",cold:"海風が冷たいので上着をお持ちください。"},
 arr:"入港",dep:"出港",pax:"名",crowd:{high:"混雑",mid:"普通",low:"空き"},
-resultT:"AIおすすめルート",returnBy:"帰船締切",leaveBy:"出発目安",alertP:"この時刻にターミナルへ向かえば締切15分前に着きます。",aiSays:"AIからひとこと",
-move:"移動",min:"分",disembark:"下船",terminal:"クルーズターミナルへ戻る",
+resultT:"AIおすすめルート",returnBy:"ターミナル到着期限",leaveBy:"ターミナルへ出発",spare:t=>`余裕 ${t}`,spareTip:"気に入った場所でゆっくりしても間に合います。",alertP:"出港2時間前までにクルーズターミナルへ戻れるコースです。",aiSays:"AIからひとこと",
+move:"移動",min:"分",disembark:"ターミナル出発（入港1時間後）",terminal:"クルーズターミナルへ戻る",
 statsT:"似た旅行者の統計",sN:"同条件の旅行者",sPct:"このルートを選択",sRate:"満足度",
 whyT:"おすすめの理由",fbT:"戻ったら感想をお願いします",fbP:"感想と滞在時間が集まるほど、次の旅行者へのおすすめが正確になります。",fbLong:"いちばん長くいた場所",fbText:"ひとこと感想（任意）",fbSave:"送信",fbThanks:"ありがとうございます！統計に反映されます。",
 rtAria:"評価",rtSrc:"★ 評価は影島ルート利用者の感想の平均です。かっこ内は件数。",modes:{walk:"徒歩",taxi:"タクシー",bus:"バス"},recLbl:"おすすめ",why:{near:"近いので歩けます",rain:"雨なのでタクシーが楽です",comfort:"歩く負担のないタクシーで",cheap:"バスが安く時間もほぼ同じ",fast:"時間を節約するならタクシー"},modeNote:"移動時間は距離からの目安です。緑がおすすめの移動手段です。",again:"最初から",demo:"表示の統計はデモ用のサンプルデータです。",outside:"影島の外",ops:"運営者向け：滞在・消費分析",
 course:{E:"影島 東海岸コース",W:"影島 西側さんぽコース",EW:"影島一周コース",WE:"影島一周コース",O:"影島＋ロッテ百貨店ショッピング"},
-r:{int:i=>`選んだ興味（${i}）に合う場所を中心にしました。`,stairs:"階段の多い白瀬文化村と海岸散策路は外しました。",family:"子どもも楽しめる屋内スポットを入れました。",crowd:"本日は入港人数が多いため、太宗台は下船直後の混雑を避けて後にしました。",beauty:"ショッピング好きの方向けに、影島大橋を渡ってすぐのロッテ百貨店光復店も入れました。影島の外はここだけです。",shopYd:"ショッピングを選ばれたので、影島のダイソーとオリーブヤングを入れました。",short:"停泊が短いので、ターミナル近くだけにしました。",meal:"昼食はルート途中の海鮮店にしました。",oneWay:"東西を行き来しないよう一方向にまとめました。",rain:"雨なので屋内中心にしました。",hot:"暑いので屋内カフェで休めるようにしました。",cold:"風が冷たいので海沿いの散策路は減らしました。"},
+r:{int:i=>`選んだ興味（${i}）に合う場所を中心にしました。`,stairs:"階段の多い白瀬文化村と海岸散策路は外しました。",family:"子どもも楽しめる屋内スポットを入れました。",crowd:"本日は入港人数が多いため、太宗台は下船直後の混雑を避けて後にしました。",beauty:"ショッピング好きの方向けに、影島大橋を渡ってすぐのロッテ百貨店光復店も入れました。影島の外はここだけです。",shopYd:"ショッピングを選ばれたので、影島のダイソーとオリーブヤングを入れました。",tooShort:"出港2時間前に戻るには、今日は観光の時間が足りません。ターミナル周辺でお過ごしください。",short:"停泊が短いので、ターミナル近くだけにしました。",meal:"昼食はルート途中の海鮮店にしました。",oneWay:"東西を行き来しないよう一方向にまとめました。",rain:"雨なので屋内中心にしました。",hot:"暑いので屋内カフェで休めるようにしました。",cold:"風が冷たいので海沿いの散策路は減らしました。"},
 pick:"1つ選んでください"},
 zh:{brand:"影岛路线",qr:"来自邮轮码头二维码",heroT:"开船前，玩转影岛",heroP:"用自己的话写下想做的事，或回答几个问题，AI会根据您的上岸时间规划影岛路线。无需姓名或联系方式。",
 ai_h:"直接问AI",ai_ph:"例：我和父母三个人，喜欢海鲜，走不了太多路。今天下雨。坐Sea Aurora来的。",ai_btn:"生成AI路线",ai_wait:"AI正在规划路线…",ai_fail:"暂时连不上AI，已根据您输入的词语推荐。",or:"或逐步回答问题",
@@ -258,15 +293,15 @@ age:{a20:"20多岁",a30:"30~40多岁",a50:"50~60多岁",a70:"70岁以上"},
 comp:{solo:"独自",couple:"情侣·夫妻",friends:"朋友",family:"家庭（带孩子）",group:"旅行团"},
 int:{food:"美食",cafe:"咖啡馆",photo:"拍照",view:"海景",culture:"文化·艺术",beauty:"购物·美妆"},
 intS:{food:"海鲜·市场",cafe:"海景咖啡馆",photo:"打卡点",view:"海岸风光",culture:"博物馆·艺术村",beauty:"大创·Olive Young·乐天"},
-wx:{sun:"晴",rain:"下雨",hot:"炎热",cold:"寒冷·有风"},
+wx:{sun:"晴",rain:"下雨",hot:"炎热",cold:"寒冷·有风"},env:{in:"室内",semi:"有遮蔽",out:"户外"},cnt:"处",wxDay:"已按天气调整",wxCut:{rain:n=>`雨天湿滑危险，已移除：${n}。户外最多安排1处。`,cold:n=>`直接受海风，已移除：${n}。户外最多安排2处。`},wxTip:{rain:"请带伞，景点之间建议乘出租车。",hot:"请带水，中午在室内休息。",cold:"海风很冷，请带外套。"},
 arr:"入港",dep:"离港",pax:"人",crowd:{high:"拥挤",mid:"一般",low:"宽松"},
-resultT:"AI推荐路线",returnBy:"返船截止",leaveBy:"建议出发",alertP:"此时出发前往码头，可在截止前15分钟到达。",aiSays:"AI的话",
-move:"移动",min:"分钟",disembark:"下船",terminal:"返回邮轮码头",
+resultT:"AI推荐路线",returnBy:"最晚抵达码头",leaveBy:"出发回码头",spare:t=>`空余时间 ${t}`,spareTip:"在喜欢的地方多停留也来得及。",alertP:"路线安排在离港前2小时回到邮轮码头。",aiSays:"AI的话",
+move:"移动",min:"分钟",disembark:"从码头出发（入港1小时后）",terminal:"返回邮轮码头",
 statsT:"相似游客统计",sN:"同条件游客",sPct:"选择此路线",sRate:"满意度",
 whyT:"推荐理由",fbT:"回来后请留下评价",fbP:"评价和停留时间越多，给下一位游客的推荐越准确。",fbLong:"停留最久的地方",fbText:"一句话评价（可选）",fbSave:"提交评价",fbThanks:"谢谢！您的评价将计入统计。",
 rtAria:"评分",rtSrc:"★ 评分为影岛路线用户评价的平均值，括号内为评价数。",modes:{walk:"步行",taxi:"出租车",bus:"公交"},recLbl:"推荐",why:{near:"距离近，步行即可",rain:"下雨，坐出租车更方便",comfort:"坐出租车，不用走太多路",cheap:"公交便宜，时间也差不多",fast:"想省时间就坐出租车"},modeNote:"交通时间为按距离估算。绿色为推荐的交通方式。",again:"重新开始",demo:"所示统计为演示用样本数据。",outside:"影岛外",ops:"运营方：停留与消费分析",
 course:{E:"影岛东海岸路线",W:"影岛西侧漫步路线",EW:"影岛环岛路线",WE:"影岛环岛路线",O:"影岛＋乐天百货购物"},
-r:{int:i=>`以您选择的兴趣（${i}）为主挑选地点。`,stairs:"已排除台阶较多的白滩文化村和海岸步道。",family:"加入了适合孩子的室内景点。",crowd:"今天入港人数多，太宗台安排在后面，避开下船后的高峰。",beauty:"您喜欢购物，加入了过影岛大桥即到的乐天百货光复店。这是路线中唯一在影岛外的地点。",shopYd:"您选择了购物，路线中加入了影岛的大创和Olive Young。",short:"停靠时间短，只安排码头附近的地点。",meal:"午餐安排在途中的海鲜餐厅。",oneWay:"路线单向进行，不会来回穿越东西两侧。",rain:"下雨，以室内景点为主。",hot:"天气炎热，安排了室内咖啡馆休息。",cold:"风大，减少了海边步道。"},
+r:{int:i=>`以您选择的兴趣（${i}）为主挑选地点。`,stairs:"已排除台阶较多的白滩文化村和海岸步道。",family:"加入了适合孩子的室内景点。",crowd:"今天入港人数多，太宗台安排在后面，避开下船后的高峰。",beauty:"您喜欢购物，加入了过影岛大桥即到的乐天百货光复店。这是路线中唯一在影岛外的地点。",shopYd:"您选择了购物，路线中加入了影岛的大创和Olive Young。",tooShort:"要在离港前2小时返回，今天没有足够时间游览，请在码头附近休息。",short:"停靠时间短，只安排码头附近的地点。",meal:"午餐安排在途中的海鲜餐厅。",oneWay:"路线单向进行，不会来回穿越东西两侧。",rain:"下雨，以室内景点为主。",hot:"天气炎热，安排了室内咖啡馆休息。",cold:"风大，减少了海边步道。"},
 pick:"请选择一项"}
 };
 
@@ -313,12 +348,49 @@ const PLACES=[
  d:{ko:"영도대교 건너 바로 · 명품·K-뷰티·식당가 · 10:30 개점",en:"Just across Yeongdo Bridge · luxury, K-beauty, food hall · opens 10:30",ja:"影島大橋を渡ってすぐ・ブランド・K-ビューティー・レストラン街・10:30開店",zh:"过影岛大桥即到 · 名品·韩妆·美食街 · 10:30开门"}}
 ];
 
-const CRUISES=[
+let CRUISES=[
 {id:"aurora",name:"Sea Aurora",arr:8*60,dep:17*60,pax:3200},
 {id:"pearl",name:"Pacific Pearl",arr:10*60,dep:14*60,pax:1800},
 {id:"horizon",name:"Blue Horizon",arr:9*60,dep:15*60+30,pax:2400},
 {id:"swift",name:"Harbor Swift",arr:13*60,dep:15*60+30,pax:900}
 ];
+/* ---------- 오늘의 크루즈 일정 불러오기 ----------
+   cruises.json: GitHub Actions가 매일 공공데이터포털 "부산광역시_크루즈 선석스케줄 정보" API를 불러 만들어 두는 파일
+   (scripts/fetch-cruises.mjs). 형태: [{name, arrive:"YYYY-MM-DDTHH:mm", depart:"YYYY-MM-DDTHH:mm", pax}]
+   이 중 오늘 영도에 머무는 배만 골라 보여주고, 파일을 불러오지 못하면 위의 예시 일정(CRUISES)을 씁니다. */
+const CRUISE_API="cruises.json";
+let cruiseSrc="sample";
+const hmD=m=>m>=1440?hm(m-1440)+" (+1)":hm(m);
+const CSRC={
+ko:{apiNext:"오늘은 영도 크루즈터미널 입항 예정이 없어요. 다가오는 일정이에요. · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",apiPast:"지난 영도 크루즈터미널 입항 기록이에요 (시연용). · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",api:"오늘 입출항 예정 · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",sample:"예시 일정이에요. 실제 입출항 일정은 아직 연결되지 않았어요."},
+en:{apiNext:"No calls at Yeongdo today. Upcoming schedule · Source: Busan cruise berth schedule (data.go.kr)",apiPast:"Past calls at Yeongdo terminal (demo) · Source: Busan cruise berth schedule (data.go.kr)",api:"Today's scheduled calls · Source: Busan cruise berth schedule (data.go.kr)",sample:"Sample schedule. Live port schedule not connected yet."},
+ja:{apiNext:"本日は影島への入港予定がありません。今後の予定です・出典：釜山広域市クルーズ船席スケジュール",apiPast:"影島ターミナルの過去の入港記録です（デモ用）・出典：釜山広域市クルーズ船席スケジュール",api:"本日の入出港予定・出典：釜山広域市クルーズ船席スケジュール（公共データポータル）",sample:"例のスケジュールです。実際の入出港予定はまだ接続されていません。"},
+zh:{apiNext:"今天影岛码头无入港计划，以下为近期日程·来源：釜山广域市邮轮泊位计划",apiPast:"影岛码头过往入港记录（演示用）·来源：釜山广域市邮轮泊位计划",api:"今日进出港计划·来源：釜山广域市邮轮泊位计划（公共数据门户）",sample:"示例日程，尚未接入实际进出港计划。"}};
+function parseIso(v){const d=new Date(v);return isNaN(d)?null:d}
+const midnight=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
+// 오늘 영도에 머무는 배 → 없으면 다가오는 배 4척 → 그것도 없으면 가장 최근 배 4척 (날짜 표시)
+async function loadCruises(){
+  try{
+    const ctl=new AbortController();setTimeout(()=>ctl.abort(),5000);
+    const res=await fetch(CRUISE_API+"?v="+Date.now(),{signal:ctl.signal});if(!res.ok)return;
+    const rows=await res.json();if(!Array.isArray(rows))return;
+    const all=rows.map(r=>({name:String(r.name||"").trim(),a:parseIso(r.arrive),d:parseIso(r.depart),pax:+r.pax||2000}))
+      .filter(c=>c.name&&c.a&&c.d&&c.d>c.a).sort((x,y)=>x.a-y.a);
+    if(!all.length)return;
+    const today=midnight(new Date()),tomorrow=new Date(+today+864e5);
+    let pick=all.filter(c=>c.a<tomorrow&&c.d>=today),src="api";
+    if(!pick.length){pick=all.filter(c=>c.a>=tomorrow).slice(0,4);src="apiNext"}
+    if(!pick.length){pick=all.slice(-4).reverse();src="apiPast"}
+    CRUISES=pick.map((c,i)=>{
+      const base=src==="api"?today:midnight(c.a);
+      const m=d=>Math.round((d-base)/6e4);
+      return {id:"api"+i,name:c.name,arr:Math.max(0,m(c.a)),dep:m(c.d),pax:c.pax,
+        date:src==="api"?"":`${c.a.getMonth()+1}/${c.a.getDate()}`};
+    });
+    cruiseSrc=src;if(!CRUISES.some(c=>c.id===state.ship))state.ship=null;if(state.screen==="q")render();
+  }catch(e){}
+}
+
 
 /* ---------- operator analysis: sample data (replace with real QR logs, reviews, card spending) ---------- */
 const DWELL={museum:52,taejongdae:104,gamji:71,haenyeo:66,huinnyeoul:78,trail:35,cafe:63,kkangkkangi:31,bongnae:47,bridge:22,lotte:88,daiso:44,oliveyoung:47};
@@ -369,7 +441,7 @@ function leg(a,b){
 }
 
 const blankA=()=>({nat:null,age:null,comp:null,interests:[],weather:null});
-let state={adsOn:true,adSel:null,lang:detectLang(),screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiBusy:false,aiMsg:"",fbSent:false};
+let state={foodCat:"all",foodMore:false,mapFull:false,adsOn:true,adSel:null,lang:detectLang(),screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiBusy:false,aiMsg:"",fbSent:false};
 let sampleFn=null;
 try{window.claude?.use?.("sample")?.then(s=>{sampleFn=s||null}).catch(()=>{})}catch(e){}
 
@@ -455,7 +527,7 @@ const KW={
 function has(txt,arr){return arr.some(w=>txt.includes(w.toLowerCase()))}
 function parseLocal(raw){
   let txt=raw.toLowerCase();const out=blankA();
-  const ship=CRUISES.find(c=>txt.includes(c.name.toLowerCase())||txt.includes(c.name.split(" ")[1].toLowerCase()));
+  const ship=CRUISES.find(c=>txt.includes(c.name.toLowerCase())||txt.includes((c.name.split(" ")[1]||c.name).toLowerCase()));
   CRUISES.forEach(c=>{txt=txt.split(c.name.toLowerCase()).join(" ")});
   for(const [k,arr] of Object.entries(KW.interests))if(has(txt,arr))out.interests.push(k);
   for(const [k,arr] of Object.entries(KW.comp))if(!out.comp&&has(txt,arr))out.comp=k;
@@ -519,9 +591,9 @@ function renderQ(s,a){
   if(key==="weather"){title=x.q_wx;sub=x.q_wxS;opts=grid(Object.keys(x.wx).map(k=>[k,x.wx[k]]),"weather")}
   if(key==="ship"){title=x.q_ship;sub=x.q_shipS;opts=`<div class="options one">${CRUISES.map(c=>{const cr=crowdOf(c.pax);return `
     <button type="button" class="ship" id="ship-${c.id}" data-v="${c.id}" aria-pressed="${state.ship===c.id}">
-      <span class="row"><strong>${c.name}</strong><span class="pill ${cr}">${x.crowd[cr]}</span></span>
-      <span class="row times"><span>${x.arr} ${hm(c.arr)} · ${x.dep} ${hm(c.dep)}</span><span>${c.pax.toLocaleString()}${x.pax==="pax"?" pax":x.pax}</span></span>
-    </button>`}).join("")}</div>`}
+      <span class="row"><strong>${c.date?`<span class="muted" style="font-weight:500">${c.date}</span> `:""}${esc(c.name)}</strong><span class="pill ${cr}">${x.crowd[cr]}</span></span>
+      <span class="row times"><span>${x.arr} ${hmD(c.arr)} · ${x.dep} ${hmD(c.dep)}</span><span>${c.pax.toLocaleString()}${x.pax==="pax"?" pax":x.pax}</span></span>
+    </button>`}).join("")}</div><p class="muted" style="font-size:12.5px">${CSRC[state.lang][cruiseSrc]}</p>`}
   s.innerHTML=`${prog}<div style="display:flex;flex-direction:column;gap:4px"><h2>${title}</h2>${sub?`<p class="muted">${sub}</p>`:""}</div>${opts}`;
   s.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{
     const v=b.dataset.v;
@@ -543,6 +615,9 @@ function grid(items,key,multi){
 }
 
 /* ---------- recommendation engine (rule-based stand-in for the AI model) ---------- */
+// 장소별 실내/야외 구분과 날씨별로 아예 빼는 곳
+const ENV={museum:"in",taejongdae:"out",gamji:"semi",haenyeo:"semi",huinnyeoul:"out",trail:"out",cafe:"in",kkangkkangi:"out",bongnae:"semi",bridge:"out",daiso:"in",oliveyoung:"in",lotte:"in"};
+const WX_BLOCK={rain:["trail","huinnyeoul","bridge"],cold:["trail","bridge"]};
 function score(p){
   const {age,comp,nat,interests,weather}=state.a;
   if((p.out||p.shop)&&!interests.includes("beauty"))return -1;
@@ -559,9 +634,12 @@ function score(p){
   if(nat==="ja"&&p.id==="haenyeo")s+=0.8;
   if((nat==="zh"||nat==="tw")&&(p.id==="bongnae"||p.id==="lotte"))s+=0.8;
   if(nat==="us"&&p.tags.includes("culture"))s+=0.5;
-  if(weather==="rain"){s+=p.indoor?2.5:-2.5}
-  if(weather==="hot"){if(p.indoor)s+=1.5;if(p.id==="trail")s-=1.5}
-  if(weather==="cold"){if(p.id==="trail")s-=2;if(p.id==="taejongdae")s-=0.5;if(p.indoor)s+=0.8}
+  // 날씨: 위험한 곳은 아예 빼고, 실내·지붕 있는 곳은 올리고 야외는 내림
+  if(WX_BLOCK[weather]?.includes(p.id))return -1;
+  const env=ENV[p.id]||"out";
+  if(weather==="rain")s+={in:3,semi:0.5,out:-3.5}[env];
+  if(weather==="hot"){s+={in:1.5,semi:0.3,out:-1}[env];if(p.id==="cafe")s+=1.5}
+  if(weather==="cold")s+={in:1,semi:0.3,out:-1.5}[env];
   // places people actually stay longer than planned and rate highly get a small boost (learning from reviews)
   s+=(RATING[p.id]-4.3)*0.8;
   return s;
@@ -572,10 +650,17 @@ function simulate(route,start){
   const backLeg=leg(prev,"T");
   return {stops:out,end:tm+backLeg.min,leave:tm,back:backLeg.min,backLeg};
 }
+// 출항 몇 분 전까지 크루즈터미널에 돌아와 있어야 하는지
+const RETURN_BEFORE=120;
+// 입항 후 몇 분 뒤에 관광을 시작하는지 (하선·입국 수속 시간)
+const DEPART_AFTER=60;
 function plan(){
   const c=CRUISES.find(x=>x.id===state.ship);
-  const start=c.arr+15, allAboard=c.dep-30, limit=allAboard-15;
-  const scored=PLACES.map(p=>({p,s:score(p)})).filter(x=>x.s>0);
+  const start=c.arr+DEPART_AFTER, limit=c.dep-RETURN_BEFORE, allAboard=limit;
+  const W=state.a.weather,OUTMAX={rain:1,cold:2,hot:3}[W]??99;
+  const isOut=p=>(ENV[p.id]||"out")==="out";
+  // 비 오는 날 야외는 관심사와 아주 잘 맞는 곳(점수 3 이상) 한 곳까지만
+  const scored=PLACES.map(p=>({p,s:score(p)})).filter(x=>x.s>0&&!(W==="rain"&&isOut(x.p)&&x.s<3));
   const beauty=state.a.interests.includes("beauty");
   let orders=[["E"],["W"],["E","W"],["W","E"]];
   if(beauty)orders=orders.concat([["E","O"],["W","O"],["E","W","O"]]);
@@ -585,6 +670,7 @@ function plan(){
     let chosen=[],meal=false;
     for(const x of pool){
       if(x.p.meal&&meal)continue;
+      if(isOut(x.p)&&chosen.filter(isOut).length>=OUTMAX)continue;
       const trial=chosen.concat(x.p).sort((a,b)=>ord.indexOf(a.zone)-ord.indexOf(b.zone)||a.seq-b.seq);
       if(simulate(trial,start).end<=limit){chosen=trial;if(x.p.meal)meal=true}
     }
@@ -592,9 +678,9 @@ function plan(){
     const total=chosen.reduce((n,p)=>n+scored.find(y=>y.p===p).s,0)-(ord.length-1)*1.2;
     if(!best||total>best.total)best={ord,chosen,total};
   }
-  if(!best){const m=PLACES[0];best={ord:["E"],chosen:[m],total:0}}
+  if(!best){best={ord:["E"],chosen:[],total:0,none:true}}
   const sim=simulate(best.chosen,start);
-  return {c,start,allAboard,sim,ord:best.ord,chosen:best.chosen,dur:c.dep-c.arr};
+  return {c,start,allAboard,sim,ord:best.ord,chosen:best.chosen,dur:c.dep-c.arr,free:limit-start,none:!!best.none};
 }
 function seeded(str){let h=2166136261;for(const ch of str){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%10000)/10000}}
 
@@ -605,10 +691,10 @@ function seeded(str){let h=2166136261;for(const ch of str){h^=ch.charCodeAt(0);h
 const CONFIG={KAKAO_JS_KEY:""};
 const TERM_NAME={ko:"크루즈터미널",en:"Cruise Terminal",ja:"クルーズターミナル",zh:"邮轮码头"};
 const MAPT={
-ko:{sketch:"영도 약도 · 위치는 대략적이에요",real:"지도 데이터 © Kakao",legend:"숫자 = 방문 순서"},
-en:{sketch:"Sketch map of Yeongdo · positions approximate",real:"Map data © Kakao",legend:"Numbers = visit order"},
-ja:{sketch:"影島の略図・位置はおおよそです",real:"地図データ © Kakao",legend:"数字＝訪問順"},
-zh:{sketch:"影岛示意图·位置为大致",real:"地图数据 © Kakao",legend:"数字＝游览顺序"}};
+ko:{full:"전체 보기",zoom:"동선 확대",sketch:"영도 약도 · 위치는 대략적이에요",real:"지도 데이터 © Kakao",legend:"숫자 = 방문 순서"},
+en:{full:"Whole island",zoom:"Zoom to route",sketch:"Sketch map of Yeongdo · positions approximate",real:"Map data © Kakao",legend:"Numbers = visit order"},
+ja:{full:"全体表示",zoom:"ルート拡大",sketch:"影島の略図・位置はおおよそです",real:"地図データ © Kakao",legend:"数字＝訪問順"},
+zh:{full:"查看全岛",zoom:"放大路线",sketch:"影岛示意图·位置为大致",real:"地图数据 © Kakao",legend:"数字＝游览顺序"}};
 /* ---------- 광고(제휴) 식당 ----------
    아래는 시연용 가상 가게입니다. 실제 광고주를 받으면 이 목록만 바꾸면 지도·목록에 반영됩니다.
    cat: food(식당) / seafood(해산물) / cafe(카페)   promo: drink / pct10 / dessert / menu */
@@ -624,10 +710,10 @@ const ADS=[
  {id:"ad9",cat:"seafood",ll:[35.0618,129.0662],name:{ko:"중리 조개구이",en:"Jungni Clam Grill"},promo:"menu",menu:{ko:"조개구이 세트",en:"Grilled clam set"},price:"40,000~"}
 ];
 const ADT={
-ko:{toggle:"광고 식당",ad:"광고",near:"동선 근처 광고 식당",from:s=>`${s}에서 도보 약`,walk:"분",cat:{food:"식당",seafood:"해산물",cafe:"카페"},promo:{drink:"크루즈 승객 음료 1잔 무료",pct10:"크루즈 승객 10% 할인",dessert:"주문 시 디저트 서비스",menu:"외국어 메뉴판·해외카드 결제"},tap:"지도에서 아이콘을 눌러 보세요.",show:"크루즈 탑승권을 보여주세요",sample:"가게 정보는 시연용 예시입니다."},
-en:{toggle:"Sponsored",ad:"Ad",near:"Sponsored places near your route",from:s=>`${s} →`,walk:" min walk",cat:{food:"Restaurant",seafood:"Seafood",cafe:"Café"},promo:{drink:"Free drink for cruise guests",pct10:"10% off for cruise guests",dessert:"Free dessert with order",menu:"English menu, foreign cards OK"},tap:"Tap an icon on the map.",show:"Show your cruise card",sample:"Shop details are sample data."},
-ja:{toggle:"広告店舗",ad:"広告",near:"ルート近くの広告店舗",from:s=>`${s}から徒歩約`,walk:"分",cat:{food:"食堂",seafood:"海鮮",cafe:"カフェ"},promo:{drink:"クルーズ客はドリンク1杯無料",pct10:"クルーズ客10%割引",dessert:"注文でデザートサービス",menu:"外国語メニュー・海外カード可"},tap:"地図のアイコンをタップしてください。",show:"クルーズカードを提示してください",sample:"店舗情報はデモ用の例です。"},
-zh:{toggle:"广告店铺",ad:"广告",near:"路线附近的广告店铺",from:s=>`距${s}步行约`,walk:"分钟",cat:{food:"餐厅",seafood:"海鲜",cafe:"咖啡馆"},promo:{drink:"邮轮游客免费饮料1杯",pct10:"邮轮游客9折",dessert:"点餐送甜点",menu:"外语菜单·可刷外卡"},tap:"点击地图上的图标查看。",show:"请出示邮轮卡",sample:"店铺信息为演示样例。"}};
+ko:{toggle:"광고 식당",ad:"광고",nearOf:s=>`${s} 근처`,walkN:n=>`도보 ${n}분`,nearStop:"근처 광고 식당",near:"동선 근처 광고 식당 (장소별)",from:s=>`${s}에서 도보 약`,walk:"분",cat:{food:"식당",seafood:"해산물",cafe:"카페"},promo:{drink:"크루즈 승객 음료 1잔 무료",pct10:"크루즈 승객 10% 할인",dessert:"주문 시 디저트 서비스",menu:"외국어 메뉴판·해외카드 결제"},tap:"지도에서 아이콘을 눌러 보세요.",show:"크루즈 탑승권을 보여주세요",sample:"가게 정보는 시연용 예시입니다."},
+en:{toggle:"Sponsored",ad:"Ad",nearOf:s=>`Near ${s}`,walkN:n=>`${n} min walk`,nearStop:"Sponsored nearby",near:"Sponsored places near your route",from:s=>`${s} →`,walk:" min walk",cat:{food:"Restaurant",seafood:"Seafood",cafe:"Café"},promo:{drink:"Free drink for cruise guests",pct10:"10% off for cruise guests",dessert:"Free dessert with order",menu:"English menu, foreign cards OK"},tap:"Tap an icon on the map.",show:"Show your cruise card",sample:"Shop details are sample data."},
+ja:{toggle:"広告店舗",ad:"広告",nearOf:s=>`${s}周辺`,walkN:n=>`徒歩${n}分`,nearStop:"近くの広告店舗",near:"ルート近くの広告店舗",from:s=>`${s}から徒歩約`,walk:"分",cat:{food:"食堂",seafood:"海鮮",cafe:"カフェ"},promo:{drink:"クルーズ客はドリンク1杯無料",pct10:"クルーズ客10%割引",dessert:"注文でデザートサービス",menu:"外国語メニュー・海外カード可"},tap:"地図のアイコンをタップしてください。",show:"クルーズカードを提示してください",sample:"店舗情報はデモ用の例です。"},
+zh:{toggle:"广告店铺",ad:"广告",nearOf:s=>`${s}附近`,walkN:n=>`步行${n}分钟`,nearStop:"附近广告店铺",near:"路线附近的广告店铺",from:s=>`距${s}步行约`,walk:"分钟",cat:{food:"餐厅",seafood:"海鲜",cafe:"咖啡馆"},promo:{drink:"邮轮游客免费饮料1杯",pct10:"邮轮游客9折",dessert:"点餐送甜点",menu:"外语菜单·可刷外卡"},tap:"点击地图上的图标查看。",show:"请出示邮轮卡",sample:"店铺信息为演示样例。"}};
 const ICON={
  food:'<path d="M8 4v6.5M6 4v4.5a2 2 0 0 0 4 0V4M8 11v9M16.5 4c-1.8 0-2.8 2.6-2.8 5.4 0 2 .9 3.4 2.8 3.6V20" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>',
  seafood:'<path d="M3.5 12c2.8-3.8 7.6-4.8 11.4-2.6L19.5 6.5v11l-4.6-2.9C11.1 16.8 6.3 15.8 3.5 12z" fill="#fff"/><circle cx="8" cy="11.2" r="1.1" fill="#e0442d"/>',
@@ -635,9 +721,9 @@ const ICON={
 const adName=(a,L)=>L==="ko"?a.name.ko:a.name.en;
 function distM([a1,b1],[a2,b2]){const r=Math.PI/180,x=(b2-b1)*r*Math.cos((a1+a2)/2*r),y=(a2-a1)*r;return Math.sqrt(x*x+y*y)*6371000}
 function nearAds(r){
-  const stops=r.sim.stops.map(st=>({p:st.p,ll:COORD[st.p.id]}));
-  return ADS.map(a=>{let best=null;stops.forEach(s=>{const d=distM(a.ll,s.ll);if(!best||d<best.d)best={d,p:s.p}});return {a,...best}})
-    .filter(x=>x.d<=800).sort((x,y)=>x.d-y.d);
+  const stops=r.sim.stops.map((st,i)=>({p:st.p,i,ll:COORD[st.p.id]}));
+  return ADS.map(a=>{let best=null;stops.forEach(s=>{const d=distM(a.ll,s.ll);if(!best||d<best.d)best={d,p:s.p,i:s.i}});return {a,...best,walk:best?Math.max(1,Math.round(best.d*1.3/70)):0}})
+    .filter(x=>x.d<=800).sort((x,y)=>x.i-y.i||x.d-y.d);
 }
 function adCardHTML(id,r){
   const L=state.lang,A=ADT[L],a=ADS.find(v=>v.id===id);if(!a)return "";
@@ -653,7 +739,7 @@ function adsSvg(r){
   if(!state.adsOn)return "";
   const L=state.lang,near=new Set(nearAds(r).map(v=>v.a.id));
   return ADS.map(a=>{
-    const [x,y]=proj(...a.ll),sel=state.adSel===a.id,s=sel?1.1:.82;
+    const [x,y]=proj(...a.ll),sel=state.adSel===a.id,s=(sel?1.1:.82)/ZK;
     const lbl=sel?`<text x="0" y="22" text-anchor="middle" font-size="10.5" font-weight="600" fill="#1b2a30" stroke="#fff" stroke-width="3" paint-order="stroke">${esc(adName(a,L))}</text>`:"";
     return `<g class="ad-pin" data-ad="${a.id}" tabindex="0" role="button" aria-label="${esc(ADT[L].ad+": "+adName(a,L))}" transform="translate(${x} ${y}) scale(${s})">
       <rect class="bg" x="-12" y="-12" width="24" height="24" rx="6" fill="#e0442d" stroke="${sel?"#0d4a5c":"#fff"}" stroke-width="2"/>
@@ -663,11 +749,13 @@ function adsSvg(r){
       ${lbl}</g>`}).join("");
 }
 function wireAds(r){
-  const sel=id=>{state.adSel=state.adSel===id?null:id;refreshMap(r)};
-  document.querySelectorAll("#smap [data-ad], #adlist [data-ad]").forEach(el=>{
-    el.onclick=()=>sel(el.dataset.ad);
-    el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();sel(el.dataset.ad)}};
+  const sel=(id,el)=>{const fromTl=el&&el.closest(".adnear");state.adSel=fromTl?id:(state.adSel===id?null:id);refreshMap(r);if(fromTl)document.getElementById("adCard")?.scrollIntoView({block:"center",behavior:"smooth"})};
+  document.querySelectorAll("#smap [data-ad], #adlist [data-ad], .adnear [data-ad]").forEach(el=>{
+    el.onclick=()=>sel(el.dataset.ad,el);
+    el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();sel(el.dataset.ad,el)}};
   });
+  const zt=document.getElementById("zoomToggle");
+  if(zt)zt.onclick=()=>{state.mapFull=!state.mapFull;zt.textContent=state.mapFull?MAPT[state.lang].zoom:MAPT[state.lang].full;refreshMap(r)};
   const tg=document.getElementById("adToggle");
   if(tg)tg.onclick=()=>{state.adsOn=!state.adsOn;if(!state.adsOn)state.adSel=null;refreshMap(r)};
 }
@@ -676,7 +764,10 @@ function adPanelHTML(r){
   if(!state.adsOn)return "";
   return `<div style="display:flex;flex-direction:column;gap:8px">
     <p style="font-weight:700;font-size:14.5px">${A.near}</p>
-    <div class="adlist" id="adlist">${near.map(v=>`<button type="button" id="adbtn-${v.a.id}" data-ad="${v.a.id}" aria-pressed="${state.adSel===v.a.id}"><span class="dot"></span>${esc(adName(v.a,L))}</button>`).join("")}</div>
+    <div class="adgroups" id="adlist">${[...new Set(near.map(v=>v.i))].map(i=>{
+      const g=near.filter(v=>v.i===i),stop=g[0].p.name[L].split(" (")[0].split("（")[0];
+      return `<div class="adgroup"><p class="adg-h"><span class="num">${i+1}</span>${esc(A.nearOf(stop))}</p>
+        <div class="adlist">${g.map(v=>`<button type="button" id="adbtn-${v.a.id}" data-ad="${v.a.id}" aria-pressed="${state.adSel===v.a.id}"><span class="dot"></span>${esc(adName(v.a,L))} <small>${A.cat[v.a.cat]} · ${A.walkN(v.walk)}</small></button>`).join("")}</div></div>`}).join("")}</div>
     <div id="adCard">${state.adSel?adCardHTML(state.adSel,r):`<p class="muted">${A.tap}</p>`}</div>
     <p class="demo" style="text-align:left">${A.sample}</p></div>`;
 }
@@ -696,36 +787,54 @@ const COAST=[[35.0962,129.0368],[35.0972,129.0450],[35.0952,129.0560],[35.0930,1
  [35.0848,129.0365],[35.0890,129.0322],[35.0932,129.0328]];
 const MAINLAND=[[35.1012,129.0255],[35.1012,129.0560],[35.0995,129.0500],[35.0985,129.0400],[35.0968,129.0340],[35.0962,129.0255]];
 const poly=arr=>arr.map(([a,b])=>proj(a,b).join(",")).join(" ");
+let ZK=1; // 약도 확대 배율 (마커·글자는 배율과 상관없이 같은 크기로 보이게 1/ZK로 줄여 그림)
+function routeView(xy){
+  // 동선(터미널+방문지)이 화면을 꽉 채우도록 viewBox 계산. 너무 가까이 가지 않게 최소 폭 제한
+  if(state.mapFull)return [0,0,MB.W,MB.H];
+  const xs=xy.map(p=>p[0]),ys=xy.map(p=>p[1]),pad=34;
+  let x0=Math.min(...xs)-pad,x1=Math.max(...xs)+pad,y0=Math.min(...ys)-pad,y1=Math.max(...ys)+pad;
+  let w=Math.max(x1-x0,130),h=Math.max(y1-y0,130*MB.H/MB.W);
+  if(w/h>MB.W/MB.H)h=w*MB.H/MB.W;else w=h*MB.W/MB.H;
+  const cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2;
+  return [cx-w/2,cy-h/2,w,h].map(v=>+v.toFixed(1));
+}
 function sketchMap(r){
   const L=state.lang,ids=["T",...r.sim.stops.map(st=>st.p.id)];
   const xy=ids.map(id=>proj(...COORD[id]));
+  const vb=routeView(xy);ZK=MB.W/vb[2];
+  const k=1/ZK,f=n=>+(n*k).toFixed(2);
   const out=xy.map(p=>p.join(",")).join(" ");
   const back=[xy[xy.length-1],xy[0]].map(p=>p.join(",")).join(" ");
   const short=p=>p.name[L].split(" (")[0].split("（")[0];
+  const midX=vb[0]+vb[2]*0.62;
   let marks="";
   r.sim.stops.forEach((st,i)=>{
-    const [x,y]=xy[i+1],left=x>290;
-    marks+=`<circle cx="${x}" cy="${y}" r="11" fill="#e5533b" stroke="#fff" stroke-width="2.5"/>
-      <text x="${x}" y="${y+4.5}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">${i+1}</text>
-      <text x="${left?x-16:x+16}" y="${y+4}" text-anchor="${left?"end":"start"}" font-size="12" font-weight="500" fill="#1b2a30" stroke="#fff" stroke-width="3.5" paint-order="stroke">${esc(short(st.p))}</text>`;
+    const [x,y]=xy[i+1],left=x>midX;
+    marks+=`<g transform="translate(${x} ${y}) scale(${k.toFixed(3)})">
+      <circle r="11" fill="#e5533b" stroke="#fff" stroke-width="2.5"/>
+      <text y="4.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">${i+1}</text>
+      <text x="${left?-16:16}" y="4" text-anchor="${left?"end":"start"}" font-size="12" font-weight="500" fill="#1b2a30" stroke="#fff" stroke-width="3.5" paint-order="stroke">${esc(short(st.p))}</text></g>`;
   });
   const [tx,ty]=xy[0];
   const np=proj(35.1001,129.029),yd=proj(35.0735,129.066);
-  return `<svg viewBox="0 0 ${MB.W} ${MB.H}" role="img" aria-label="${esc(MAPT[L].sketch)}" font-family="Noto Sans KR, sans-serif">
-    <defs><pattern id="mgrid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#c9dfe3" stroke-width="1"/></pattern>
-    <marker id="marr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#e5533b"/></marker></defs>
-    <rect width="${MB.W}" height="${MB.H}" fill="url(#mgrid)"/>
-    <polygon points="${poly(MAINLAND)}" fill="#efe9dc" stroke="#cfc6b3"/>
-    <text x="${np[0]}" y="${np[1]}" font-size="11" fill="#8a8170">남포·광복 Nampo</text>
-    <polygon points="${poly(COAST)}" fill="#f4f1ea" stroke="#9fb8bc" stroke-width="1.5"/>
-    <text x="${yd[0]}" y="${yd[1]}" font-size="20" fill="#b9c4c2" text-anchor="middle" font-family="Do Hyeon, sans-serif">YEONGDO 영도</text>
-    <polyline points="${back}" fill="none" stroke="#0d4a5c" stroke-width="2.5" stroke-dasharray="5 5" opacity=".7"/>
-    <polyline points="${out}" fill="none" stroke="#e5533b" stroke-width="3.5" stroke-linejoin="round" marker-mid="url(#marr)"/>
+  return `<svg viewBox="${vb.join(" ")}" role="img" aria-label="${esc(MAPT[L].sketch)}" font-family="Noto Sans KR, sans-serif">
+    <defs><pattern id="mgrid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#c9dfe3" stroke-width="${f(1)}"/></pattern>
+    <marker id="marr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="${f(5/3.5*3.5)}" markerHeight="${f(5)}" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L10 5L0 10z" fill="#e5533b"/></marker></defs>
+    <rect x="-200" y="-200" width="${MB.W+400}" height="${MB.H+400}" fill="#dcebee"/>
+    <rect x="-200" y="-200" width="${MB.W+400}" height="${MB.H+400}" fill="url(#mgrid)"/>
+    <polygon points="${poly(MAINLAND)}" fill="#efe9dc" stroke="#cfc6b3" stroke-width="${f(1)}"/>
+    <text x="${np[0]}" y="${np[1]}" font-size="${f(11)}" fill="#8a8170">남포·광복 Nampo</text>
+    <polygon points="${poly(COAST)}" fill="#f4f1ea" stroke="#9fb8bc" stroke-width="${f(1.5)}"/>
+    ${state.mapFull?`<text x="${yd[0]}" y="${yd[1]}" font-size="20" fill="#b9c4c2" text-anchor="middle" font-family="Do Hyeon, sans-serif">YEONGDO 영도</text>`:""}
+    <polyline points="${back}" fill="none" stroke="#0d4a5c" stroke-width="${f(2.5)}" stroke-dasharray="${f(5)} ${f(5)}" opacity=".7"/>
+    <polyline points="${out}" fill="none" stroke="#e5533b" stroke-width="${f(3.5)}" stroke-linejoin="round" marker-mid="url(#marr)"/>
     ${adsSvg(r)}
+    ${foodSvg(r)}
     ${marks}
-    <rect x="${tx-13}" y="${ty-13}" width="26" height="26" rx="7" fill="#0d4a5c" stroke="#fff" stroke-width="2.5"/>
-    <text x="${tx}" y="${ty+4.5}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">T</text>
-    <text x="${tx+18}" y="${ty+22}" font-size="11.5" font-weight="700" fill="#0d4a5c" stroke="#fff" stroke-width="3.5" paint-order="stroke">${esc(TERM_NAME[L])}</text>
+    <g transform="translate(${tx} ${ty}) scale(${k.toFixed(3)})">
+      <rect x="-13" y="-13" width="26" height="26" rx="7" fill="#0d4a5c" stroke="#fff" stroke-width="2.5"/>
+      <text y="4.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">T</text>
+      <text x="18" y="22" font-size="11.5" font-weight="700" fill="#0d4a5c" stroke="#fff" stroke-width="3.5" paint-order="stroke">${esc(TERM_NAME[L])}</text></g>
   </svg>`;
 }
 let kakaoP=null,kmapObj=null,kAds=[];
@@ -763,14 +872,165 @@ function kakaoMap(r){
     const b=new K.LatLngBounds();
     path.forEach((p,i)=>{b.extend(p);new K.CustomOverlay({map,position:p,yAnchor:.5,content:`<div class="kpin${i?"":" t"}">${i||"T"}</div>`})});
     map.setBounds(b,40,40,40,40);
-    drawKakaoAds(r);
+    drawKakaoAds(r);drawKakaoFoods(r);
   }).catch(()=>{});
+}
+
+/* ---------- 영도 맛집 목록 ----------
+   출처: 부산어디?(busan-where.com) 영도구 맛집 목록 1~3페이지, 인기순, 2026-11-23 기준.
+   [이름, 분류, 소개, 네이버 평점, 리뷰 수, 인증 배지, 동네(E=동쪽·터미널 쪽 / W=서쪽, 소개에 동네가 나온 곳만)] */
+let FOOD=[
+["카페 385","cafe","해변을 한눈에 보며 여유롭게 쉬는 카페"],
+["피아크 카페&베이커리","cafe","하버뷰 베이커리카페"],
+["그라치에","west","이탈리안, 감자뇨끼·오징어먹물리조또 인기",4.8,11447,["safe"]],
+["스페이스 원지","west","높은 층고와 뷰가 특징",4.5,1702],
+["여울 책장","cafe","바다 전경의 북카페",4.5,2753],
+["몽작","west","신선한 고기와 야경, 가족 식사",4.9,6960,["safe"]],
+["미피카페 부산","cafe","미피 캐릭터 카페"],
+["재기돼지국밥","pork","남항시장에서 55년 된 전통 돼지국밥",null,null,null,"W"],
+["모모스 로스터리 & 커피바","cafe","부산 대표 로스터리",4.4,2091],
+["에테르","cafe","흰여울문화마을 바다뷰 카페",4.3,4499,null,"W"],
+["오구카페","cafe","남항대교와 바다가 보이는 베이커리 카페",4.6,4306,null,"W"],
+["아르프","west","비건 메뉴 레스토랑",null,null,["bib"]],
+["도날드즉석떡볶이","snack","해물 육수 즉석떡볶이",4.6,3725],
+["헤일르","cafe","흰여울길 오션뷰 카페",null,null,null,"W"],
+["리스보아","cafe","절영로, 바다 보며 커피",4.9,1891,null,"W"],
+["선생조고매","cafe","고구마 음료와 디저트"],
+["아델라베일리 부산","west","24층에서 영도대교 전망, 가족 친화",4.6,802,null,"W"],
+["영도해녀촌","sea","해녀가 잡은 해산물과 김밥"],
+["꼬쇼네","cafe","유럽풍 인테리어 오션뷰 카페"],
+["아트센트","cafe","청학동 옛 목욕탕 건물을 고친 카페",4.8,1689,["safe"],"E"],
+["제주복국","sea","복요리 전문점",null,null,["model","safe"]],
+["청해수산","sea","두껍게 썬 회로 유명, 웨이팅 있음"],
+["태종대짬뽕","cn","태종대 근처 해산물 짬뽕",4.7,8233,null,"E"],
+["목장원","kr","바다 풍경 복합외식공간",null,null,["safe"]],
+["몽벨쉘터 영도점","bakery","애견동반 빵집·식당",4.9,2003],
+["화목정따로국밥","kr","국물 깔끔한 따로국밥",4.5,456],
+["알지비","cafe","3층에서 남항대교 경치",null,null,null,"W"],
+["선인장식당 영도본점","west","한우·한돈 함박스테이크, 치킨카레"],
+["사카나","jp","일본요리, 런치세트",4.6,509],
+["덕이네돼지국밥","pork","돼지국밥 정식",4.7,2163],
+["함흥보쌈사계절냉면","mil","보쌈과 냉면"],
+["와인드","cafe","목재 보트 콘셉트 카페",4.9,1339],
+["빨간등대 영도본점","kr","남항 해산물 식당 (2층)",4.9,4582,null,"W"],
+["무명일기","cafe","봉래동 폐공장을 고친 카페",4.5,1461,null,"W"],
+["토로","west","골목 이탈리안 레스토랑",null,null,["safe"]],
+["영도면옥","kr","칼국수·국밥·냉면, 청학수변공원 근처",4.8,4358,null,"E"],
+["르봉비","bakery","커피와 빵, 브런치"],
+["신기커피영도","cafe","옛 유치원을 고친 카페"],
+["가마솥돼지국밥","pork","신선동 돼지국밥",null,null,null,"W"],
+["삼형제오리부산1호점","kr","오리바베큐와 양꼬치"],
+["금영돼지국밥","pork","전통 돼지국밥"],
+["비엘르","cafe","해안 풍경 카페"],
+["라운지비","cafe","부산항 조망 카페",5.0,1044],
+["쿠시이로","jp","일본 술과 안주"],
+["작은시장횟집","sea","흰여울 근처 로컬 횟집",4.6,370,null,"W"],
+["영도 흰여울 카페거리","cafe","바다 전망 카페가 모인 거리",null,null,null,"W"],
+["야끼팩토리","jp","이자카야",null,null,["safe"]],
+["Izakaya NETA","jp","맥주·사케와 일품요리 이자카야"],
+["도요","cafe","아늑한 디저트 카페"],
+["영도횟집","sea","남항동 해산물 전문점",null,null,null,"W"],
+["화복반점","cn","청학동 중식당, 짬뽕 추천",null,null,null,"E"],
+["영도우","chick","부산항이 보이는 피자 전문점"],
+["호시이자카야","jp","남항동 이자카야",null,null,null,"W"],
+["르모아","cafe","절영 바다를 보는 카페",null,null,null,"W"],
+["댄싱컵 영도영선점","cafe","영선동 카페",null,null,null,"W"],
+["대교횟집","sea","생선회 전문"],
+["만풍","jp","바다 보며 일본식 안주와 술",5.0,40,["safe"]],
+["167호","bar","동삼동 요리주점",null,null,null,"E"]
+].map(([n,c,d,r,rv,b,z],i)=>({i,n,c,d,r,rv,b:b||[],z:z||null}));
+const FCAT_ORDER=["cafe","sea","kr","pork","west","jp","cn","bakery","mil","snack","chick","bar"];
+const FT={
+ko:{h:n=>`영도 맛집 ${n}곳`,sub:"부산어디? 인기순 · ★ 네이버 평점",subApi:"한국관광공사 관광정보 · 동선에서 가까운 순",pin:"지도의 초록 점 = 동선 근처 맛집",srcApi:d=>`출처: 한국관광공사 TourAPI(공공데이터포털), ${d} 업데이트. 매일 새벽 자동으로 새로 받아와요. 평점은 제공되지 않아요.`,all:"전체",near:"동선 근처",more:n=>`${n}곳 더 보기`,less:"접기",rev:"리뷰",
+ src:"출처: 부산어디?(busan-where.com) 영도 맛집 목록, 2026-11-23 기준. 번호는 가까운 동선 장소예요. 위치와 도보 시간은 가게 소개에 나온 동네 기준이라 대략적이에요.",
+ cat:{cafe:"카페·디저트",sea:"해산물·회",kr:"한식",pork:"돼지국밥",west:"양식",jp:"일식·초밥",cn:"중식",bakery:"베이커리",mil:"밀면",snack:"분식",chick:"치킨·피자",bar:"주점"},
+ badge:{safe:"안심식당",model:"모범음식점",bib:"빕 구르망"}},
+en:{h:n=>`${n} places to eat in Yeongdo`,sub:"Popularity order from Busan-where · ★ NAVER rating",subApi:"Korea Tourism Organization data · closest to your route first",pin:"Green dots on the map = places to eat near your route",srcApi:d=>`Source: Korea Tourism Organization TourAPI, updated ${d}. Refreshed automatically every morning. No ratings in this data.`,all:"All",near:"Near your route",more:n=>`Show ${n} more`,less:"Show less",rev:"reviews",
+ src:"Source: Busan-where (busan-where.com) Yeongdo restaurant list, as of 23 Nov 2026. 'Near your route' is a rough guide based on the neighbourhood in each listing. Descriptions are in Korean.",
+ cat:{cafe:"Café & dessert",sea:"Seafood & sashimi",kr:"Korean",pork:"Pork rice soup",west:"Western",jp:"Japanese",cn:"Chinese",bakery:"Bakery",mil:"Milmyeon noodles",snack:"Street food",chick:"Chicken & pizza",bar:"Bar"},
+ badge:{safe:"Safe restaurant",model:"Model restaurant",bib:"Bib Gourmand"}},
+ja:{h:n=>`影島グルメ${n}店`,sub:"釜山オディ？人気順・★NAVER評価",subApi:"韓国観光公社データ・ルートに近い順",pin:"地図の緑の点＝ルート近くの店",srcApi:d=>`出典：韓国観光公社 TourAPI、${d}更新。毎朝自動で更新されます。評価はありません。`,all:"すべて",near:"ルート近く",more:n=>`あと${n}店を見る`,less:"閉じる",rev:"件",
+ src:"出典：釜山オディ？(busan-where.com) 影島グルメ一覧、2026年11月23日時点。「ルート近く」は店舗紹介の地名によるおおよその目安です。紹介文は韓国語です。",
+ cat:{cafe:"カフェ・デザート",sea:"海鮮・刺身",kr:"韓国料理",pork:"テジクッパ",west:"洋食",jp:"和食・寿司",cn:"中華",bakery:"ベーカリー",mil:"ミルミョン",snack:"粉食",chick:"チキン・ピザ",bar:"居酒屋"},
+ badge:{safe:"安心食堂",model:"模範飲食店",bib:"ビブグルマン"}},
+zh:{h:n=>`影岛美食${n}家`,sub:"釜山哪里？人气排序 · ★ NAVER评分",subApi:"韩国观光公社数据 · 按离路线远近排序",pin:"地图上的绿点＝路线附近餐厅",srcApi:d=>`来源：韩国观光公社 TourAPI，${d}更新。每天早上自动更新。无评分数据。`,all:"全部",near:"路线附近",more:n=>`再看${n}家`,less:"收起",rev:"条评价",
+ src:"来源：釜山哪里？(busan-where.com) 影岛美食列表，截至2026年11月23日。“路线附近”按店铺介绍中的街区大致判断。介绍为韩语。",
+ cat:{cafe:"咖啡·甜点",sea:"海鲜·生鱼片",kr:"韩餐",pork:"猪肉汤饭",west:"西餐",jp:"日料·寿司",cn:"中餐",bakery:"面包店",mil:"小麦冷面",snack:"小吃",chick:"炸鸡·披萨",bar:"酒馆"},
+ badge:{safe:"安心餐厅",model:"模范餐厅",bib:"必比登推介"}}};
+// 가게 소개에 나온 동네 → 대략적인 위치 (앞에서부터 먼저 맞는 것)
+const FAREA=[[/흰여울|영선|절영/,[35.0785,129.0445]],[/남항대교/,[35.0830,129.0420]],[/남항/,[35.0890,129.0400]],[/영도대교|대교동/,[35.0935,129.0365]],
+ [/봉래/,[35.0915,129.0420]],[/신선/,[35.0850,129.0470]],[/청학수변/,[35.0905,129.0660]],[/청학/,[35.0920,129.0600]],[/태종대/,[35.0600,129.0820]],[/동삼/,[35.0750,129.0720]]];
+function foodNear(f,r){
+  // foods.json에서 받은 가게는 실제 좌표(f.ll), 기본 목록은 소개에 나온 동네 위치로 계산
+  const ll=f.ll||(FAREA.find(([re])=>re.test(f.d||""))||[])[1];if(!ll)return null;
+  let best=null;r.sim.stops.forEach((st,i)=>{const d=distM(ll,COORD[st.p.id]);if(!best||d<best.d)best={d,i,p:st.p}});
+  return best&&best.d<=800?{...best,walk:Math.max(2,Math.round(best.d*1.3/70))}:null;
+}
+function foodHTML(r){
+  const L=state.lang,F=FT[L],zones=new Set(r.chosen.map(p=>p.zone).filter(z=>z==="E"||z==="W"));
+  const cats=FCAT_ORDER.filter(c=>FOOD.some(f=>f.c===c)).map(c=>[c,FOOD.filter(f=>f.c===c).length]);
+  const list=FOOD.filter(f=>state.foodCat==="all"||f.c===state.foodCat).map(f=>({...f,nr:foodNear(f,r)}))
+    .sort((a,b)=>(!!b.nr-!!a.nr)||((a.nr?.i??0)-(b.nr?.i??0))||((a.nr?.d??0)-(b.nr?.d??0))||(a.i-b.i));
+  const LIMIT=8,shown=state.foodMore?list:list.slice(0,LIMIT);
+  const kk=L==="ko"?"카카오맵":"KakaoMap",nv=L==="ko"?"네이버 지도":"NAVER Map";
+  const item=f=>{const q=encodeURIComponent("부산 영도 "+f.n);return `<li class="fd">
+    <span class="nm"><strong>${esc(f.n)}</strong>${f.nr?`<span class="nearb"><span class="num">${f.nr.i+1}</span>${esc(ADT[L].nearOf(f.nr.p.name[L].split(" (")[0].split("（")[0]))} · ${ADT[L].walkN(f.nr.walk)}</span>`:""}</span>
+    <span class="meta"><span>${F.cat[f.c]}</span>${f.r?`<span><span class="st">★ ${f.r.toFixed(1)}</span> (${F.rev} ${f.rv.toLocaleString()})</span>`:""}${f.b.map(b=>`<span class="fbadge">${F.badge[b]}</span>`).join("")}</span>
+    <span class="ds">${esc(f.d)}</span>
+    <span class="maps"><a href="${f.ll?`https://map.kakao.com/link/map/${encodeURIComponent(f.n)},${f.ll[0]},${f.ll[1]}`:`https://map.kakao.com/link/search/${q}`}" target="_blank" rel="noopener">${kk}</a><a href="https://map.naver.com/p/search/${q}" target="_blank" rel="noopener">${nv}</a></span></li>`};
+  return `<h2 style="font-size:19px">${F.h(FOOD.length)}</h2><p class="muted">${foodSrc==="api"?F.subApi:F.sub}${nearFoodsLL(r).length?` · ${F.pin}`:""}</p>
+    <div class="fcats" role="group" aria-label="${esc(F.h(FOOD.length))}">${[["all",FOOD.length]].concat(cats).map(([c,n])=>`<button type="button" id="fcat-${c}" data-fc="${c}" aria-pressed="${state.foodCat===c}">${c==="all"?F.all:F.cat[c]} ${n}</button>`).join("")}</div>
+    <ol class="flist">${shown.map(item).join("")}</ol>
+    ${list.length>LIMIT?`<button type="button" class="fmore" id="foodMore">${state.foodMore?F.less:F.more(list.length-LIMIT)}</button>`:""}
+    <p class="demo" style="text-align:left">${foodSrc==="api"?F.srcApi(foodUpdated):F.src}</p>`;
+}
+/* ---------- 매일 바뀌는 맛집 목록 불러오기 ----------
+   foods.json: GitHub Actions가 매일 새벽 한국관광공사 TourAPI에서 영도 음식점을 받아 만들어 두는 파일
+   (scripts/fetch-foods.mjs). 형태: {updated, items:[{id,name,cat,addr,lat,lng,tel}]}
+   불러오지 못하면 위의 기본 목록(FOOD, 부산어디? 58곳)을 그대로 씁니다. */
+const FOOD_API="foods.json";
+let foodSrc="sample",foodUpdated="",lastR=null,kFoods=[];
+function nearFoodsLL(r){
+  return FOOD.filter(f=>f.ll).map(f=>({f,nr:foodNear(f,r)})).filter(x=>x.nr).sort((a,b)=>a.nr.d-b.nr.d).slice(0,15);
+}
+function foodSvg(r){
+  return nearFoodsLL(r).map(({f})=>{const [x,y]=proj(...f.ll);
+    return `<g transform="translate(${x} ${y}) scale(${(1/ZK).toFixed(3)})"><title>${esc(f.n)}</title><circle r="5.5" fill="#2f8a5b" stroke="#fff" stroke-width="1.8"/></g>`}).join("");
+}
+function drawKakaoFoods(r){
+  kFoods.forEach(o=>o.setMap(null));kFoods=[];if(!kmapObj)return;const K=kakao.maps;
+  nearFoodsLL(r).forEach(({f})=>kFoods.push(new K.CustomOverlay({map:kmapObj,position:new K.LatLng(...f.ll),yAnchor:.5,zIndex:0,
+    content:`<div title="${esc(f.n)}" style="width:12px;height:12px;border-radius:50%;background:#2f8a5b;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)"></div>`})));
+}
+async function loadFoods(){
+  try{
+    const ctl=new AbortController();setTimeout(()=>ctl.abort(),5000);
+    const res=await fetch(FOOD_API+"?v="+Date.now(),{signal:ctl.signal});if(!res.ok)return;
+    const j=await res.json();const rows=Array.isArray(j)?j:(j&&j.items);if(!Array.isArray(rows))return;
+    const items=rows.map((x,i)=>{const la=+x.lat,ln=+x.lng;return {i,n:String(x.name||"").trim(),c:FCAT_ORDER.includes(x.cat)?x.cat:"kr",d:String(x.addr||""),r:null,rv:null,b:[],z:null,
+      ll:(la>35&&la<35.2&&ln>128.9&&ln<129.2)?[la,ln]:null}}).filter(f=>f.n);
+    if(items.length<10)return;
+    FOOD=items;foodSrc="api";foodUpdated=String(j.updated||"").slice(0,10);
+    if(state.foodCat!=="all"&&!FOOD.some(f=>f.c===state.foodCat))state.foodCat="all";
+    if(state.screen==="result"&&lastR){const sec=document.getElementById("foodSec");if(sec){sec.innerHTML=foodHTML(lastR);wireFood(lastR)}refreshMap(lastR);if(kmapObj)drawKakaoFoods(lastR)}
+  }catch(e){}
+}
+function wireFood(r){
+  const sec=document.getElementById("foodSec");if(!sec)return;
+  sec.querySelectorAll("[data-fc]").forEach(b=>b.onclick=()=>{state.foodCat=b.dataset.fc;state.foodMore=false;sec.innerHTML=foodHTML(r);wireFood(r)});
+  const m=document.getElementById("foodMore");
+  if(m)m.onclick=()=>{state.foodMore=!state.foodMore;sec.innerHTML=foodHTML(r);wireFood(r);if(!state.foodMore)sec.scrollIntoView({block:"start"})};
 }
 
 function legHTML(lg,x){
   const m=k=>{const v=lg[k];const on=lg.mode===k;return `<span class="mode${on?" on":""}">${x.modes[k]} ${v===null?"—":v+x.min}</span>`};
   return `<div class="leg"><div class="modes">${m("walk")}${m("taxi")}${m("bus")}</div><span class="move"><b>${x.recLbl} ${x.modes[lg.mode]}</b> · ${x.why[lg.why]}</span></div>`;
 }
+function fmtDur(m,L){const h=Math.floor(m/60),n=m%60;
+  if(L==="en")return (h?h+" h ":"")+(n?n+" min":"").trim();
+  if(L==="ja")return (h?h+"時間":"")+(n?n+"分":"");
+  if(L==="zh")return (h?h+"小时":"")+(n?n+"分钟":"");
+  return (h?h+"시간 ":"")+(n?n+"분":"");}
 function renderResult(s,a){
   const x=t(),r=plan(),L=state.lang;
   const ordKey=r.ord.includes("O")?"O":r.ord.join("");
@@ -779,26 +1039,34 @@ function renderResult(s,a){
   const n=40+Math.floor(rnd()*150),pct=48+Math.floor(rnd()*27),rate=(4.3+rnd()*0.5).toFixed(1);
   const intNames=state.a.interests.map(k=>x.int[k]).join(", ");
   const reasons=[x.r.int(intNames)];
-  if(state.a.weather&&state.a.weather!=="sun")reasons.push(x.r[state.a.weather]);
+  const W=state.a.weather;
+  if(W&&W!=="sun"){
+    reasons.push(x.r[W]);
+    const cut=(WX_BLOCK[W]||[]).map(id=>PLACES.find(p=>p.id===id)).filter(Boolean).map(p=>p.name[L].split(" (")[0].split("（")[0]);
+    if(cut.length&&x.wxCut[W])reasons.push(x.wxCut[W](cut.join(", ")));
+    if(x.wxTip[W])reasons.push(x.wxTip[W]);
+  }
   const hasStairsSkip=(state.a.age==="a70"||state.a.age==="a50")&&!ids.includes("huinnyeoul");
   if(hasStairsSkip)reasons.push(x.r.stairs);
   if(state.a.comp==="family"&&ids.includes("museum"))reasons.push(x.r.family);
   if(crowdOf(r.c.pax)==="high"&&ids.includes("taejongdae")&&ids.includes("museum"))reasons.push(x.r.crowd);
   if(ids.includes("daiso")||ids.includes("oliveyoung"))reasons.push(x.r.shopYd);
   if(ids.includes("lotte"))reasons.push(x.r.beauty);
-  if(r.dur<=180)reasons.push(x.r.short);
+  if(r.none)reasons.unshift(x.r.tooShort);else if(r.free<=150)reasons.push(x.r.short);
   if(r.chosen.some(p=>p.meal))reasons.push(x.r.meal);
   if(r.ord.length>1&&!r.ord.includes("O"))reasons.push(x.r.oneWay);
 
   const prof=[x.nat[state.a.nat],x.age[state.a.age],x.comp[state.a.comp],state.a.weather?x.wx[state.a.weather]:null].filter(Boolean).map(v=>`<span class="chip">${esc(v)}</span>`).join("")+state.a.interests.map(k=>`<span class="chip">${esc(x.int[k])}</span>`).join("");
   let tl=`<li class="tl"><span class="t">${hm(r.start)}</span><span class="rail"><span class="dot end"></span><span class="line"></span></span><div class="body"><strong>${x.disembark}</strong><span class="d">${r.c.name}</span></div></li>`;
+  const nearAll=nearAds(r);
   r.sim.stops.forEach((st,i)=>{
     tl+=`<li class="tl"><span class="t">${hm(st.at)}</span><span class="rail"><span class="dot"></span><span class="line"></span></span><div class="body">
       ${legHTML(st.lg,x)}
       <strong>${i+1}. ${esc(st.p.name[L])}${st.p.out?`<span class="tag-out">${x.outside}</span>`:""}</strong>
       <span class="rt" aria-label="${x.rtAria} ${placeRating(st.p.id).avg}/5"><span class="st">★</span> ${placeRating(st.p.id).avg} <small>(${placeRating(st.p.id).n})</small></span>
-      <span class="d">${esc(st.p.d[L])} · ${st.p.dwell}${x.min}</span>
-      ${mapLinks(st.p,L)}</div></li>`;
+      <span class="d"><span class="envb ${ENV[st.p.id]||"out"}">${x.env[ENV[st.p.id]||"out"]}</span> ${esc(st.p.d[L])} · ${st.p.dwell}${x.min}</span>
+      ${mapLinks(st.p,L)}
+      ${state.adsOn?(()=>{const g=nearAll.filter(v=>v.i===i);return g.length?`<span class="adnear"><b>${ADT[L].nearStop}</b>${g.map(v=>`<button type="button" data-ad="${v.a.id}"><span class="dot"></span>${esc(adName(v.a,L))} · ${ADT[L].walkN(v.walk)}</button>`).join("")}</span>`:""})():""}</div></li>`;
   });
   tl+=`<li class="tl"><span class="t">${hm(r.sim.end)}</span><span class="rail"><span class="dot end"></span></span><div class="body">${legHTML(r.sim.backLeg,x)}<strong>${x.terminal}</strong></div></li>`;
 
@@ -810,20 +1078,22 @@ function renderResult(s,a){
 
   s.innerHTML=`
   <div style="display:flex;flex-direction:column;gap:8px">
-    <p class="muted">${x.resultT} · ${r.c.name} · ${hm(r.c.arr)}–${hm(r.c.dep)}</p>
+    <p class="muted">${x.resultT} · ${esc(r.c.name)} · ${hmD(r.c.arr)}–${hmD(r.c.dep)}</p>
     <div class="course-name">${x.course[ordKey]}</div>
+    ${W&&W!=="sun"?(()=>{const c={in:0,semi:0,out:0};r.chosen.forEach(p=>c[ENV[p.id]||"out"]++);return `<div class="wxbar ${W}"><b>${x.wxDay} · ${esc(x.wx[W])}</b><span>${x.env.in} ${c.in}${x.cnt} · ${x.env.semi} ${c.semi}${x.cnt} · ${x.env.out} ${c.out}${x.cnt}</span></div>`})():""}
     <div class="chips">${prof}</div>
   </div>
   ${state.aiNote?`<div class="ainote"><b>${x.aiSays}</b><br>${esc(state.aiNote)}</div>`:""}
   ${state.aiMsg&&!state.aiNote?`<p class="muted">${esc(state.aiMsg)}</p>`:""}
-  <div class="alert" role="note"><span>${x.leaveBy} <strong>${hm(r.sim.leave)}</strong> · ${x.returnBy} <strong>${hm(r.allAboard)}</strong></span><span class="muted">${x.alertP}</span></div>
+  <div class="alert" role="note"><span>${x.leaveBy} <strong>${hmD(r.sim.leave)}</strong> · ${x.returnBy} <strong>${hmD(r.allAboard)}</strong></span><span class="muted">${x.alertP} (${x.dep} ${hmD(r.c.dep)})</span>${(()=>{const sp=r.allAboard-r.sim.end;return !r.none&&sp>=20?`<span class="spare"><b>${x.spare(fmtDur(sp,L))}</b> ${x.spareTip}</span>`:""})()}</div>
   <section class="mapbox" aria-label="map">
     <div id="kmap"></div>
     <div id="smap">${sketchMap(r)}</div>
-    <div class="map-cap"><span id="mapCap">${MAPT[L].sketch}</span><button type="button" class="adtoggle" id="adToggle" aria-pressed="${state.adsOn}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="5" fill="currentColor"/></svg>${ADT[L].toggle}</button></div>
+    <div class="map-cap"><span id="mapCap">${MAPT[L].sketch}</span><span style="display:flex;gap:6px"><button type="button" class="adtoggle" id="zoomToggle" style="color:var(--sea)">${state.mapFull?MAPT[L].zoom:MAPT[L].full}</button><button type="button" class="adtoggle" id="adToggle" aria-pressed="${state.adsOn}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="5" fill="currentColor"/></svg>${ADT[L].toggle}</button></span></div>
   </section>
   <div id="adPanel">${adPanelHTML(r)}</div>
   <ol class="timeline">${tl}</ol>
+  <section class="card" id="foodSec">${foodHTML(r)}</section>
   <p class="muted" style="margin-top:-8px">${x.rtSrc} ${x.modeNote}</p>
   <section class="card">
     <h2 style="font-size:19px">${x.statsT}</h2>
@@ -844,7 +1114,7 @@ function renderResult(s,a){
     ${fb}
   </section>
   <p class="demo">${x.demo}</p>`;
-  kmapObj=null;kakaoMap(r);wireAds(r);
+  lastR=r;kmapObj=null;kakaoMap(r);wireAds(r);wireFood(r);
   s.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{
     state.rating=+b.dataset.s;
     s.querySelectorAll("[data-s]").forEach(o=>o.setAttribute("aria-pressed",String(+o.dataset.s<=state.rating)));
@@ -922,6 +1192,8 @@ function renderOps(s,a){
 }
 
 render();
+loadCruises();
+loadFoods();
 }
 </script>
 </body>
