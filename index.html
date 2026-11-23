@@ -866,20 +866,31 @@ function loadKakao(){
   });
   return naverP;
 }
+let mapToken=0,liveMap=null;
 function kakaoMap(r){
-  loadKakao().then(()=>{
-    const el=document.getElementById("kmap");if(!el)return;
-    el.style.display="block";document.getElementById("smap").style.display="none";
-    document.getElementById("mapCap").textContent=MAPT[state.lang].real;
-    const N=naver.maps,path=["T",...r.sim.stops.map(st=>st.p.id)].map(id=>new N.LatLng(...COORD[id]));
-    const map=new N.Map(el,{center:path[0],zoom:14});kmapObj=map;
-    new N.Polyline({map,path,strokeWeight:5,strokeColor:"#e5533b",strokeOpacity:.9});
-    new N.Polyline({map,path:[path[path.length-1],path[0]],strokeWeight:3,strokeColor:"#0d4a5c",strokeOpacity:.7,strokeStyle:"shortdash"});
-    path.forEach((p,i)=>new N.Marker({map,position:p,icon:{content:`<div class="kpin${i?"":" t"}">${i||"T"}</div>`,anchor:new N.Point(13,13)},zIndex:2}));
-    const lats=path.map(p=>p.lat()),lngs=path.map(p=>p.lng());
-    map.fitBounds(new N.LatLngBounds(new N.LatLng(Math.min(...lats),Math.min(...lngs)),new N.LatLng(Math.max(...lats),Math.max(...lngs))));
-    drawKakaoAds(r);drawKakaoFoods(r);
-  }).catch(()=>{});
+  const my=++mapToken;
+  // 이전 결과 화면의 지도를 정리
+  if(liveMap){try{liveMap.destroy()}catch(e){} liveMap=null}
+  kAds=[];
+  loadKakao()
+    .then(()=>new Promise(res=>setTimeout(res,80))) // 화면이 자리 잡을 때까지 잠깐 기다림
+    .then(()=>{
+      if(my!==mapToken)return; // 그사이 화면이 또 바뀌었으면 그리지 않음
+      const el=document.getElementById("kmap");if(!el)return;
+      el.style.display="block";document.getElementById("smap").style.display="none";
+      document.getElementById("mapCap").textContent=MAPT[state.lang].real;
+      const N=naver.maps,path=["T",...r.sim.stops.map(st=>st.p.id)].map(id=>new N.LatLng(...COORD[id]));
+      const map=new N.Map(el,{center:path[0],zoom:14});kmapObj=map;liveMap=map;
+      new N.Polyline({map,path,strokeWeight:5,strokeColor:"#e5533b",strokeOpacity:.9});
+      new N.Polyline({map,path:[path[path.length-1],path[0]],strokeWeight:3,strokeColor:"#0d4a5c",strokeOpacity:.7,strokeStyle:"shortdash"});
+      path.forEach((p,i)=>new N.Marker({map,position:p,icon:{content:`<div class="kpin${i?"":" t"}">${i||"T"}</div>`,anchor:new N.Point(13,13)},zIndex:2}));
+      const lats=path.map(p=>p.lat()),lngs=path.map(p=>p.lng());
+      const bounds=new N.LatLngBounds(new N.LatLng(Math.min(...lats),Math.min(...lngs)),new N.LatLng(Math.max(...lats),Math.max(...lngs)));
+      const fit=()=>{if(my!==mapToken)return;map.setSize(new N.Size(el.offsetWidth,el.offsetHeight||320));map.fitBounds(bounds)};
+      fit();
+      setTimeout(fit,300); // 한 번 더 크기를 맞춰서 회색 화면 방지
+      drawKakaoAds(r);
+    }).catch(()=>{});
 }
 
 /* ---------- 영도 맛집 목록 ----------
