@@ -203,6 +203,15 @@ label.f{display:grid;gap:4px;font-size:14px;color:var(--muted)}
 .nearb .num{width:15px;height:15px;border-radius:50%;background:var(--buoy);color:#fff;display:grid;place-items:center;font-size:9.5px}
 .fbadge{font-size:11.5px;border:1px solid #c9d9db;color:var(--sea);border-radius:4px;padding:0 5px}
 .fmore{border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:10px;font:600 14px var(--body);color:var(--sea);cursor:pointer;min-height:44px}
+/* 결과 화면 카테고리 탭 (누르면 그 탭 내용만 보임, 탭 줄은 스크롤해도 화면 위에 붙어 있음) */
+.rtabs{position:sticky;top:0;z-index:30;display:flex;gap:6px;overflow-x:auto;margin:0 -18px;padding:8px 18px;background:var(--paper);border-bottom:1px solid var(--line);scrollbar-width:none}
+.rtabs::-webkit-scrollbar{display:none}
+.rtabs button{flex:none;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;font:500 13.5px var(--body);color:var(--ink);cursor:pointer;min-height:36px;white-space:nowrap}
+.rtabs button[aria-selected="true"]{border-color:var(--sea);background:var(--sea);color:#fff;font-weight:700}
+.rtabs button:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.rpanel{display:flex;flex-direction:column;gap:18px}
+.rpanel[hidden]{display:none}
+.mapbox{isolation:isolate}
 @media (prefers-reduced-motion:no-preference){
   main>*{animation:rise .28s ease both}
   @keyframes rise{from{transform:translateY(6px)}to{transform:none}}
@@ -447,7 +456,7 @@ function leg(a,b){
 }
 
 const blankA=()=>({nat:null,age:null,comp:null,interests:[],weather:null});
-let state={foodCat:"all",foodMore:false,mapFull:false,adsOn:true,adSel:null,lang:detectLang(),screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiBusy:false,aiMsg:"",fbSent:false};
+let state={resTab:"map",foodCat:"all",foodMore:false,mapFull:false,adsOn:true,adSel:null,lang:detectLang(),screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiBusy:false,aiMsg:"",fbSent:false};
 let sampleFn=null;
 try{window.claude?.use?.("sample")?.then(s=>{sampleFn=s||null}).catch(()=>{})}catch(e){}
 
@@ -582,7 +591,7 @@ Read it and return ONLY a JSON object with these keys:
   state.a=fillDefaults(res.a);
   state.ship=res.ship;
   state.aiNote=res.note||"";
-  state.aiBusy=false;state.rating=0;state.fbSent=false;
+  state.aiBusy=false;state.rating=0;state.fbSent=false;state.resTab="map";
   if(state.ship){state.screen="result"}else{state.screen="q";state.q=QUESTIONS.indexOf("ship")}
   render();
 }
@@ -613,7 +622,7 @@ function renderQ(s,a){
   const last=state.q===QUESTIONS.length-1;
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="nextBtn" type="button" ${filled?"":"disabled"}>${last?x.see:x.next}</button>`;
   document.getElementById("backBtn").onclick=()=>{if(state.q===0){state.screen="home"}else state.q--;render()};
-  document.getElementById("nextBtn").onclick=()=>{if(!filled)return;if(last){state.screen="result";state.rating=0;state.fbSent=false}else state.q++;render()};
+  document.getElementById("nextBtn").onclick=()=>{if(!filled)return;if(last){state.screen="result";state.rating=0;state.fbSent=false;state.resTab="map"}else state.q++;render()};
 }
 function grid(items,key,multi){
   return `<div class="options">${items.map(([k,l,sub])=>{
@@ -702,6 +711,43 @@ ko:{full:"전체 보기",zoom:"동선 확대",sketch:"영도 약도 · 위치는
 en:{full:"Whole island",zoom:"Zoom to route",sketch:"Sketch map of Yeongdo · positions approximate",real:"Map data © NAVER Corp.",legend:"Numbers = visit order"},
 ja:{full:"全体表示",zoom:"ルート拡大",sketch:"影島の略図・位置はおおよそです",real:"地図データ © NAVER Corp.",legend:"数字＝訪問順"},
 zh:{full:"查看全岛",zoom:"放大路线",sketch:"影岛示意图·位置为大致",real:"地图数据 © NAVER Corp.",legend:"数字＝游览顺序"}};
+/* 결과 화면 카테고리 탭 이름 */
+const TABT={
+ko:{aria:"결과 바로가기",map:"🗺️ 지도",tl:"🕒 일정",food:"🍜 맛집",why:"💡 추천 이유",fb:"⭐ 후기"},
+en:{aria:"Jump to section",map:"🗺️ Map",tl:"🕒 Schedule",food:"🍜 Food",why:"💡 Why",fb:"⭐ Review"},
+ja:{aria:"セクションへ移動",map:"🗺️ 地図",tl:"🕒 日程",food:"🍜 グルメ",why:"💡 理由",fb:"⭐ 感想"},
+zh:{aria:"跳转到",map:"🗺️ 地图",tl:"🕒 行程",food:"🍜 美食",why:"💡 理由",fb:"⭐ 评价"}};
+const TAB_KEYS=["map","tl","food","why","fb"];
+/* 탭 전환: 누른 탭의 내용만 보이고 나머지는 숨김. init=true는 화면을 처음 그릴 때(지도는 renderResult가 이미 그림) */
+function showTab(k,init){
+  if(!TAB_KEYS.includes(k))k="map";
+  state.resTab=k;
+  TAB_KEYS.forEach(n=>{
+    const p=document.getElementById("tab-"+n);if(p)p.hidden=n!==k;
+    const b=document.getElementById("tabbtn-"+n);if(b){b.setAttribute("aria-selected",String(n===k));b.tabIndex=n===k?0:-1}
+  });
+  const bar=document.getElementById("rtabs");if(!bar)return;
+  const ab=document.getElementById("tabbtn-"+k);
+  if(ab)bar.scrollTo({left:ab.offsetLeft-bar.clientWidth/2+ab.offsetWidth/2}); // 고른 탭을 탭 줄 가운데로
+  if(init)return;
+  // 아래로 내려와 있었다면 새 탭 내용의 맨 앞이 탭 줄 바로 밑에 보이게 올림
+  const panel=document.getElementById("tab-"+k);
+  if(panel){const y=panel.getBoundingClientRect().top+window.scrollY-bar.offsetHeight-12;if(window.scrollY>y)window.scrollTo({top:y})}
+  // 숨겨져 있던 네이버 지도는 크기를 잃어 회색이 되므로 다시 그림
+  if(k==="map"&&lastR&&nmapObj)naverMap(lastR);
+}
+function wireTabs(){
+  const bar=document.getElementById("rtabs");if(!bar)return;
+  const btns=[...bar.querySelectorAll("[data-tab]")];
+  btns.forEach((b,i)=>{
+    b.onclick=()=>showTab(b.dataset.tab);
+    b.onkeydown=e=>{ // 키보드 좌우 화살표로 탭 이동
+      const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;if(!d)return;
+      e.preventDefault();const nb=btns[(i+d+btns.length)%btns.length];showTab(nb.dataset.tab);nb.focus();
+    };
+  });
+  showTab(state.resTab,true);
+}
 /* ---------- 광고(제휴) 식당 ----------
    아래는 시연용 가상 가게입니다. 실제 광고주를 받으면 이 목록만 바꾸면 지도·목록에 반영됩니다.
    cat: food(식당) / seafood(해산물) / cafe(카페)   promo: drink / pct10 / dessert / menu */
@@ -756,7 +802,7 @@ function adsSvg(r){
       ${lbl}</g>`}).join("");
 }
 function wireAds(r){
-  const sel=(id,el)=>{const fromTl=el&&el.closest(".adnear");state.adSel=fromTl?id:(state.adSel===id?null:id);refreshMap(r);if(fromTl)document.getElementById("adCard")?.scrollIntoView({block:"center",behavior:"smooth"})};
+  const sel=(id,el)=>{const fromTl=el&&el.closest(".adnear");state.adSel=fromTl?id:(state.adSel===id?null:id);refreshMap(r);if(fromTl){showTab("map");document.getElementById("adCard")?.scrollIntoView({block:"center",behavior:"smooth"})}};
   document.querySelectorAll("#smap [data-ad], #adlist [data-ad], .adnear [data-ad]").forEach(el=>{
     el.onclick=()=>sel(el.dataset.ad,el);
     el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();sel(el.dataset.ad,el)}};
@@ -1148,15 +1194,23 @@ function renderResult(s,a){
   ${state.aiNote?`<div class="ainote"><b>${x.aiSays}</b><br>${esc(state.aiNote)}</div>`:""}
   ${state.aiMsg&&!state.aiNote?`<p class="muted">${esc(state.aiMsg)}</p>`:""}
   <div class="alert" role="note"><span>${x.leaveBy} <strong>${hmD(r.sim.leave)}</strong> · ${x.returnBy} <strong>${hmD(r.allAboard)}</strong></span><span class="muted">${x.alertP} (${x.dep} ${hmD(r.c.dep)})</span>${(()=>{const sp=r.allAboard-r.sim.end;return !r.none&&sp>=20?`<span class="spare"><b>${x.spare(fmtDur(sp,L))}</b> ${x.spareTip}</span>`:""})()}</div>
+  <nav class="rtabs" id="rtabs" role="tablist" aria-label="${(TABT[L]||TABT.en).aria}">${TAB_KEYS.map(k=>`<button type="button" role="tab" id="tabbtn-${k}" data-tab="${k}" aria-controls="tab-${k}">${(TABT[L]||TABT.en)[k]}</button>`).join("")}</nav>
+  <div class="rpanel" id="tab-map" role="tabpanel" aria-labelledby="tabbtn-map">
   <section class="mapbox" aria-label="map">
     <div id="nmap"></div>
     <div id="smap">${sketchMap(r)}</div>
     <div class="map-cap"><span id="mapCap">${MAPT[L].sketch}</span><span style="display:flex;gap:6px"><button type="button" class="adtoggle" id="zoomToggle" style="color:var(--sea)">${state.mapFull?MAPT[L].zoom:MAPT[L].full}</button><button type="button" class="adtoggle" id="adToggle" aria-pressed="${state.adsOn}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="5" fill="currentColor"/></svg>${ADT[L].toggle}</button></span></div>
   </section>
   <div id="adPanel">${adPanelHTML(r)}</div>
+  </div>
+  <div class="rpanel" id="tab-tl" role="tabpanel" aria-labelledby="tabbtn-tl" hidden>
   <ol class="timeline">${tl}</ol>
-  <section class="card" id="foodSec">${foodHTML(r)}</section>
   <p class="muted" style="margin-top:-8px">${x.rtSrc} ${x.modeNote}</p>
+  </div>
+  <div class="rpanel" id="tab-food" role="tabpanel" aria-labelledby="tabbtn-food" hidden>
+  <section class="card" id="foodSec">${foodHTML(r)}</section>
+  </div>
+  <div class="rpanel" id="tab-why" role="tabpanel" aria-labelledby="tabbtn-why" hidden>
   <section class="card">
     <h2 style="font-size:19px">${x.statsT}</h2>
     <div class="stats">
@@ -1170,13 +1224,16 @@ function renderResult(s,a){
     <h2 style="font-size:19px">${x.whyT}</h2>
     <ul class="reasons">${reasons.map(v=>`<li>${esc(v)}</li>`).join("")}</ul>
   </section>
+  </div>
+  <div class="rpanel" id="tab-fb" role="tabpanel" aria-labelledby="tabbtn-fb" hidden>
   <section class="card" id="fb">
     <h2 style="font-size:19px">${x.fbT}</h2>
     <p class="muted">${x.fbP}</p>
     ${fb}
   </section>
+  </div>
   <p class="demo">${x.demo}</p>`;
-  lastR=r;naverMap(r);wireAds(r);wireFood(r);
+  lastR=r;naverMap(r);wireAds(r);wireFood(r);wireTabs();
   s.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{
     state.rating=+b.dataset.s;
     s.querySelectorAll("[data-s]").forEach(o=>o.setAttribute("aria-pressed",String(+o.dataset.s<=state.rating)));
