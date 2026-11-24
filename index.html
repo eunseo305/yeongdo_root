@@ -362,10 +362,10 @@ const CRUISE_API="cruises.json";
 let cruiseSrc="sample";
 const hmD=m=>m>=1440?hm(m-1440)+" (+1)":hm(m);
 const CSRC={
-ko:{apiNext:"오늘은 영도 크루즈터미널 입항 예정이 없어요. 다가오는 일정이에요. · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",apiPast:"지난 영도 크루즈터미널 입항 기록이에요 (시연용). · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",api:"오늘 입출항 예정 · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",sample:"예시 일정이에요. 실제 입출항 일정은 아직 연결되지 않았어요."},
-en:{apiNext:"No calls at Yeongdo today. Upcoming schedule · Source: Busan cruise berth schedule (data.go.kr)",apiPast:"Past calls at Yeongdo terminal (demo) · Source: Busan cruise berth schedule (data.go.kr)",api:"Today's scheduled calls · Source: Busan cruise berth schedule (data.go.kr)",sample:"Sample schedule. Live port schedule not connected yet."},
-ja:{apiNext:"本日は影島への入港予定がありません。今後の予定です・出典：釜山広域市クルーズ船席スケジュール",apiPast:"影島ターミナルの過去の入港記録です（デモ用）・出典：釜山広域市クルーズ船席スケジュール",api:"本日の入出港予定・出典：釜山広域市クルーズ船席スケジュール（公共データポータル）",sample:"例のスケジュールです。実際の入出港予定はまだ接続されていません。"},
-zh:{apiNext:"今天影岛码头无入港计划，以下为近期日程·来源：釜山广域市邮轮泊位计划",apiPast:"影岛码头过往入港记录（演示用）·来源：釜山广域市邮轮泊位计划",api:"今日进出港计划·来源：釜山广域市邮轮泊位计划（公共数据门户）",sample:"示例日程，尚未接入实际进出港计划。"}};
+ko:{apiNext:"오늘은 영도 크루즈터미널 입항 예정이 없어요. 다가오는 일정이에요. · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",apiPast:"시연용이에요. 최근 실제 영도 크루즈터미널 입항 기록을 이번 달 날짜로 옮겨 보여줘요. · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",api:"오늘 입출항 예정 · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",sample:"예시 일정이에요. 실제 입출항 일정은 아직 연결되지 않았어요."},
+en:{apiNext:"No calls at Yeongdo today. Upcoming schedule · Source: Busan cruise berth schedule (data.go.kr)",apiPast:"Demo: recent real Yeongdo terminal calls, moved to this month's dates · Source: Busan cruise berth schedule (data.go.kr)",api:"Today's scheduled calls · Source: Busan cruise berth schedule (data.go.kr)",sample:"Sample schedule. Live port schedule not connected yet."},
+ja:{apiNext:"本日は影島への入港予定がありません。今後の予定です・出典：釜山広域市クルーズ船席スケジュール",apiPast:"デモ用：影島ターミナルの最近の実際の入港記録を今月の日付に移して表示しています・出典：釜山広域市クルーズ船席スケジュール",api:"本日の入出港予定・出典：釜山広域市クルーズ船席スケジュール（公共データポータル）",sample:"例のスケジュールです。実際の入出港予定はまだ接続されていません。"},
+zh:{apiNext:"今天影岛码头无入港计划，以下为近期日程·来源：釜山广域市邮轮泊位计划",apiPast:"演示用：将影岛码头最近的实际入港记录移至本月日期显示·来源：釜山广域市邮轮泊位计划",api:"今日进出港计划·来源：釜山广域市邮轮泊位计划（公共数据门户）",sample:"示例日程，尚未接入实际进出港计划。"}};
 function parseIso(v){const d=new Date(v);return isNaN(d)?null:d}
 const midnight=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
 // 오늘 영도에 머무는 배 → 없으면 다가오는 배 4척 → 그것도 없으면 가장 최근 배 4척 (날짜 표시)
@@ -380,7 +380,13 @@ async function loadCruises(){
     const today=midnight(new Date()),tomorrow=new Date(+today+864e5);
     let pick=all.filter(c=>c.a<tomorrow&&c.d>=today),src="api";
     if(!pick.length){pick=all.filter(c=>c.a>=tomorrow).slice(0,4);src="apiNext"}
-    if(!pick.length){pick=all.slice(-4).reverse();src="apiPast"}
+    // 오늘·다가오는 일정이 없으면(시연용) 최근 실제 입항 기록 4건을 날짜만 옮겨 보여줌.
+    // 가장 최근 기록이 오늘이 되도록 모두 같은 일수만큼 옮겨서, 기록 사이 간격은 그대로 유지함.
+    if(!pick.length){
+      pick=all.slice(-4).reverse();src="apiPast";
+      const shift=Math.round((today-midnight(pick[0].a))/864e5)*864e5;
+      pick=pick.map(c=>({...c,a:new Date(+c.a+shift),d:new Date(+c.d+shift)})).sort((x,y)=>x.a-y.a); // 날짜 오름차순
+    }
     CRUISES=pick.map((c,i)=>{
       const base=src==="api"?today:midnight(c.a);
       const m=d=>Math.round((d-base)/6e4);
@@ -466,6 +472,7 @@ function renderLang(){
 const QUESTIONS=["nat","age","comp","interests","weather","ship"];
 
 function render(){
+  parkNaverMap(); // 화면을 바꾸기 전에 지도 상자를 보관함으로 옮김
   renderLang();
   const s=document.getElementById("screen"),a=document.getElementById("actions");
   if(state.screen==="home"){renderHome(s,a)}
@@ -842,12 +849,24 @@ function sketchMap(r){
    지도 상자(nmapEl)를 새 화면의 #nmap 자리로 옮기고, 크기를 다시 맞춘 뒤
    동선·핀·광고·맛집 표시만 지우고 새로 그림. (지도를 지웠다 다시 만들면
    두 번째부터 회색 화면이 되는 문제가 있었음) */
-let naverP=null,nmapObj=null,nmapEl=null,nAds=[],nRoute=[],mapToken=0;
-// 키 인증이 실패하면 약도로 되돌림
-window.navermap_authFailure=()=>{
+let naverP=null,nmapObj=null,nmapEl=null,nmapPark=null,nAds=[],nRoute=[],mapToken=0;
+/* 지도 상자는 문서에서 절대 빼지 않음. 화면이 바뀌기 직전(render)에 화면 밖
+   보관함으로 옮겨 두었다가, 결과 화면이 다시 그려지면 새 #nmap 자리로 옮김.
+   (화면을 innerHTML로 바꾸면서 지도 상자가 문서에서 떨어져 나가면, 두 번째
+   실행 때 "네이버 지도 Open API 인증이 실패했습니다"가 뜨는 문제가 있었음) */
+function parkNaverMap(){
+  if(!nmapEl)return;
+  if(!nmapPark){nmapPark=document.createElement("div");nmapPark.setAttribute("aria-hidden","true");
+    nmapPark.style.cssText="position:fixed;left:-10000px;top:0;width:360px;height:320px;overflow:hidden;visibility:hidden;pointer-events:none";
+    document.body.appendChild(nmapPark)}
+  if(nmapEl.parentNode!==nmapPark)nmapPark.appendChild(nmapEl);
+}
+function showSketch(){
   const k=document.getElementById("nmap"),s=document.getElementById("smap"),c=document.getElementById("mapCap");
-  if(k)k.style.display="none";if(s)s.style.display="block";if(c)c.textContent=MAPT[state.lang].sketch;nmapObj=null;
-};
+  if(k)k.style.display="none";if(s)s.style.display="block";if(c)c.textContent=MAPT[state.lang].sketch;
+}
+// 키 인증이 실패하면 약도로 되돌림
+window.navermap_authFailure=()=>{showSketch();nmapObj=null};
 function clearOverlays(list){list.forEach(o=>{try{o.setMap(null)}catch(e){}});list.length=0}
 function drawNaverAds(r){
   clearOverlays(nAds);
@@ -862,8 +881,8 @@ function drawNaverAds(r){
 }
 /* SDK 불러오기
    - 스크립트 태그는 딱 한 번만 넣음. (예전엔 6초 안에 안 끝나면 실패로 보고
-     다음 실행 때 maps.js를 또 넣었는데, SDK가 두 번 로드되면서 지도 API를
-     불러올 수 없다는 오류가 났음)
+     다음 실행 때 maps.js를 또 넣었는데, SDK가 두 번 로드되면서 두 번째 실행 때
+     "네이버 지도 Open API 인증이 실패했습니다"가 떴음)
    - maps.js는 받은 뒤에도 안쪽 모듈을 따로 더 받아서, onload 시점엔 아직
      naver.maps.Map이 없을 수 있음 → Map이 실제로 생길 때까지 기다림 */
 let naverScript=null;
@@ -916,7 +935,7 @@ function naverMap(r){
       fit();
       setTimeout(fit,300); // 한 번 더 크기를 맞춰서 회색 화면 방지
       drawNaverAds(r);drawNaverFoods(r);
-    }).catch(()=>{if(my===mapToken)window.navermap_authFailure()}); // 실패하면 약도로 되돌림
+    }).catch(()=>{if(my===mapToken)showSketch()}); // 실패하면 약도로 되돌림(지도는 버리지 않음)
 }
 
 /* ---------- 영도 맛집 목록 ----------
