@@ -120,17 +120,17 @@ select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:10p
 #smap svg{display:block;width:100%;height:auto}
 .adtoggle svg{flex:none}
 .adtoggle{white-space:nowrap}
-#kmap{width:100%;height:320px;display:none}
+#nmap{width:100%;height:320px;display:none}
 .map-cap{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:var(--paper);border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
-.kpin{background:var(--buoy);color:#fff;border:2px solid #fff;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;font:700 13px var(--body);box-shadow:0 1px 4px rgba(0,0,0,.35)}
-.kpin.t{background:var(--sea)}
+.npin{background:var(--buoy);color:#fff;border:2px solid #fff;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;font:700 13px var(--body);box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.npin.t{background:var(--sea)}
 .ad-pin{cursor:pointer}
 .ad-pin:focus{outline:none}
 .ad-pin:focus-visible rect.bg{stroke:var(--sea);stroke-width:3}
-.kad{display:flex;flex-direction:column;align-items:center;cursor:pointer}
-.kad .ic{position:relative;width:30px;height:30px;border-radius:8px;background:#e0442d;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);display:grid;place-items:center}
-.kad .ic i{position:absolute;top:-7px;right:-9px;font:700 8.5px/1 var(--body);font-style:normal;background:#fff;color:#e0442d;border:1px solid #e0442d;border-radius:3px;padding:1px 2px}
-.kad .nm{font:600 11.5px var(--body);color:#1b2a30;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;margin-top:2px;white-space:nowrap}
+.nad{display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.nad .ic{position:relative;width:30px;height:30px;border-radius:8px;background:#e0442d;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);display:grid;place-items:center}
+.nad .ic i{position:absolute;top:-7px;right:-9px;font:700 8.5px/1 var(--body);font-style:normal;background:#fff;color:#e0442d;border:1px solid #e0442d;border-radius:3px;padding:1px 2px}
+.nad .nm{font:600 11.5px var(--body);color:#1b2a30;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;margin-top:2px;white-space:nowrap}
 .adtoggle{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:3px 10px;font:600 12px var(--body);color:#e0442d;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .adtoggle[aria-pressed="false"]{color:var(--muted)}
 .adtoggle:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
@@ -403,7 +403,7 @@ function placeRating(id){
   const avg=(RATING[id]*RCOUNT[id]+mine.reduce((s,r)=>s+r.stars,0))/n;
   return {avg:avg.toFixed(1),n};
 }
-const mapLinks=(p,L)=>{const kk=L==="ko"?"카카오맵":"KakaoMap",nv=L==="ko"?"네이버 지도":"NAVER Map";const q=encodeURIComponent((p.out?"부산 ":"부산 영도 ")+p.name.ko.replace(/ \(.*\)/,""));return `<span class="maps"><a href="https://map.kakao.com/link/search/${q}" target="_blank" rel="noopener">${kk}</a><a href="https://map.naver.com/p/search/${q}" target="_blank" rel="noopener">${nv}</a></span>`};
+const mapLinks=(p,L)=>{const nv=L==="ko"?"네이버 지도":"NAVER Map";const q=encodeURIComponent((p.out?"부산 ":"부산 영도 ")+p.name.ko.replace(/ \(.*\)/,""));return `<span class="maps"><a href="https://map.naver.com/p/search/${q}" target="_blank" rel="noopener">${nv}</a></span>`};
 const SPEND=[
  {k:"ja",avg:38000,food:55,cafe:20,shop:25},
  {k:"zh",avg:52000,food:35,cafe:10,shop:55},
@@ -775,7 +775,7 @@ function refreshMap(r){
   const sm=document.getElementById("smap");if(sm)sm.innerHTML=sketchMap(r);
   const ap=document.getElementById("adPanel");if(ap)ap.innerHTML=adPanelHTML(r);
   const tg=document.getElementById("adToggle");if(tg)tg.setAttribute("aria-pressed",String(state.adsOn));
-  if(kmapObj)drawKakaoAds(r);
+  if(nmapObj)drawNaverAds(r);
   wireAds(r);
 }
 
@@ -837,60 +837,86 @@ function sketchMap(r){
       <text x="18" y="22" font-size="11.5" font-weight="700" fill="#0d4a5c" stroke="#fff" stroke-width="3.5" paint-order="stroke">${esc(TERM_NAME[L])}</text></g>
   </svg>`;
 }
-/* 네이버 지도 (함수 이름은 기존 코드와 맞추려고 그대로 둠) */
-let naverP=null,kmapObj=null,kAds=[];
+/* 네이버 지도
+   지도는 한 번만 만들고 계속 다시 씀. 결과 화면이 새로 그려질 때마다
+   지도 상자(nmapEl)를 새 화면의 #nmap 자리로 옮기고, 크기를 다시 맞춘 뒤
+   동선·핀·광고·맛집 표시만 지우고 새로 그림. (지도를 지웠다 다시 만들면
+   두 번째부터 회색 화면이 되는 문제가 있었음) */
+let naverP=null,nmapObj=null,nmapEl=null,nAds=[],nRoute=[],mapToken=0;
 // 키 인증이 실패하면 약도로 되돌림
 window.navermap_authFailure=()=>{
-  const k=document.getElementById("kmap"),s=document.getElementById("smap"),c=document.getElementById("mapCap");
-  if(k)k.style.display="none";if(s)s.style.display="block";if(c)c.textContent=MAPT[state.lang].sketch;kmapObj=null;
+  const k=document.getElementById("nmap"),s=document.getElementById("smap"),c=document.getElementById("mapCap");
+  if(k)k.style.display="none";if(s)s.style.display="block";if(c)c.textContent=MAPT[state.lang].sketch;nmapObj=null;
 };
-function drawKakaoAds(r){
-  kAds.forEach(o=>o.setMap(null));kAds=[];
-  if(!state.adsOn||!kmapObj)return;
+function clearOverlays(list){list.forEach(o=>{try{o.setMap(null)}catch(e){}});list.length=0}
+function drawNaverAds(r){
+  clearOverlays(nAds);
+  if(!state.adsOn||!nmapObj)return;
   const N=naver.maps,L=state.lang;
   ADS.forEach(a=>{
-    const html=`<div class="kad"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">${ICON[a.cat]}</svg><i>AD</i></span><span class="nm">${esc(adName(a,L))}</span></div>`;
-    const mk=new N.Marker({map:kmapObj,position:new N.LatLng(...a.ll),icon:{content:html,anchor:new N.Point(15,15)},zIndex:1});
+    const html=`<div class="nad"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">${ICON[a.cat]}</svg><i>AD</i></span><span class="nm">${esc(adName(a,L))}</span></div>`;
+    const mk=new N.Marker({map:nmapObj,position:new N.LatLng(...a.ll),icon:{content:html,anchor:new N.Point(15,15)},zIndex:1});
     N.Event.addListener(mk,"click",()=>{state.adSel=a.id;refreshMap(r)});
-    kAds.push(mk);
+    nAds.push(mk);
   });
 }
-function loadKakao(){
+/* SDK 불러오기
+   - 스크립트 태그는 딱 한 번만 넣음. (예전엔 6초 안에 안 끝나면 실패로 보고
+     다음 실행 때 maps.js를 또 넣었는데, SDK가 두 번 로드되면서 지도 API를
+     불러올 수 없다는 오류가 났음)
+   - maps.js는 받은 뒤에도 안쪽 모듈을 따로 더 받아서, onload 시점엔 아직
+     naver.maps.Map이 없을 수 있음 → Map이 실제로 생길 때까지 기다림 */
+let naverScript=null;
+const naverReady=()=>!!(window.naver&&naver.maps&&typeof naver.maps.Map==="function"&&naver.maps.LatLng);
+function loadNaver(){
   if(!CONFIG.NAVER_KEY_ID)return Promise.reject("no key");
   if(naverP)return naverP;
   naverP=new Promise((res,rej)=>{
-    if(window.naver&&naver.maps){res();return}
-    const sc=document.createElement("script");
-    sc.src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId="+encodeURIComponent(CONFIG.NAVER_KEY_ID);
-    sc.onload=()=>res();sc.onerror=rej;document.head.appendChild(sc);setTimeout(()=>rej("timeout"),6000);
-  });
+    if(naverReady()){res();return}
+    if(!naverScript){
+      naverScript=document.createElement("script");
+      naverScript.src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId="+encodeURIComponent(CONFIG.NAVER_KEY_ID);
+      naverScript.onerror=()=>{naverScript.remove();naverScript=null}; // 네트워크 실패만 다음에 새로 넣음
+      document.head.appendChild(naverScript);
+    }
+    const t0=Date.now();
+    (function wait(){
+      if(naverReady())return res();
+      if(!naverScript)return rej("load error");
+      if(Date.now()-t0>15000)return rej("timeout"); // 기다림만 멈추고 스크립트는 그대로 둠
+      setTimeout(wait,100);
+    })();
+  }).catch(e=>{naverP=null;throw e}); // 실패하면 다음 실행 때 다시 기다림(스크립트를 또 넣지는 않음)
   return naverP;
 }
-let mapToken=0,liveMap=null;
-function kakaoMap(r){
+function naverMap(r){
   const my=++mapToken;
-  // 이전 결과 화면의 지도를 정리
-  if(liveMap){try{liveMap.destroy()}catch(e){} liveMap=null}
-  kAds=[];
-  loadKakao()
-    .then(()=>new Promise(res=>setTimeout(res,80))) // 화면이 자리 잡을 때까지 잠깐 기다림
+  loadNaver()
+    .then(()=>new Promise(res=>requestAnimationFrame(()=>requestAnimationFrame(res)))) // 새 화면이 자리 잡을 때까지 기다림
     .then(()=>{
       if(my!==mapToken)return; // 그사이 화면이 또 바뀌었으면 그리지 않음
-      const el=document.getElementById("kmap");if(!el)return;
-      el.style.display="block";document.getElementById("smap").style.display="none";
+      const slot=document.getElementById("nmap");if(!slot)return;
+      const N=naver.maps;
+      slot.style.display="block";document.getElementById("smap").style.display="none";
       document.getElementById("mapCap").textContent=MAPT[state.lang].real;
-      const N=naver.maps,path=["T",...r.sim.stops.map(st=>st.p.id)].map(id=>new N.LatLng(...COORD[id]));
-      const map=new N.Map(el,{center:path[0],zoom:14});kmapObj=map;liveMap=map;
-      new N.Polyline({map,path,strokeWeight:5,strokeColor:"#e5533b",strokeOpacity:.9});
-      new N.Polyline({map,path:[path[path.length-1],path[0]],strokeWeight:3,strokeColor:"#0d4a5c",strokeOpacity:.7,strokeStyle:"shortdash"});
-      path.forEach((p,i)=>new N.Marker({map,position:p,icon:{content:`<div class="kpin${i?"":" t"}">${i||"T"}</div>`,anchor:new N.Point(13,13)},zIndex:2}));
+      if(!nmapEl){nmapEl=document.createElement("div");nmapEl.style.cssText="width:100%;height:100%"}
+      if(nmapEl.parentNode!==slot)slot.appendChild(nmapEl); // 지도 상자를 새 화면으로 옮김
+      const path=["T",...r.sim.stops.map(st=>st.p.id)].map(id=>new N.LatLng(...COORD[id]));
+      if(!nmapObj)nmapObj=new N.Map(nmapEl,{center:path[0],zoom:14});
+      const map=nmapObj;
+      map.setSize(new N.Size(slot.clientWidth||nmapEl.offsetWidth||360,slot.clientHeight||320));
+      // 이전 결과의 동선·핀·광고·맛집 표시 지우기
+      clearOverlays(nRoute);clearOverlays(nAds);clearOverlays(nFoods);
+      nRoute.push(new N.Polyline({map,path,strokeWeight:5,strokeColor:"#e5533b",strokeOpacity:.9}));
+      nRoute.push(new N.Polyline({map,path:[path[path.length-1],path[0]],strokeWeight:3,strokeColor:"#0d4a5c",strokeOpacity:.7,strokeStyle:"shortdash"}));
+      path.forEach((p,i)=>nRoute.push(new N.Marker({map,position:p,icon:{content:`<div class="npin${i?"":" t"}">${i||"T"}</div>`,anchor:new N.Point(13,13)},zIndex:2})));
       const lats=path.map(p=>p.lat()),lngs=path.map(p=>p.lng());
       const bounds=new N.LatLngBounds(new N.LatLng(Math.min(...lats),Math.min(...lngs)),new N.LatLng(Math.max(...lats),Math.max(...lngs)));
-      const fit=()=>{if(my!==mapToken)return;map.setSize(new N.Size(el.offsetWidth,el.offsetHeight||320));map.fitBounds(bounds)};
+      const fit=()=>{if(my!==mapToken||!nmapEl.isConnected)return;map.setSize(new N.Size(slot.clientWidth||360,slot.clientHeight||320));map.fitBounds(bounds)};
       fit();
       setTimeout(fit,300); // 한 번 더 크기를 맞춰서 회색 화면 방지
-      drawKakaoAds(r);drawKakaoFoods(r);
-    }).catch(()=>{});
+      drawNaverAds(r);drawNaverFoods(r);
+    }).catch(()=>{if(my===mapToken)window.navermap_authFailure()}); // 실패하면 약도로 되돌림
 }
 
 /* ---------- 영도 맛집 목록 ----------
@@ -989,12 +1015,12 @@ function foodHTML(r){
   const list=FOOD.filter(f=>state.foodCat==="all"||f.c===state.foodCat).map(f=>({...f,nr:foodNear(f,r)}))
     .sort((a,b)=>(!!b.nr-!!a.nr)||((a.nr?.i??0)-(b.nr?.i??0))||((a.nr?.d??0)-(b.nr?.d??0))||(a.i-b.i));
   const LIMIT=8,shown=state.foodMore?list:list.slice(0,LIMIT);
-  const kk=L==="ko"?"카카오맵":"KakaoMap",nv=L==="ko"?"네이버 지도":"NAVER Map";
+  const nv=L==="ko"?"네이버 지도":"NAVER Map";
   const item=f=>{const q=encodeURIComponent("부산 영도 "+f.n);return `<li class="fd">
     <span class="nm"><strong>${esc(f.n)}</strong>${f.nr?`<span class="nearb"><span class="num">${f.nr.i+1}</span>${esc(ADT[L].nearOf(f.nr.p.name[L].split(" (")[0].split("（")[0]))} · ${ADT[L].walkN(f.nr.walk)}</span>`:""}</span>
     <span class="meta"><span>${F.cat[f.c]}</span>${f.r?`<span><span class="st">★ ${f.r.toFixed(1)}</span> (${F.rev} ${f.rv.toLocaleString()})</span>`:""}${f.b.map(b=>`<span class="fbadge">${F.badge[b]}</span>`).join("")}</span>
     <span class="ds">${esc(f.d)}</span>
-    <span class="maps"><a href="${f.ll?`https://map.kakao.com/link/map/${encodeURIComponent(f.n)},${f.ll[0]},${f.ll[1]}`:`https://map.kakao.com/link/search/${q}`}" target="_blank" rel="noopener">${kk}</a><a href="https://map.naver.com/p/search/${q}" target="_blank" rel="noopener">${nv}</a></span></li>`};
+    <span class="maps"><a href="https://map.naver.com/p/search/${q}" target="_blank" rel="noopener">${nv}</a></span></li>`};
   return `<h2 style="font-size:19px">${F.h(FOOD.length)}</h2><p class="muted">${foodSrc==="api"?F.subApi:F.sub}${nearFoodsLL(r).length?` · ${F.pin}`:""}</p>
     <div class="fcats" role="group" aria-label="${esc(F.h(FOOD.length))}">${[["all",FOOD.length]].concat(cats).map(([c,n])=>`<button type="button" id="fcat-${c}" data-fc="${c}" aria-pressed="${state.foodCat===c}">${c==="all"?F.all:F.cat[c]} ${n}</button>`).join("")}</div>
     <ol class="flist">${shown.map(item).join("")}</ol>
@@ -1006,7 +1032,7 @@ function foodHTML(r){
    (scripts/fetch-foods.mjs). 형태: {updated, items:[{id,name,cat,addr,lat,lng,tel}]}
    불러오지 못하면 위의 기본 목록(FOOD, 부산어디? 58곳)을 그대로 씁니다. */
 const FOOD_API="foods.json";
-let foodSrc="sample",foodUpdated="",lastR=null,kFoods=[];
+let foodSrc="sample",foodUpdated="",lastR=null,nFoods=[];
 function nearFoodsLL(r){
   return FOOD.filter(f=>f.ll).map(f=>({f,nr:foodNear(f,r)})).filter(x=>x.nr).sort((a,b)=>a.nr.d-b.nr.d).slice(0,15);
 }
@@ -1014,9 +1040,9 @@ function foodSvg(r){
   return nearFoodsLL(r).map(({f})=>{const [x,y]=proj(...f.ll);
     return `<g transform="translate(${x} ${y}) scale(${(1/ZK).toFixed(3)})"><title>${esc(f.n)}</title><circle r="5.5" fill="#2f8a5b" stroke="#fff" stroke-width="1.8"/></g>`}).join("");
 }
-function drawKakaoFoods(r){
-  kFoods.forEach(o=>o.setMap(null));kFoods=[];if(!kmapObj)return;const N=naver.maps;
-  nearFoodsLL(r).forEach(({f})=>kFoods.push(new N.Marker({map:kmapObj,position:new N.LatLng(...f.ll),zIndex:0,
+function drawNaverFoods(r){
+  clearOverlays(nFoods);if(!nmapObj)return;const N=naver.maps;
+  nearFoodsLL(r).forEach(({f})=>nFoods.push(new N.Marker({map:nmapObj,position:new N.LatLng(...f.ll),zIndex:0,
     icon:{content:`<div title="${esc(f.n)}" style="width:12px;height:12px;border-radius:50%;background:#2f8a5b;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)"></div>`,anchor:new N.Point(8,8)}})));
 }
 async function loadFoods(){
@@ -1029,7 +1055,7 @@ async function loadFoods(){
     if(items.length<10)return;
     FOOD=items;foodSrc="api";foodUpdated=String(j.updated||"").slice(0,10);
     if(state.foodCat!=="all"&&!FOOD.some(f=>f.c===state.foodCat))state.foodCat="all";
-    if(state.screen==="result"&&lastR){const sec=document.getElementById("foodSec");if(sec){sec.innerHTML=foodHTML(lastR);wireFood(lastR)}refreshMap(lastR);if(kmapObj)drawKakaoFoods(lastR)}
+    if(state.screen==="result"&&lastR){const sec=document.getElementById("foodSec");if(sec){sec.innerHTML=foodHTML(lastR);wireFood(lastR)}refreshMap(lastR);if(nmapObj)drawNaverFoods(lastR)}
   }catch(e){}
 }
 function wireFood(r){
@@ -1104,7 +1130,7 @@ function renderResult(s,a){
   ${state.aiMsg&&!state.aiNote?`<p class="muted">${esc(state.aiMsg)}</p>`:""}
   <div class="alert" role="note"><span>${x.leaveBy} <strong>${hmD(r.sim.leave)}</strong> · ${x.returnBy} <strong>${hmD(r.allAboard)}</strong></span><span class="muted">${x.alertP} (${x.dep} ${hmD(r.c.dep)})</span>${(()=>{const sp=r.allAboard-r.sim.end;return !r.none&&sp>=20?`<span class="spare"><b>${x.spare(fmtDur(sp,L))}</b> ${x.spareTip}</span>`:""})()}</div>
   <section class="mapbox" aria-label="map">
-    <div id="kmap"></div>
+    <div id="nmap"></div>
     <div id="smap">${sketchMap(r)}</div>
     <div class="map-cap"><span id="mapCap">${MAPT[L].sketch}</span><span style="display:flex;gap:6px"><button type="button" class="adtoggle" id="zoomToggle" style="color:var(--sea)">${state.mapFull?MAPT[L].zoom:MAPT[L].full}</button><button type="button" class="adtoggle" id="adToggle" aria-pressed="${state.adsOn}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="5" fill="currentColor"/></svg>${ADT[L].toggle}</button></span></div>
   </section>
@@ -1131,7 +1157,7 @@ function renderResult(s,a){
     ${fb}
   </section>
   <p class="demo">${x.demo}</p>`;
-  lastR=r;kmapObj=null;kakaoMap(r);wireAds(r);wireFood(r);
+  lastR=r;naverMap(r);wireAds(r);wireFood(r);
   s.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{
     state.rating=+b.dataset.s;
     s.querySelectorAll("[data-s]").forEach(o=>o.setAttribute("aria-pressed",String(+o.dataset.s<=state.rating)));
