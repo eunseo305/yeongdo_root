@@ -1,0 +1,72 @@
+/* 디자인 A "클린 블루" 덮어쓰기 (담당: ② 화면)
+   이 파일을 index.html에서 빼고 <html>의 data-skin="a"를 지우면 이전 디자인으로 돌아갑니다. */
+
+/* ===== 디자인 A "클린 블루" =====
+   이 <style id="redesign"> 블록을 지우고 <html>의 data-skin="a"를 빼면 이전 디자인으로 돌아갑니다.
+   흰 바탕·회색 배경·파란 포인트, 굵은 고딕 (한국 금융앱처럼 깔끔하게) */
+html[data-skin]{--r:16px}
+html[data-skin="a"]{
+  --sea:#3182f6;--sea-deep:#191f28;--buoy:#3182f6;--sand:#f2f4f6;--paper:#ffffff;--ink:#191f28;
+  --muted:#6b7684;--line:#e5e8eb;--good:#0f9d58;--warn:#d9822b;--tint:#e8f3ff;--hl:#3182f6;
+  --display:"Noto Sans KR",system-ui,sans-serif;--body:"Noto Sans KR","Hiragino Sans","PingFang SC",system-ui,sans-serif;
+  --shadow:0 1px 3px rgba(0,27,55,.06);
+}
+html[data-skin] body{background:var(--sand)}
+html[data-skin] body{word-break:keep-all;overflow-wrap:anywhere}
+html[data-skin] .app{background:var(--sand);box-shadow:none}
+html[data-skin] main{gap:16px;padding:18px 16px 120px}
+html[data-skin] h1,html[data-skin] h2,html[data-skin] .course-name{font-family:var(--display);color:var(--sea-deep);text-wrap:balance}
+html[data-skin="a"] h1,html[data-skin="a"] h2,html[data-skin="a"] .course-name{font-weight:800;letter-spacing:-.8px}
+html[data-skin] .course-name{font-size:26px}
+html[data-skin] .muted{color:var(--muted)}
+/* 헤더 */
+html[data-skin="a"] header.top{background:var(--paper);color:var(--ink);border-bottom:1px solid var(--line)}
+html[data-skin="a"] .brand{font-family:var(--display);font-weight:800;color:var(--ink);letter-spacing:-.5px}
+html[data-skin="a"] .brand svg path:first-child{stroke:var(--sea)}
+html[data-skin] .lang{background:var(--sand);padding:3px;border-radius:999px;gap:2px}
+html[data-skin] .lang button{border:0;border-radius:999px;color:var(--muted);padding:4px 10px;min-height:30px;background:transparent}
+html[data-skin] .lang button[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* 첫 화면 */
+html[data-skin] .hero{border-radius:var(--r);padding:24px 20px;box-shadow:var(--shadow)}
+html[data-skin="a"] .hero{background:var(--paper);color:var(--ink)}
+html[data-skin="a"] .hero h1{color:var(--ink);font-size:27px}
+html[data-skin="a"] .hero p{color:var(--muted)}
+html[data-skin="a"] .hero .wave{display:none}
+html[data-skin="a"] .qr-tag{background:var(--tint);color:var(--sea);font-weight:700}
+html[data-skin] .qr-tag svg path{stroke:currentColor}
+html[data-skin] .aibox{border:0;border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow);padding:18px}
+html[data-skin] .steps-list{background:var(--paper);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+html[data-skin] .steps-list b{background:var(--tint);color:var(--sea);font-weight:800}
+/* 질문 */
+html[data-skin] .progress span{height:5px;border-radius:3px;background:var(--line)}
+html[data-skin] .progress span.on{background:var(--sea)}
+html[data-skin] .opt,html[data-skin] .ship{border:2px solid transparent;border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow);position:relative}
+html[data-skin] .opt span{font-weight:700}
+html[data-skin] .opt[aria-pressed="true"],html[data-skin] .ship[aria-pressed="true"]{border-color:var(--sea);background:var(--tint);box-shadow:none}
+html[data-skin] .opt[aria-pressed="true"]::after,html[data-skin] .ship[aria-pressed="true"]::after{content:"";position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--sea) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+html[data-skin] .ship[aria-pressed="true"]::after{top:auto;bottom:12px}
+/* 버튼 */
+html[data-skin] .bar-inner{background:linear-gradient(to top,var(--sand) 65%,rgba(0,0,0,0))}
+html[data-skin] .btn{border-radius:14px;background:var(--buoy);box-shadow:none;font-weight:800}
+html[data-skin] .btn.sea{background:var(--sea-deep)}
+html[data-skin] .btn:disabled{background:#c9d1d6}
+html[data-skin] .btn.ghost{background:var(--paper);color:var(--ink);border:0;box-shadow:var(--shadow)}
+/* 결과 */
+html[data-skin] .chip{background:var(--paper);color:var(--sea-deep);border:1px solid var(--line);font-weight:600}
+html[data-skin] .alert{background:var(--paper);border-left:0;border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
+html[data-skin] .alert strong{color:var(--sea);font-size:18px;font-weight:800}
+html[data-skin] .wxbar{border-radius:12px;background:var(--tint);color:var(--sea-deep)}
+html[data-skin] .card,html[data-skin] .timeline,html[data-skin] .mapbox{border:0;border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow)}
+html[data-skin] .card{padding:18px}
+html[data-skin] .timeline{padding:18px 16px 4px}
+html[data-skin] .tl .t{color:var(--sea-deep);font-weight:800}
+html[data-skin] .tl .dot{background:var(--sea);box-shadow:0 0 0 4px var(--tint)}
+html[data-skin] .tl .dot.end{background:var(--sea-deep)}
+html[data-skin] .tl .line{background:var(--line)}
+html[data-skin] .tl .adnear .dot,html[data-skin] .adlist .dot{width:7px;height:7px;border-radius:2px;box-shadow:none;margin:0;background:#e0442d;flex:none}
+html[data-skin] .stat{background:var(--sand);border-radius:12px}
+html[data-skin] .stat .n{font-family:var(--display);color:var(--sea-deep)}
+html[data-skin] .meter i{background:var(--sea)}
+html[data-skin] .map-cap{flex-wrap:wrap;row-gap:6px}
+html[data-skin] .stars button{border-radius:12px}
+html[data-skin] .fmore{border-radius:14px}
