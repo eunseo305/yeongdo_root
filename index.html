@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-skin="a">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>영도 크루즈 동선 추천</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   /* Layout: one phone-width column, step-by-step screens, sticky action bar at the bottom */
@@ -69,6 +69,15 @@ select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:10p
 .steps-list li{display:flex;gap:12px;align-items:flex-start;font-size:15px}
 .steps-list b{flex:none;width:26px;height:26px;border-radius:50%;background:#e8f1f2;color:var(--sea);display:grid;place-items:center;font-size:13px}
 .ship{border:1.5px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px;background:var(--paper);cursor:pointer;text-align:left;font-family:var(--body);color:var(--ink)}
+.datebar{display:flex;flex-direction:column;gap:8px}
+.datebar .dl{font-size:13.5px;font-weight:700;color:var(--sea-deep)}
+.dchips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.dchips button{flex:none;border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:7px 12px;font:600 13.5px var(--body);color:var(--ink);cursor:pointer;min-height:36px}
+.dchips button[aria-pressed="true"]{border-color:var(--sea);background:var(--sea);color:#fff}
+.dchips button:focus-visible,.dpick input:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.dpick{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted)}
+.dpick input{font:500 14px var(--body);padding:6px 8px;border:1.5px solid var(--line);border-radius:10px;color:var(--ink);background:var(--paper)}
+.nodate{font-size:14px;color:#a7341f;background:#fdece8;border-radius:10px;padding:10px 12px}
 .ship[aria-pressed="true"]{border-color:var(--sea);background:#e8f1f2;box-shadow:inset 0 0 0 1px var(--sea)}
 .ship .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ship strong{font-size:16px}
@@ -208,6 +217,77 @@ label.f{display:grid;gap:4px;font-size:14px;color:var(--muted)}
   @keyframes rise{from{transform:translateY(6px)}to{transform:none}}
 }
 </style>
+<style id="redesign">
+/* ===== 디자인 A "클린 블루" =====
+   이 <style id="redesign"> 블록을 지우고 <html>의 data-skin="a"를 빼면 이전 디자인으로 돌아갑니다.
+   흰 바탕·회색 배경·파란 포인트, 굵은 고딕 (한국 금융앱처럼 깔끔하게) */
+html[data-skin]{--r:16px}
+html[data-skin="a"]{
+  --sea:#3182f6;--sea-deep:#191f28;--buoy:#3182f6;--sand:#f2f4f6;--paper:#ffffff;--ink:#191f28;
+  --muted:#6b7684;--line:#e5e8eb;--good:#0f9d58;--warn:#d9822b;--tint:#e8f3ff;--hl:#3182f6;
+  --display:"Noto Sans KR",system-ui,sans-serif;--body:"Noto Sans KR","Hiragino Sans","PingFang SC",system-ui,sans-serif;
+  --shadow:0 1px 3px rgba(0,27,55,.06);
+}
+html[data-skin] body{background:var(--sand)}
+html[data-skin] body{word-break:keep-all;overflow-wrap:anywhere}
+html[data-skin] .app{background:var(--sand);box-shadow:none}
+html[data-skin] main{gap:16px;padding:18px 16px 120px}
+html[data-skin] h1,html[data-skin] h2,html[data-skin] .course-name{font-family:var(--display);color:var(--sea-deep);text-wrap:balance}
+html[data-skin="a"] h1,html[data-skin="a"] h2,html[data-skin="a"] .course-name{font-weight:800;letter-spacing:-.8px}
+html[data-skin] .course-name{font-size:26px}
+html[data-skin] .muted{color:var(--muted)}
+/* 헤더 */
+html[data-skin="a"] header.top{background:var(--paper);color:var(--ink);border-bottom:1px solid var(--line)}
+html[data-skin="a"] .brand{font-family:var(--display);font-weight:800;color:var(--ink);letter-spacing:-.5px}
+html[data-skin="a"] .brand svg path:first-child{stroke:var(--sea)}
+html[data-skin] .lang{background:var(--sand);padding:3px;border-radius:999px;gap:2px}
+html[data-skin] .lang button{border:0;border-radius:999px;color:var(--muted);padding:4px 10px;min-height:30px;background:transparent}
+html[data-skin] .lang button[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* 첫 화면 */
+html[data-skin] .hero{border-radius:var(--r);padding:24px 20px;box-shadow:var(--shadow)}
+html[data-skin="a"] .hero{background:var(--paper);color:var(--ink)}
+html[data-skin="a"] .hero h1{color:var(--ink);font-size:27px}
+html[data-skin="a"] .hero p{color:var(--muted)}
+html[data-skin="a"] .hero .wave{display:none}
+html[data-skin="a"] .qr-tag{background:var(--tint);color:var(--sea);font-weight:700}
+html[data-skin] .qr-tag svg path{stroke:currentColor}
+html[data-skin] .aibox{border:0;border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow);padding:18px}
+html[data-skin] .steps-list{background:var(--paper);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+html[data-skin] .steps-list b{background:var(--tint);color:var(--sea);font-weight:800}
+/* 질문 */
+html[data-skin] .progress span{height:5px;border-radius:3px;background:var(--line)}
+html[data-skin] .progress span.on{background:var(--sea)}
+html[data-skin] .opt,html[data-skin] .ship{border:2px solid transparent;border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow);position:relative}
+html[data-skin] .opt span{font-weight:700}
+html[data-skin] .opt[aria-pressed="true"],html[data-skin] .ship[aria-pressed="true"]{border-color:var(--sea);background:var(--tint);box-shadow:none}
+html[data-skin] .opt[aria-pressed="true"]::after,html[data-skin] .ship[aria-pressed="true"]::after{content:"";position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--sea) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+html[data-skin] .ship[aria-pressed="true"]::after{top:auto;bottom:12px}
+/* 버튼 */
+html[data-skin] .bar-inner{background:linear-gradient(to top,var(--sand) 65%,rgba(0,0,0,0))}
+html[data-skin] .btn{border-radius:14px;background:var(--buoy);box-shadow:none;font-weight:800}
+html[data-skin] .btn.sea{background:var(--sea-deep)}
+html[data-skin] .btn:disabled{background:#c9d1d6}
+html[data-skin] .btn.ghost{background:var(--paper);color:var(--ink);border:0;box-shadow:var(--shadow)}
+/* 결과 */
+html[data-skin] .chip{background:var(--paper);color:var(--sea-deep);border:1px solid var(--line);font-weight:600}
+html[data-skin] .alert{background:var(--paper);border-left:0;border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
+html[data-skin] .alert strong{color:var(--sea);font-size:18px;font-weight:800}
+html[data-skin] .wxbar{border-radius:12px;background:var(--tint);color:var(--sea-deep)}
+html[data-skin] .card,html[data-skin] .timeline,html[data-skin] .mapbox{border:0;border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow)}
+html[data-skin] .card{padding:18px}
+html[data-skin] .timeline{padding:18px 16px 4px}
+html[data-skin] .tl .t{color:var(--sea-deep);font-weight:800}
+html[data-skin] .tl .dot{background:var(--sea);box-shadow:0 0 0 4px var(--tint)}
+html[data-skin] .tl .dot.end{background:var(--sea-deep)}
+html[data-skin] .tl .line{background:var(--line)}
+html[data-skin] .tl .adnear .dot,html[data-skin] .adlist .dot{width:7px;height:7px;border-radius:2px;box-shadow:none;margin:0;background:#e0442d;flex:none}
+html[data-skin] .stat{background:var(--sand);border-radius:12px}
+html[data-skin] .stat .n{font-family:var(--display);color:var(--sea-deep)}
+html[data-skin] .meter i{background:var(--sea)}
+html[data-skin] .map-cap{flex-wrap:wrap;row-gap:6px}
+html[data-skin] .stars button{border-radius:12px}
+html[data-skin] .fmore{border-radius:14px}
+</style>
 </head>
 <body>
 <div class="app">
@@ -229,8 +309,8 @@ const LANGS=[["ko","한"],["en","EN"],["ja","日"],["zh","中"]];
 const T={
 ko:{brand:"영도 루트",qr:"크루즈터미널 QR로 접속",heroT:"출항 전까지, 영도를 알차게",heroP:"하고 싶은 걸 말로 적거나 질문 몇 개에 답하면, AI가 남은 시간에 맞춰 영도 동선을 짜드려요. 이름이나 연락처는 묻지 않아요.",
 ai_h:"AI에게 말로 물어보기",ai_ph:"예: 부모님이랑 셋이 왔어요. 해산물 좋아하고 많이 못 걸어요. 비가 와요. Sea Aurora 타고 왔어요.",ai_btn:"AI 동선 추천받기",ai_wait:"AI가 동선을 짜는 중…",ai_fail:"AI 연결이 안 돼서 적어주신 단어로 추천했어요.",or:"또는 질문에 하나씩 답하기",
-how:"이렇게 진행돼요",h1:"국적·연령대·동행 선택",h2:"관심사와 오늘 날씨",h3:"오늘 탄 크루즈 선택",h4:"AI 맞춤 동선 확인",start:"질문으로 시작하기",next:"다음",back:"이전",see:"동선 추천받기",
-q_nat:"어느 나라에서 오셨어요?",q_age:"연령대를 골라주세요",q_comp:"누구와 함께 오셨어요?",q_int:"무엇에 관심 있으세요?",q_intS:"여러 개 고를 수 있어요",q_wx:"오늘 날씨는 어때요?",q_wxS:"날씨에 맞춰 실내·실외를 조절해요",q_ship:"오늘 타고 오신 크루즈는?",q_shipS:"하선·귀선 시간이 자동으로 들어가요",
+how:"이렇게 진행돼요",h1:"국적·연령대·동행 선택",h2:"관심사와 오늘 날씨",h3:"타고 온 크루즈 선택",h4:"AI 맞춤 동선 확인",start:"질문으로 시작하기",next:"다음",back:"이전",see:"동선 추천받기",
+q_nat:"어느 나라에서 오셨어요?",q_age:"연령대를 골라주세요",q_comp:"누구와 함께 오셨어요?",q_int:"무엇에 관심 있으세요?",q_intS:"여러 개 고를 수 있어요",q_wx:"오늘 날씨는 어때요?",q_wxS:"날씨에 맞춰 실내·실외를 조절해요",q_ship:"타고 오신 크루즈는?",q_shipS:"하선·귀선 시간이 자동으로 들어가요",
 nat:{ja:"일본",zh:"중국",tw:"대만",us:"미국",kr:"한국",other:"기타"},
 age:{a20:"20대",a30:"30~40대",a50:"50~60대",a70:"70대 이상"},
 comp:{solo:"혼자",couple:"커플·부부",friends:"친구",family:"가족 (아이 동반)",group:"단체"},
@@ -248,7 +328,7 @@ r:{int:i=>`고르신 관심사(${i})와 맞는 곳 위주로 골랐어요.`,stai
 pick:"하나를 골라주세요"},
 en:{brand:"Yeongdo Route",qr:"Opened from the terminal QR",heroT:"Make the most of Yeongdo before you sail",heroP:"Tell us what you'd like in your own words, or answer a few questions, and AI plans a Yeongdo route that fits your time ashore. No name or contact needed.",
 ai_h:"Ask AI in your own words",ai_ph:"e.g. Three of us with my parents. We love seafood but can't walk much. It's raining. We came on Sea Aurora.",ai_btn:"Get my AI route",ai_wait:"AI is planning your route…",ai_fail:"AI isn't reachable, so we planned from the words you typed.",or:"or answer step by step",
-how:"How it works",h1:"Country, age and travel group",h2:"Interests and today's weather",h3:"Choose today's cruise",h4:"Get your AI route",start:"Start with questions",next:"Next",back:"Back",see:"Get my route",
+how:"How it works",h1:"Country, age and travel group",h2:"Interests and today's weather",h3:"Choose your cruise",h4:"Get your AI route",start:"Start with questions",next:"Next",back:"Back",see:"Get my route",
 q_nat:"Where are you from?",q_age:"Your age group",q_comp:"Who are you travelling with?",q_int:"What are you into?",q_intS:"Choose as many as you like",q_wx:"How's the weather today?",q_wxS:"We balance indoor and outdoor stops",q_ship:"Which cruise did you arrive on?",q_shipS:"Your times ashore fill in automatically",
 nat:{ja:"Japan",zh:"China",tw:"Taiwan",us:"USA",kr:"Korea",other:"Other"},
 age:{a20:"20s",a30:"30s–40s",a50:"50s–60s",a70:"70+"},
@@ -267,8 +347,8 @@ r:{int:i=>`Stops match your interests (${i}).`,stairs:"Steep stairs at Huinnyeou
 pick:"Choose one"},
 ja:{brand:"影島ルート",qr:"クルーズターミナルのQRから",heroT:"出航まで、影島をたっぷり",heroP:"やりたいことを言葉で書くか、いくつかの質問に答えると、AIが滞在時間に合わせて影島のルートを作ります。名前や連絡先は不要です。",
 ai_h:"AIに言葉で聞く",ai_ph:"例：両親と3人です。海鮮が好きで、あまり歩けません。雨です。Sea Auroraで来ました。",ai_btn:"AIルートを作る",ai_wait:"AIがルートを作成中…",ai_fail:"AIにつながらないため、入力された言葉からおすすめしました。",or:"または質問に答える",
-how:"進め方",h1:"国・年代・同行者",h2:"興味と今日の天気",h3:"本日のクルーズを選ぶ",h4:"AIおすすめルート",start:"質問ではじめる",next:"次へ",back:"戻る",see:"ルートを見る",
-q_nat:"どちらの国から？",q_age:"年代を選んでください",q_comp:"どなたと一緒ですか？",q_int:"興味のあることは？",q_intS:"いくつでも選べます",q_wx:"今日の天気は？",q_wxS:"天気に合わせて屋内・屋外を調整します",q_ship:"本日のクルーズは？",q_shipS:"下船・帰船時刻が自動で入ります",
+how:"進め方",h1:"国・年代・同行者",h2:"興味と今日の天気",h3:"ご乗船のクルーズを選ぶ",h4:"AIおすすめルート",start:"質問ではじめる",next:"次へ",back:"戻る",see:"ルートを見る",
+q_nat:"どちらの国から？",q_age:"年代を選んでください",q_comp:"どなたと一緒ですか？",q_int:"興味のあることは？",q_intS:"いくつでも選べます",q_wx:"今日の天気は？",q_wxS:"天気に合わせて屋内・屋外を調整します",q_ship:"ご乗船のクルーズは？",q_shipS:"下船・帰船時刻が自動で入ります",
 nat:{ja:"日本",zh:"中国",tw:"台湾",us:"アメリカ",kr:"韓国",other:"その他"},
 age:{a20:"20代",a30:"30〜40代",a50:"50〜60代",a70:"70代以上"},
 comp:{solo:"ひとり",couple:"カップル・夫婦",friends:"友人",family:"家族（子ども連れ）",group:"団体"},
@@ -286,8 +366,8 @@ r:{int:i=>`選んだ興味（${i}）に合う場所を中心にしました。`,
 pick:"1つ選んでください"},
 zh:{brand:"影岛路线",qr:"来自邮轮码头二维码",heroT:"开船前，玩转影岛",heroP:"用自己的话写下想做的事，或回答几个问题，AI会根据您的上岸时间规划影岛路线。无需姓名或联系方式。",
 ai_h:"直接问AI",ai_ph:"例：我和父母三个人，喜欢海鲜，走不了太多路。今天下雨。坐Sea Aurora来的。",ai_btn:"生成AI路线",ai_wait:"AI正在规划路线…",ai_fail:"暂时连不上AI，已根据您输入的词语推荐。",or:"或逐步回答问题",
-how:"使用流程",h1:"国家·年龄·同行",h2:"兴趣和今天的天气",h3:"选择今天的邮轮",h4:"查看AI路线",start:"回答问题开始",next:"下一步",back:"上一步",see:"生成路线",
-q_nat:"您来自哪里？",q_age:"请选择年龄段",q_comp:"和谁一起来？",q_int:"您对什么感兴趣？",q_intS:"可多选",q_wx:"今天天气怎么样？",q_wxS:"根据天气调整室内外安排",q_ship:"今天乘坐的邮轮是？",q_shipS:"上岸与返船时间将自动填入",
+how:"使用流程",h1:"国家·年龄·同行",h2:"兴趣和今天的天气",h3:"选择乘坐的邮轮",h4:"查看AI路线",start:"回答问题开始",next:"下一步",back:"上一步",see:"生成路线",
+q_nat:"您来自哪里？",q_age:"请选择年龄段",q_comp:"和谁一起来？",q_int:"您对什么感兴趣？",q_intS:"可多选",q_wx:"今天天气怎么样？",q_wxS:"根据天气调整室内外安排",q_ship:"您乘坐的邮轮是？",q_shipS:"上岸与返船时间将自动填入",
 nat:{ja:"日本",zh:"中国",tw:"台湾",us:"美国",kr:"韩国",other:"其他"},
 age:{a20:"20多岁",a30:"30~40多岁",a50:"50~60多岁",a70:"70岁以上"},
 comp:{solo:"独自",couple:"情侣·夫妻",friends:"朋友",family:"家庭（带孩子）",group:"旅行团"},
@@ -359,41 +439,44 @@ let CRUISES=[
    (scripts/fetch-cruises.mjs). 형태: [{name, arrive:"YYYY-MM-DDTHH:mm", depart:"YYYY-MM-DDTHH:mm", pax}]
    이 중 오늘 영도에 머무는 배만 골라 보여주고, 파일을 불러오지 못하면 위의 예시 일정(CRUISES)을 씁니다. */
 const CRUISE_API="cruises.json";
+// 부산광역시 크루즈 선석스케줄 정보(공공데이터포털)에서 받은 영도 크루즈터미널 일정 (2026-11 ~ 2027-12)
+const CRUISES_INLINE=[{"name":"ADORA MAGIC CITY","arrive":"2026-11-02T10:00","depart":"2026-11-02T22:00","pax":5246},{"name":"SPECTRUM OF THE SEAS","arrive":"2026-11-03T08:00","depart":"2026-11-03T20:00","pax":5622},{"name":"NORWEGIAN JADE","arrive":"2026-11-05T14:00","depart":"2026-11-05T20:00","pax":2402},{"name":"ADORA MAGIC CITY","arrive":"2026-11-10T10:00","depart":"2026-11-10T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2026-11-14T10:00","depart":"2026-11-14T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2026-11-18T10:00","depart":"2026-11-18T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2026-11-22T10:00","depart":"2026-11-22T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2026-11-26T10:00","depart":"2026-11-26T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2026-11-30T10:00","depart":"2026-11-30T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2026-12-04T10:00","depart":"2026-12-04T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-01-01T10:00","depart":"2027-01-01T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-01-05T10:00","depart":"2027-01-05T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-01-09T10:00","depart":"2027-01-09T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-01-13T10:00","depart":"2027-01-13T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-01-17T10:00","depart":"2027-01-17T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-01-21T10:00","depart":"2027-01-21T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-01-25T10:00","depart":"2027-01-25T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-01-26T10:00","depart":"2027-01-26T21:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-01-29T10:00","depart":"2027-01-29T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-01-30T07:00","depart":"2027-01-30T21:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-02-03T10:00","depart":"2027-02-03T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-02-04T10:00","depart":"2027-02-04T21:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-02-07T10:00","depart":"2027-02-07T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-02-08T07:00","depart":"2027-02-08T21:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-02-12T10:00","depart":"2027-02-12T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-02-13T10:00","depart":"2027-02-13T21:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-02-16T10:00","depart":"2027-02-16T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-02-17T07:00","depart":"2027-02-17T21:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-02-20T10:00","depart":"2027-02-20T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-02-22T10:00","depart":"2027-02-22T21:00","pax":5654},{"name":"DREAM","arrive":"2027-02-24T11:00","depart":"2027-02-24T22:00","pax":2270},{"name":"MSC BELLISSIMA","arrive":"2027-02-26T07:00","depart":"2027-02-26T21:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-02-28T10:00","depart":"2027-02-28T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-03-03T10:00","depart":"2027-03-03T21:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-03-04T10:00","depart":"2027-03-04T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-03-08T10:00","depart":"2027-03-08T22:00","pax":5246},{"name":"SPECTRUM OF THE SEAS","arrive":"2027-03-14T07:00","depart":"2027-03-14T19:00","pax":5622},{"name":"DREAM","arrive":"2027-03-16T11:00","depart":"2027-03-16T22:00","pax":2270},{"name":"ADORA MAGIC CITY","arrive":"2027-03-20T10:00","depart":"2027-03-20T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-03-24T10:00","depart":"2027-03-24T22:00","pax":5246},{"name":"ADORA FLORA CITY","arrive":"2027-03-25T08:00","depart":"2027-03-25T22:00","pax":2130},{"name":"LE SOLEAL","arrive":"2027-03-26T07:00","depart":"2027-03-26T18:30","pax":200},{"name":"ADORA MAGIC CITY","arrive":"2027-03-28T10:00","depart":"2027-03-28T22:00","pax":5246},{"name":"ADORA FLORA CITY","arrive":"2027-03-30T08:00","depart":"2027-03-30T22:00","pax":2130},{"name":"LUMINARA","arrive":"2027-04-01T08:00","depart":"2027-04-01T17:00","pax":452},{"name":"ADORA MAGIC CITY","arrive":"2027-04-04T10:00","depart":"2027-04-04T22:00","pax":5246},{"name":"SILVER MUSE","arrive":"2027-04-05T07:00","depart":"2027-04-05T17:00","pax":623},{"name":"MEIN SCHIFF 6","arrive":"2027-04-06T07:00","depart":"2027-04-06T18:00","pax":2794},{"name":"ADORA FLORA CITY","arrive":"2027-04-08T10:00","depart":"2027-04-08T22:00","pax":2130},{"name":"ADORA MAGIC CITY","arrive":"2027-04-09T12:00","depart":"2027-04-09T22:00","pax":5246},{"name":"ADORA FLORA CITY","arrive":"2027-04-12T10:00","depart":"2027-04-12T22:00","pax":2130},{"name":"DREAM","arrive":"2027-04-13T11:00","depart":"2027-04-13T22:00","pax":2270},{"name":"LE SOLEAL","arrive":"2027-04-15T07:30","depart":"2027-04-15T17:30","pax":200},{"name":"ADORA FLORA CITY","arrive":"2027-04-16T10:00","depart":"2027-04-16T22:00","pax":2130},{"name":"DREAM","arrive":"2027-04-17T11:00","depart":"2027-04-17T22:00","pax":2270},{"name":"SILVER MUSE","arrive":"2027-04-19T07:00","depart":"2027-04-19T17:00","pax":623},{"name":"MEIN SCHIFF 6","arrive":"2027-04-20T07:00","depart":"2027-04-20T19:00","pax":2794},{"name":"DREAM","arrive":"2027-04-21T11:00","depart":"2027-04-21T22:00","pax":2270},{"name":"ADORA MAGIC CITY","arrive":"2027-04-24T10:00","depart":"2027-04-24T22:00","pax":5246},{"name":"DREAM","arrive":"2027-04-25T11:00","depart":"2027-04-25T22:00","pax":2270},{"name":"ADORA FLORA CITY","arrive":"2027-04-28T10:00","depart":"2027-04-28T22:00","pax":2130},{"name":"ADORA MAGIC CITY","arrive":"2027-04-29T07:00","depart":"2027-04-29T17:00","pax":5246},{"name":"LE SOLEAL","arrive":"2027-05-01T07:30","depart":"2027-05-02T17:00","pax":200},{"name":"ADORA MAGIC CITY","arrive":"2027-05-03T11:00","depart":"2027-05-03T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-05-04T07:00","depart":"2027-05-04T17:00","pax":5246},{"name":"CELEBRITY MILLENNIUM","arrive":"2027-05-07T07:00","depart":"2027-05-07T17:00","pax":2200},{"name":"MSC BELLISSIMA","arrive":"2027-05-08T16:00","depart":"2027-05-08T22:00","pax":5654},{"name":"ADORA FLORA CITY","arrive":"2027-05-11T08:00","depart":"2027-05-11T22:00","pax":2130},{"name":"MSC BELLISSIMA","arrive":"2027-05-13T16:00","depart":"2027-05-13T22:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-05-14T07:00","depart":"2027-05-14T17:00","pax":5246},{"name":"ADORA FLORA CITY","arrive":"2027-05-15T10:00","depart":"2027-05-15T22:00","pax":2130},{"name":"LE SOLEAL","arrive":"2027-05-17T06:30","depart":"2027-05-17T18:30","pax":200},{"name":"MSC BELLISSIMA","arrive":"2027-05-19T16:00","depart":"2027-05-19T22:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-05-20T10:00","depart":"2027-05-20T20:00","pax":5246},{"name":"DREAM","arrive":"2027-05-23T11:00","depart":"2027-05-23T22:00","pax":2270},{"name":"SAPPHIRE PRINCESS","arrive":"2027-05-24T07:00","depart":"2027-05-24T16:00","pax":3168},{"name":"ADORA MAGIC CITY","arrive":"2027-05-28T10:00","depart":"2027-05-28T22:00","pax":5246},{"name":"DREAM","arrive":"2027-05-31T11:00","depart":"2027-05-31T22:00","pax":2270},{"name":"SPECTRUM OF THE SEAS","arrive":"2027-06-01T07:00","depart":"2027-06-01T19:00","pax":5622},{"name":"ADORA MAGIC CITY","arrive":"2027-06-03T07:00","depart":"2027-06-03T17:00","pax":5246},{"name":"DREAM","arrive":"2027-06-04T11:00","depart":"2027-06-04T22:00","pax":2270},{"name":"ADORA MAGIC CITY","arrive":"2027-06-05T10:00","depart":"2027-06-05T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-06-09T10:00","depart":"2027-06-09T22:00","pax":5246},{"name":"DREAM","arrive":"2027-06-12T11:00","depart":"2027-06-12T22:00","pax":2270},{"name":"ADORA MAGIC CITY","arrive":"2027-06-13T10:00","depart":"2027-06-13T22:00","pax":5246},{"name":"DREAM","arrive":"2027-06-16T11:00","depart":"2027-06-16T22:00","pax":2270},{"name":"ADORA MAGIC CITY","arrive":"2027-06-17T10:00","depart":"2027-06-17T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-06-21T10:00","depart":"2027-06-21T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-06-25T08:00","depart":"2027-06-25T18:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-06-28T07:00","depart":"2027-06-28T17:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-06-29T08:00","depart":"2027-06-29T17:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-06-30T10:00","depart":"2027-06-30T22:00","pax":5246},{"name":"DREAM","arrive":"2027-07-02T11:00","depart":"2027-07-02T22:00","pax":2270},{"name":"ADORA MAGIC CITY","arrive":"2027-07-03T07:00","depart":"2027-07-03T17:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-07-04T10:00","depart":"2027-07-04T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-07-05T07:00","depart":"2027-07-05T20:00","pax":5654},{"name":"SPECTRUM OF THE SEAS","arrive":"2027-07-07T07:00","depart":"2027-07-07T19:00","pax":5622},{"name":"ADORA MAGIC CITY","arrive":"2027-07-08T10:00","depart":"2027-07-08T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-07-12T10:00","depart":"2027-07-12T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-07-13T07:00","depart":"2027-07-13T17:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-07-16T10:00","depart":"2027-07-16T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-07-17T07:00","depart":"2027-07-17T20:00","pax":5654},{"name":"MSC BELLISSIMA","arrive":"2027-07-18T08:00","depart":"2027-07-18T17:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-07-21T10:00","depart":"2027-07-21T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-07-25T10:00","depart":"2027-07-25T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-07-26T07:00","depart":"2027-07-26T16:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-07-29T08:00","depart":"2027-07-29T18:00","pax":5246},{"name":"DREAM","arrive":"2027-07-30T11:00","depart":"2027-07-30T22:00","pax":2270},{"name":"SPECTRUM OF THE SEAS","arrive":"2027-07-31T07:00","depart":"2027-07-31T19:00","pax":5622},{"name":"ADORA MAGIC CITY","arrive":"2027-08-02T07:00","depart":"2027-08-02T17:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-08-03T08:00","depart":"2027-08-03T18:00","pax":5246},{"name":"ADORA FLORA CITY","arrive":"2027-08-07T10:00","depart":"2027-08-07T22:00","pax":2130},{"name":"DREAM","arrive":"2027-08-11T11:00","depart":"2027-08-11T22:00","pax":2270},{"name":"ADORA MAGIC CITY","arrive":"2027-08-12T08:00","depart":"2027-08-12T18:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-08-13T07:00","depart":"2027-08-13T20:00","pax":5654},{"name":"ADORA FLORA CITY","arrive":"2027-08-16T10:00","depart":"2027-08-16T22:00","pax":2130},{"name":"ADORA MAGIC CITY","arrive":"2027-08-17T10:00","depart":"2027-08-17T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-08-18T10:00","depart":"2027-08-18T21:00","pax":5654},{"name":"ADORA FLORA CITY","arrive":"2027-08-20T10:00","depart":"2027-08-20T22:00","pax":2130},{"name":"ADORA MAGIC CITY","arrive":"2027-08-21T10:00","depart":"2027-08-21T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-08-22T10:00","depart":"2027-08-22T21:00","pax":5654},{"name":"DREAM","arrive":"2027-08-23T11:00","depart":"2027-08-23T22:00","pax":2270},{"name":"ADORA MAGIC CITY","arrive":"2027-08-25T10:00","depart":"2027-08-25T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-08-26T10:00","depart":"2027-08-26T21:00","pax":5654},{"name":"SPECTRUM OF THE SEAS","arrive":"2027-08-27T07:00","depart":"2027-08-27T19:00","pax":5622},{"name":"ADORA MAGIC CITY","arrive":"2027-08-29T10:00","depart":"2027-08-29T22:00","pax":5246},{"name":"DREAM","arrive":"2027-08-31T11:00","depart":"2027-08-31T22:00","pax":2270},{"name":"MSC BELLISSIMA","arrive":"2027-09-01T07:00","depart":"2027-09-01T20:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-09-02T08:00","depart":"2027-09-02T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-09-05T10:00","depart":"2027-09-05T21:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-09-06T07:00","depart":"2027-09-06T17:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-09-09T07:00","depart":"2027-09-09T20:00","pax":5654},{"name":"CELEBRITY MILLENNIUM","arrive":"2027-09-10T07:00","depart":"2027-09-10T18:00","pax":2200},{"name":"ADORA MAGIC CITY","arrive":"2027-09-11T07:00","depart":"2027-09-11T17:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-09-13T10:00","depart":"2027-09-13T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-09-14T10:00","depart":"2027-09-14T21:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-09-17T10:00","depart":"2027-09-17T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-09-19T07:00","depart":"2027-09-19T20:00","pax":5654},{"name":"DREAM","arrive":"2027-09-20T11:00","depart":"2027-09-20T22:00","pax":2270},{"name":"ADORA MAGIC CITY","arrive":"2027-09-21T10:00","depart":"2027-09-21T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-09-25T10:00","depart":"2027-09-25T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-09-29T10:00","depart":"2027-09-29T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-10-04T08:00","depart":"2027-10-04T18:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-10-05T07:00","depart":"2027-10-05T17:00","pax":5246},{"name":"DREAM","arrive":"2027-10-06T11:00","depart":"2027-10-06T22:00","pax":2270},{"name":"LE SOLEAL","arrive":"2027-10-07T06:30","depart":"2027-10-07T18:00","pax":200},{"name":"ADORA MAGIC CITY","arrive":"2027-10-09T10:00","depart":"2027-10-09T22:00","pax":5246},{"name":"LUMINARA","arrive":"2027-10-10T09:00","depart":"2027-10-10T16:00","pax":452},{"name":"MSC POESIA","arrive":"2027-10-13T07:00","depart":"2027-10-13T19:00","pax":3223},{"name":"ADORA MAGIC CITY","arrive":"2027-10-15T07:00","depart":"2027-10-15T17:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-10-17T10:00","depart":"2027-10-17T22:00","pax":5246},{"name":"VISIO","arrive":"2027-10-19T07:00","depart":"2027-10-19T14:00","pax":3470},{"name":"MSC POESIA","arrive":"2027-10-20T08:00","depart":"2027-10-20T20:00","pax":3223},{"name":"ADORA MAGIC CITY","arrive":"2027-10-21T10:00","depart":"2027-10-21T22:00","pax":5246},{"name":"DREAM","arrive":"2027-10-22T11:00","depart":"2027-10-22T22:00","pax":2270},{"name":"LE SOLEAL","arrive":"2027-10-23T07:30","depart":"2027-10-23T18:30","pax":200},{"name":"VISIO","arrive":"2027-10-24T07:00","depart":"2027-10-24T14:00","pax":3470},{"name":"ADORA MAGIC CITY","arrive":"2027-10-25T08:00","depart":"2027-10-25T18:00","pax":5246},{"name":"DREAM","arrive":"2027-10-26T11:00","depart":"2027-10-26T22:00","pax":2270},{"name":"MSC BELLISSIMA","arrive":"2027-10-29T07:00","depart":"2027-10-29T17:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-10-30T10:00","depart":"2027-10-30T22:00","pax":5246},{"name":"MSC POESIA","arrive":"2027-11-01T08:00","depart":"2027-11-01T18:00","pax":3223},{"name":"ADORA MAGIC CITY","arrive":"2027-11-03T10:00","depart":"2027-11-03T22:00","pax":5246},{"name":"DREAM","arrive":"2027-11-07T11:00","depart":"2027-11-07T22:00","pax":2270},{"name":"ADORA MAGIC CITY","arrive":"2027-11-11T10:00","depart":"2027-11-11T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-11-12T16:00","depart":"2027-11-12T22:00","pax":5654},{"name":"MSC BELLISSIMA","arrive":"2027-11-13T10:30","depart":"2027-11-13T18:30","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-11-15T10:00","depart":"2027-11-15T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-11-16T07:00","depart":"2027-11-16T16:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-11-19T10:00","depart":"2027-11-19T22:00","pax":5246},{"name":"MSC BELLISSIMA","arrive":"2027-11-22T10:30","depart":"2027-11-22T18:30","pax":5654},{"name":"DREAM","arrive":"2027-11-23T11:00","depart":"2027-11-23T22:00","pax":2270},{"name":"MSC BELLISSIMA","arrive":"2027-11-25T07:00","depart":"2027-11-25T16:00","pax":5654},{"name":"ADORA MAGIC CITY","arrive":"2027-11-27T10:00","depart":"2027-11-27T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-12-01T10:00","depart":"2027-12-01T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-12-05T10:00","depart":"2027-12-05T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-12-09T10:00","depart":"2027-12-09T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-12-13T10:00","depart":"2027-12-13T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-12-17T10:00","depart":"2027-12-17T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-12-21T10:00","depart":"2027-12-21T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-12-25T10:00","depart":"2027-12-25T22:00","pax":5246},{"name":"ADORA MAGIC CITY","arrive":"2027-12-29T10:00","depart":"2027-12-29T22:00","pax":5246}];
 let cruiseSrc="sample";
 const hmD=m=>m>=1440?hm(m-1440)+" (+1)":hm(m);
 const CSRC={
-ko:{apiNext:"오늘은 영도 크루즈터미널 입항 예정이 없어요. 다가오는 일정이에요. · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",apiPast:"시연용이에요. 최근 실제 영도 크루즈터미널 입항 기록을 이번 달 날짜로 옮겨 보여줘요. · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",api:"오늘 입출항 예정 · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",sample:"예시 일정이에요. 실제 입출항 일정은 아직 연결되지 않았어요."},
-en:{apiNext:"No calls at Yeongdo today. Upcoming schedule · Source: Busan cruise berth schedule (data.go.kr)",apiPast:"Demo: recent real Yeongdo terminal calls, moved to this month's dates · Source: Busan cruise berth schedule (data.go.kr)",api:"Today's scheduled calls · Source: Busan cruise berth schedule (data.go.kr)",sample:"Sample schedule. Live port schedule not connected yet."},
-ja:{apiNext:"本日は影島への入港予定がありません。今後の予定です・出典：釜山広域市クルーズ船席スケジュール",apiPast:"デモ用：影島ターミナルの最近の実際の入港記録を今月の日付に移して表示しています・出典：釜山広域市クルーズ船席スケジュール",api:"本日の入出港予定・出典：釜山広域市クルーズ船席スケジュール（公共データポータル）",sample:"例のスケジュールです。実際の入出港予定はまだ接続されていません。"},
-zh:{apiNext:"今天影岛码头无入港计划，以下为近期日程·来源：釜山广域市邮轮泊位计划",apiPast:"演示用：将影岛码头最近的实际入港记录移至本月日期显示·来源：釜山广域市邮轮泊位计划",api:"今日进出港计划·来源：釜山广域市邮轮泊位计划（公共数据门户）",sample:"示例日程，尚未接入实际进出港计划。"}};
+ko:{apiDate:"선택한 날짜에 영도 크루즈터미널에 머무는 배 · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",apiNone:"출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",apiNext:"오늘은 영도 크루즈터미널 입항 예정이 없어요. 다가오는 일정이에요. · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",apiPast:"지난 영도 크루즈터미널 입항 기록이에요 (시연용). · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",api:"오늘 입출항 예정 · 출처: 부산광역시 크루즈 선석스케줄 정보 (공공데이터포털)",sample:"예시 일정이에요. 실제 입출항 일정은 아직 연결되지 않았어요."},
+en:{apiDate:"Ships at Yeongdo terminal on the chosen date · Source: Busan cruise berth schedule (data.go.kr)",apiNone:"Source: Busan cruise berth schedule (data.go.kr)",apiNext:"No calls at Yeongdo today. Upcoming schedule · Source: Busan cruise berth schedule (data.go.kr)",apiPast:"Past calls at Yeongdo terminal (demo) · Source: Busan cruise berth schedule (data.go.kr)",api:"Today's scheduled calls · Source: Busan cruise berth schedule (data.go.kr)",sample:"Sample schedule. Live port schedule not connected yet."},
+ja:{apiDate:"選んだ日に影島ターミナルに停泊する船・出典：釜山広域市クルーズ船席スケジュール",apiNone:"出典：釜山広域市クルーズ船席スケジュール",apiNext:"本日は影島への入港予定がありません。今後の予定です・出典：釜山広域市クルーズ船席スケジュール",apiPast:"影島ターミナルの過去の入港記録です（デモ用）・出典：釜山広域市クルーズ船席スケジュール",api:"本日の入出港予定・出典：釜山広域市クルーズ船席スケジュール（公共データポータル）",sample:"例のスケジュールです。実際の入出港予定はまだ接続されていません。"},
+zh:{apiDate:"所选日期停靠影岛码头的邮轮·来源：釜山广域市邮轮泊位计划",apiNone:"来源：釜山广域市邮轮泊位计划",apiNext:"今天影岛码头无入港计划，以下为近期日程·来源：釜山广域市邮轮泊位计划",apiPast:"影岛码头过往入港记录（演示用）·来源：釜山广域市邮轮泊位计划",api:"今日进出港计划·来源：釜山广域市邮轮泊位计划（公共数据门户）",sample:"示例日程，尚未接入实际进出港计划。"}};
 function parseIso(v){const d=new Date(v);return isNaN(d)?null:d}
 const midnight=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
-// 오늘 영도에 머무는 배 → 없으면 다가오는 배 4척 → 그것도 없으면 가장 최근 배 4척 (날짜 표시)
+// 크루즈 일정 전체를 받아 두고, 고른 날짜(state.cdate)에 영도에 머무는 배만 보여줌
+let ALLC=[];
+const ymdOf=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+function setCruiseDate(ds){
+  state.cdate=ds;const base=new Date(ds+"T00:00"),next=new Date(+base+864e5);
+  const pick=ALLC.filter(c=>c.a<next&&c.d>base);
+  const m=d=>Math.round((d-base)/6e4);
+  CRUISES=pick.map((c,i)=>({id:"d"+ds.replace(/-/g,"")+"_"+i,name:c.name,arr:Math.max(0,m(c.a)),dep:m(c.d),pax:c.pax,date:""}));
+  cruiseSrc=pick.length?"apiDate":"apiNone";
+  if(!CRUISES.some(c=>c.id===state.ship))state.ship=null;
+}
+function arrivalDates(){ // 오늘 이후 영도 입항일 (중복 없이)
+  const t=ymdOf(new Date());return [...new Set(ALLC.map(c=>ymdOf(c.a)))].filter(d=>d>=t);
+}
 async function loadCruises(){
   try{
     const ctl=new AbortController();setTimeout(()=>ctl.abort(),5000);
-    const res=await fetch(CRUISE_API+"?v="+Date.now(),{signal:ctl.signal});if(!res.ok)return;
-    const rows=await res.json();if(!Array.isArray(rows))return;
-    const all=rows.map(r=>({name:String(r.name||"").trim(),a:parseIso(r.arrive),d:parseIso(r.depart),pax:+r.pax||2000}))
+    // cruises.json을 못 읽으면(파일로 바로 열었을 때 등) 이 파일 안에 넣어둔 일정을 씀
+    let rows=CRUISES_INLINE;
+    try{const res=await fetch(CRUISE_API+"?v="+Date.now(),{signal:ctl.signal});if(res.ok){const j=await res.json();if(Array.isArray(j)&&j.length)rows=j}}catch(e){}
+    ALLC=rows.map(r=>({name:String(r.name||"").trim(),a:parseIso(r.arrive),d:parseIso(r.depart),pax:+r.pax||2000}))
       .filter(c=>c.name&&c.a&&c.d&&c.d>c.a).sort((x,y)=>x.a-y.a);
-    if(!all.length)return;
-    const today=midnight(new Date()),tomorrow=new Date(+today+864e5);
-    let pick=all.filter(c=>c.a<tomorrow&&c.d>=today),src="api";
-    if(!pick.length){pick=all.filter(c=>c.a>=tomorrow).slice(0,4);src="apiNext"}
-    // 오늘·다가오는 일정이 없으면(시연용) 최근 실제 입항 기록 4건을 날짜만 옮겨 보여줌.
-    // 가장 최근 기록이 오늘이 되도록 모두 같은 일수만큼 옮겨서, 기록 사이 간격은 그대로 유지함.
-    if(!pick.length){
-      pick=all.slice(-4).reverse();src="apiPast";
-      const shift=Math.round((today-midnight(pick[0].a))/864e5)*864e5;
-      pick=pick.map(c=>({...c,a:new Date(+c.a+shift),d:new Date(+c.d+shift)})).sort((x,y)=>x.a-y.a); // 날짜 오름차순
-    }
-    CRUISES=pick.map((c,i)=>{
-      const base=src==="api"?today:midnight(c.a);
-      const m=d=>Math.round((d-base)/6e4);
-      return {id:"api"+i,name:c.name,arr:Math.max(0,m(c.a)),dep:m(c.d),pax:c.pax,
-        date:src==="api"?"":`${c.a.getMonth()+1}/${c.a.getDate()}`};
-    });
-    cruiseSrc=src;if(!CRUISES.some(c=>c.id===state.ship))state.ship=null;if(state.screen==="q")render();
+    if(!ALLC.length)return;
+    const today=ymdOf(new Date());
+    const hasToday=ALLC.some(c=>ymdOf(c.a)<=today&&ymdOf(c.d)>=today);
+    setCruiseDate(hasToday?today:(arrivalDates()[0]||ymdOf(ALLC[ALLC.length-1].a)));
+    if(state.screen==="q")render();
   }catch(e){}
 }
 
@@ -596,12 +679,14 @@ function renderQ(s,a){
   if(key==="comp"){title=x.q_comp;opts=grid(Object.keys(x.comp).map(k=>[k,x.comp[k]]),"comp")}
   if(key==="interests"){title=x.q_int;sub=x.q_intS;opts=grid(Object.keys(x.int).map(k=>[k,x.int[k],x.intS[k]]),"interests",true)}
   if(key==="weather"){title=x.q_wx;sub=x.q_wxS;opts=grid(Object.keys(x.wx).map(k=>[k,x.wx[k]]),"weather")}
-  if(key==="ship"){title=x.q_ship;sub=x.q_shipS;opts=`<div class="options one">${CRUISES.map(c=>{const cr=crowdOf(c.pax);return `
+  if(key==="ship"){title=x.q_ship;sub=x.q_shipS;opts=`${dateBarHTML()}${!CRUISES.length&&ALLC.length?`<p class="nodate">${DT[state.lang].none}</p>`:""}<div class="options one">${CRUISES.map(c=>{const cr=crowdOf(c.pax);return `
     <button type="button" class="ship" id="ship-${c.id}" data-v="${c.id}" aria-pressed="${state.ship===c.id}">
       <span class="row"><strong>${c.date?`<span class="muted" style="font-weight:500">${c.date}</span> `:""}${esc(c.name)}</strong><span class="pill ${cr}">${x.crowd[cr]}</span></span>
       <span class="row times"><span>${x.arr} ${hmD(c.arr)} · ${x.dep} ${hmD(c.dep)}</span><span>${c.pax.toLocaleString()}${x.pax==="pax"?" pax":x.pax}</span></span>
     </button>`}).join("")}</div><p class="muted" style="font-size:12.5px">${CSRC[state.lang][cruiseSrc]}</p>`}
   s.innerHTML=`${prog}<div style="display:flex;flex-direction:column;gap:4px"><h2>${title}</h2>${sub?`<p class="muted">${sub}</p>`:""}</div>${opts}`;
+  s.querySelectorAll("[data-cd]").forEach(b=>b.onclick=()=>{setCruiseDate(b.dataset.cd);renderQ(s,a)});
+  const cdi=document.getElementById("cdate");if(cdi)cdi.onchange=()=>{if(cdi.value){setCruiseDate(cdi.value);renderQ(s,a)}};
   s.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{
     const v=b.dataset.v;
     if(key==="interests"){const arr=state.a.interests;const i=arr.indexOf(v);i>=0?arr.splice(i,1):arr.push(v)}
@@ -614,6 +699,22 @@ function renderQ(s,a){
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="nextBtn" type="button" ${filled?"":"disabled"}>${last?x.see:x.next}</button>`;
   document.getElementById("backBtn").onclick=()=>{if(state.q===0){state.screen="home"}else state.q--;render()};
   document.getElementById("nextBtn").onclick=()=>{if(!filled)return;if(last){state.screen="result";state.rating=0;state.fbSent=false}else state.q++;render()};
+}
+const DT={
+ko:{lbl:"크루즈가 들어오는 날",other:"다른 날짜",today:"오늘",wd:["일","월","화","수","목","금","토"],none:"이 날은 영도 크루즈터미널에 머무는 배가 없어요. 위에서 다른 날짜를 골라 보세요.",fmt:(m,d,w)=>`${m}/${d} (${w})`},
+en:{lbl:"Day your cruise is in port",other:"Other date",today:"Today",wd:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],none:"No ships at the Yeongdo terminal that day. Pick another date above.",fmt:(m,d,w)=>`${w} ${m}/${d}`},
+ja:{lbl:"クルーズの入港日",other:"他の日付",today:"今日",wd:["日","月","火","水","木","金","土"],none:"この日は影島ターミナルに停泊する船がありません。上で別の日付を選んでください。",fmt:(m,d,w)=>`${m}/${d}（${w}）`},
+zh:{lbl:"邮轮靠港日期",other:"其他日期",today:"今天",wd:["日","一","二","三","四","五","六"],none:"这天影岛码头没有停靠的邮轮，请在上方选择其他日期。",fmt:(m,d,w)=>`${m}/${d}（周${w}）`}};
+function dateBarHTML(){
+  if(!ALLC.length)return "";
+  const D=DT[state.lang],today=ymdOf(new Date());
+  let ds=arrivalDates().slice(0,8);
+  if(state.cdate&&!ds.includes(state.cdate))ds=[state.cdate,...ds].sort();
+  const lab=d=>{const x=new Date(d+"T00:00");return d===today?D.today:D.fmt(x.getMonth()+1,x.getDate(),D.wd[x.getDay()])};
+  const first=ymdOf(ALLC[0].a),last=ymdOf(ALLC[ALLC.length-1].d);
+  return `<div class="datebar"><p class="dl">${D.lbl}</p>
+    <div class="dchips" role="group" aria-label="${esc(D.lbl)}">${ds.map(d=>`<button type="button" id="cd-${d}" data-cd="${d}" aria-pressed="${state.cdate===d}">${lab(d)}</button>`).join("")}</div>
+    <label class="dpick" for="cdate">${D.other}<input type="date" id="cdate" value="${state.cdate||""}" min="${first}" max="${last}"></label></div>`;
 }
 function grid(items,key,multi){
   return `<div class="options">${items.map(([k,l,sub])=>{
@@ -1140,7 +1241,7 @@ function renderResult(s,a){
 
   s.innerHTML=`
   <div style="display:flex;flex-direction:column;gap:8px">
-    <p class="muted">${x.resultT} · ${esc(r.c.name)} · ${hmD(r.c.arr)}–${hmD(r.c.dep)}</p>
+    <p class="muted">${x.resultT} · ${state.cdate&&ALLC.length?(()=>{const x=new Date(state.cdate+"T00:00"),D=DT[L];return D.fmt(x.getMonth()+1,x.getDate(),D.wd[x.getDay()])+" · "})():""}${esc(r.c.name)} · ${hmD(r.c.arr)}–${hmD(r.c.dep)}</p>
     <div class="course-name">${x.course[ordKey]}</div>
     ${W&&W!=="sun"?(()=>{const c={in:0,semi:0,out:0};r.chosen.forEach(p=>c[ENV[p.id]||"out"]++);return `<div class="wxbar ${W}"><b>${x.wxDay} · ${esc(x.wx[W])}</b><span>${x.env.in} ${c.in}${x.cnt} · ${x.env.semi} ${c.semi}${x.cnt} · ${x.env.out} ${c.out}${x.cnt}</span></div>`})():""}
     <div class="chips">${prof}</div>
