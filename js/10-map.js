@@ -19,7 +19,7 @@ ko:{aria:"결과 바로가기",map:"🗺️ 지도",tl:"🕒 일정",food:"🍜 
 en:{aria:"Jump to section",map:"🗺️ Map",tl:"🕒 Schedule",food:"🍜 Food",why:"💡 Why",fb:"⭐ Review"},
 ja:{aria:"セクションへ移動",map:"🗺️ 地図",tl:"🕒 日程",food:"🍜 グルメ",why:"💡 理由",fb:"⭐ 感想"},
 zh:{aria:"跳转到",map:"🗺️ 地图",tl:"🕒 行程",food:"🍜 美食",why:"💡 理由",fb:"⭐ 评价"}};
-const TAB_KEYS=["map","tl","food","why","fb"];
+const TAB_KEYS=["map","tl","food"];
 /* 탭 전환: 누른 탭의 내용만 보이고 나머지는 숨김. init=true는 화면을 처음 그릴 때(지도는 renderResult가 이미 그림) */
 function showTab(k,init){
   if(!TAB_KEYS.includes(k))k="map";
@@ -271,7 +271,11 @@ function naverMap(r){
       if(!nmapEl){nmapEl=document.createElement("div");nmapEl.style.cssText="width:100%;height:100%"}
       if(nmapEl.parentNode!==slot)slot.appendChild(nmapEl); // 지도 상자를 새 화면으로 옮김
       const path=["T",...r.sim.stops.map(st=>st.p.id)].map(id=>new N.LatLng(...COORD[id]));
-      if(!nmapObj)nmapObj=new N.Map(nmapEl,{center:path[0],zoom:14});
+      if(!nmapObj){
+        nmapObj=new N.Map(nmapEl,{center:path[0],zoom:14});
+        // 경로 수정: '지도에서 위치 찍기' 중이면 누른 곳을 새 장소로 추가
+        N.Event.addListener(nmapObj,"click",e=>{if(state.picking)pickAt(e.coord.lat(),e.coord.lng())});
+      }
       const map=nmapObj;
       map.setSize(new N.Size(slot.clientWidth||nmapEl.offsetWidth||360,slot.clientHeight||320));
       // 이전 결과의 동선·핀·광고·맛집 표시 지우기

@@ -1,6 +1,144 @@
 /* 결과 화면: 추천 동선, 통계, 후기 남기기
    담당: ② 화면 */
 
+/* ---------- 경로 수정 (일정 탭)
+   '✏️ 경로 수정'을 누르면: 장소마다 ▲ 위로 · ▼ 아래로 · ✕ 빼기, 장소 사이마다 ＋ 장소 추가 버튼이 나타남
+   (폰에서는 장소를 왼쪽으로 밀어서 빼기도 됨) ---------- */
+const EDT={
+ko:{edit:"✏️ 경로 수정",done:"✓ 수정 완료",hint:"▲ 위로 · ▼ 아래로 버튼으로 순서를 바꾸고, ✕ 빼기 버튼으로 뺄 수 있어요. 장소를 더 넣고 싶은 자리에서 ＋ 여기에 장소 추가를 누르세요.",up:"위로",down:"아래로",upAria:n=>`${n} 한 칸 위로`,downAria:n=>`${n} 한 칸 아래로`,swipeDel:"빼기",delAria:n=>`${n} 빼기`,
+  addHere:"＋ 여기에 장소 추가",addAria:n=>`${n}번째 자리에 장소 추가`,addAt:n=>`${n}번째 자리에 넣기`,close:"닫기",addH:"목록에서 고르기",add:"넣기",none:"넣을 수 있는 장소가 없어요",
+  myH:"또는 내가 원하는 장소",name:"장소 이름",dwell:"머무는 시간(분)",pick:"📍 지도에서 위치 찍기",picking:"지도에서 새 장소 위치를 눌러 주세요",cancel:"취소",reset:"추천 코스로 되돌리기",
+  course:"나만의 영도 코스",mine:"내가 추가한 곳",reason:"직접 고친 경로예요. 이동시간은 직선거리로 어림한 값이에요.",over:(e,b)=>`이 경로는 ${e}에 터미널에 돌아와요. 귀선 기한 ${b}보다 늦어요. 장소를 빼거나 머무는 시간을 줄여 주세요.`},
+en:{edit:"✏️ Edit route",done:"✓ Done",hint:"Use ▲ Up and ▼ Down to reorder and ✕ Remove to take a stop out. Tap ＋ Add a place here wherever you want another stop.",up:"Up",down:"Down",upAria:n=>`Move ${n} up`,downAria:n=>`Move ${n} down`,swipeDel:"Remove",delAria:n=>`Remove ${n}`,
+  addHere:"＋ Add a place here",addAria:n=>`Add a place at position ${n}`,addAt:n=>`Add at position ${n}`,close:"Close",addH:"Pick from the list",add:"Add",none:"No more places to add",
+  myH:"Or add your own place",name:"Place name",dwell:"Time there (min)",pick:"📍 Pick on map",picking:"Tap the map where the new place is",cancel:"Cancel",reset:"Back to recommended route",
+  course:"My Yeongdo route",mine:"Added by you",reason:"You edited this route. Travel times are estimated from straight-line distance.",over:(e,b)=>`This route gets you back at ${e}, later than the ${b} all-aboard deadline. Remove a stop or shorten a visit.`},
+ja:{edit:"✏️ ルート編集",done:"✓ 編集完了",hint:"▲ 上へ・▼ 下へで順番を変え、✕ 削除で外せます。追加したい位置の＋ ここに場所を追加を押してください。",up:"上へ",down:"下へ",upAria:n=>`${n}を1つ上へ`,downAria:n=>`${n}を1つ下へ`,swipeDel:"削除",delAria:n=>`${n}を削除`,
+  addHere:"＋ ここに場所を追加",addAria:n=>`${n}番目に場所を追加`,addAt:n=>`${n}番目に追加`,close:"閉じる",addH:"リストから選ぶ",add:"追加",none:"追加できる場所がありません",
+  myH:"または行きたい場所",name:"場所の名前",dwell:"滞在時間（分）",pick:"📍 地図で位置を選ぶ",picking:"地図で新しい場所の位置をタップしてください",cancel:"キャンセル",reset:"おすすめルートに戻す",
+  course:"わたしの影島ルート",mine:"自分で追加",reason:"手動で編集したルートです。移動時間は直線距離からの目安です。",over:(e,b)=>`このルートでは${e}にターミナルに戻ります。帰船期限${b}より遅いので、場所を減らすか滞在を短くしてください。`},
+zh:{edit:"✏️ 修改路线",done:"✓ 完成",hint:"用▲ 上移、▼ 下移调整顺序，用✕ 删除移除地点。想加地点的位置点击＋ 在此添加地点。",up:"上移",down:"下移",upAria:n=>`将${n}上移一位`,downAria:n=>`将${n}下移一位`,swipeDel:"删除",delAria:n=>`删除${n}`,
+  addHere:"＋ 在此添加地点",addAria:n=>`在第${n}个位置添加地点`,addAt:n=>`添加到第${n}个位置`,close:"关闭",addH:"从列表选择",add:"添加",none:"没有可添加的地点",
+  myH:"或添加想去的地点",name:"地点名称",dwell:"停留时间（分钟）",pick:"📍 在地图上选择位置",picking:"请在地图上点击新地点的位置",cancel:"取消",reset:"恢复推荐路线",
+  course:"我的影岛路线",mine:"自己添加",reason:"这是手动修改的路线，交通时间按直线距离估算。",over:(e,b)=>`按此路线将于${e}回到码头，晚于${b}的登船期限。请删减地点或缩短停留。`}};
+// 내가 추가한 장소는 이 기기에 저장해 두고 다음에도 고를 수 있게 함
+function saveCustom(){try{localStorage.setItem("yd-custom",JSON.stringify(state.customPlaces))}catch(e){}}
+try{state.customPlaces=JSON.parse(localStorage.getItem("yd-custom")||"[]").filter(p=>p&&p.id&&Array.isArray(p.ll))}catch(e){state.customPlaces=[]}
+state.customPlaces.forEach(p=>{COORD[p.id]=p.ll});
+const SWIPE_DEL=90; // 왼쪽으로 이만큼(px) 밀면 빠짐
+
+// 장소 사이 '＋ 여기에 추가' 버튼 (at = 새 장소가 들어갈 순번, 0부터)
+function addBtnHTML(at){
+  if(!state.editing)return ""; // '경로 수정'을 눌렀을 때만 보임
+  const E=EDT[state.lang]||EDT.en;
+  return `<button type="button" class="addbtn" data-at="${at}" aria-expanded="${state.addAt===at}" aria-label="${esc(E.addAria(at+1))}">${E.addHere}</button>`;
+}
+// ＋를 누르면 그 자리에 펼쳐지는 넣기 상자
+function addPanelHTML(r,at){
+  const L=state.lang,E=EDT[L]||EDT.en,ids=r.chosen.map(p=>p.id);
+  const rest=[...PLACES,...state.customPlaces].filter(p=>!ids.includes(p.id));
+  return `<li class="addpanel" id="addPanel"><div class="card">
+    <div class="aphead"><b>${E.addAt(at+1)}</b><button type="button" class="link" id="apClose">${E.close}</button></div>
+    <label class="f" for="edSel">${E.addH}</label>
+    <div class="edrow"><select id="edSel" ${rest.length?"":"disabled"}>${rest.length?rest.map(p=>`<option value="${p.id}">${esc(p.name[L])}${p.custom?" · "+E.mine:""}</option>`).join(""):`<option>${E.none}</option>`}</select>
+      <button type="button" class="btn sea edadd" id="edAdd" ${rest.length?"":"disabled"}>${E.add}</button></div>
+    <p style="font-weight:700;font-size:14.5px;margin-top:4px">${E.myH}</p>
+    <div class="edrow"><label class="f" style="flex:1">${E.name}<input id="edName" class="edin" maxlength="40" autocomplete="off"></label>
+      <label class="f" style="width:7.5em">${E.dwell}<input id="edDwell" class="edin" type="number" min="5" max="240" step="5" value="30"></label></div>
+    <button type="button" class="btn ghost" id="edPick">${E.pick}</button>
+  </div></li>`;
+}
+// 지도에서 누른 위치로 새 장소를 만들어, ＋를 눌렀던 자리에 넣음
+function pickAt(lat,lng){
+  const d=state.picking;if(!d||!lastR)return;
+  const id="c"+Date.now().toString(36),nm={ko:d.name,en:d.name,ja:d.name,zh:d.name};
+  const desc=Object.fromEntries(Object.keys(EDT).map(k=>[k,EDT[k].mine]));
+  const p={id,zone:"C",seq:0,dwell:d.dwell,tags:[],stairs:false,meal:false,custom:true,ll:[+lat.toFixed(5),+lng.toFixed(5)],name:nm,d:desc};
+  COORD[id]=p.ll;state.customPlaces.push(p);saveCustom();
+  const v=lastR.chosen.map(q=>q.id);
+  if(Number.isInteger(d.at))v.splice(Math.min(d.at,v.length),0,id);else v.push(id);
+  state.route=v;state.picking=null;state.resTab="tl";
+  renderResult(document.getElementById("screen"),document.getElementById("actions"));
+  document.querySelector(`#tab-tl li.stop[data-id="${id}"]`)?.scrollIntoView({block:"center"});
+}
+function wireEdit(r,s,a){
+  const ids=()=>r.chosen.map(p=>p.id);
+  // 경로를 바꾸고 다시 그림. 키보드로 쓰는 사람을 위해 방금 누른 버튼 자리로 포커스를 돌려줌
+  const commit=(v,focusId,sel=".delbtn")=>{
+    state.route=v;state.addAt=null;renderResult(s,a);
+    if(!focusId)return;
+    const li=document.querySelector(`#tab-tl li.stop[data-id="${focusId}"]`);
+    (li?.querySelector(`${sel}:not(:disabled)`)||li?.querySelector(".mvbtn:not(:disabled)")||li?.querySelector(".delbtn"))?.focus();
+  };
+
+  // ＋ 여기에 추가 / 넣기 상자
+  s.querySelectorAll(".addbtn").forEach(b=>b.onclick=()=>{
+    const at=+b.dataset.at;state.addAt=state.addAt===at?null:at;renderResult(s,a);
+    document.getElementById("edSel")?.focus();
+  });
+  const close=document.getElementById("apClose");
+  if(close)close.onclick=()=>{const at=state.addAt;state.addAt=null;renderResult(s,a);s.querySelector(`.addbtn[data-at="${at}"]`)?.focus()};
+  const add=document.getElementById("edAdd");
+  if(add)add.onclick=()=>{const id=document.getElementById("edSel").value;if(!findPlace(id))return;const v=ids();v.splice(state.addAt,0,id);commit(v,id)};
+  const pick=document.getElementById("edPick");
+  if(pick)pick.onclick=()=>{
+    const ni=document.getElementById("edName"),name=ni.value.trim();
+    if(!name){ni.setAttribute("aria-invalid","true");ni.focus();return}
+    const dw=Math.min(240,Math.max(5,Math.round(+document.getElementById("edDwell").value||30)));
+    state.picking={name,dwell:dw,at:state.addAt};state.addAt=null;state.resTab="map";renderResult(s,a);
+    document.getElementById("pickBar")?.scrollIntoView({block:"center"});
+  };
+  const rs=document.getElementById("edReset");
+  if(rs)rs.onclick=()=>{state.route=null;state.addAt=null;renderResult(s,a)};
+  const pc=document.getElementById("pickCancel");
+  if(pc)pc.onclick=()=>{state.picking=null;state.resTab="tl";renderResult(s,a)};
+
+  // ✏️ 경로 수정 / 완료
+  const tg=document.getElementById("edToggle");
+  if(tg)tg.onclick=()=>{state.editing=!state.editing;state.addAt=null;renderResult(s,a);document.getElementById("edToggle")?.focus()};
+
+  // 수정 중일 때만 ▲ 위로 · ▼ 아래로 · ✕ 빼기 연결 (수정 중이 아니면 버튼이 없음)
+  s.querySelectorAll("#tab-tl .timeline.editing li.stop").forEach(li=>{
+    const i=+li.dataset.i;
+    li.querySelector(".delbtn").onclick=()=>{const v=ids(),next=v[i+1]||v[i-1];v.splice(i,1);commit(v,next,".delbtn")};
+    li.querySelectorAll(".mvbtn").forEach(b=>b.onclick=()=>{
+      const d=+b.dataset.mv,v=ids(),j=i+d;if(j<0||j>=v.length)return;
+      [v[i],v[j]]=[v[j],v[i]];commit(v,v[j],`.mvbtn[data-mv="${d}"]`);
+      document.querySelector(`#tab-tl li.stop[data-id="${v[j]}"]`)?.scrollIntoView({block:"center"});
+    });
+    // 왼쪽으로 밀어서 빼기 (세로로 움직이면 그냥 스크롤)
+    li.onpointerdown=e=>{
+      if(e.button>0||e.target.closest("button,a,select,input,label"))return;
+      const x0=e.clientX,y0=e.clientY;let on=false,dx=0;
+      const end=()=>{li.removeEventListener("pointermove",move);li.removeEventListener("pointerup",up);li.removeEventListener("pointercancel",cancel)};
+      const move=ev=>{
+        dx=ev.clientX-x0;const dy=ev.clientY-y0;
+        if(!on){
+          if(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.5){on=true;li.setPointerCapture(ev.pointerId);li.classList.add("swiping")}
+          else{if(Math.abs(dy)>10)end();return}
+        }
+        li.style.transform=`translateX(${Math.min(0,dx)}px)`;li.classList.toggle("willdel",dx<-SWIPE_DEL);
+      };
+      const cancel=()=>{end();li.classList.remove("swiping","willdel");li.style.transform=""};
+      const up=()=>{
+        if(on&&dx<-SWIPE_DEL){end();const v=ids();v.splice(i,1);commit(v)}
+        else cancel();
+      };
+      li.addEventListener("pointermove",move);li.addEventListener("pointerup",up);li.addEventListener("pointercancel",cancel);
+    };
+  });
+
+  // 약도(SVG)에서 위치 찍기: 화면 좌표 → 약도 좌표 → 위도·경도
+  const sm=document.getElementById("smap");
+  if(sm)sm.onclick=e=>{
+    if(!state.picking)return;
+    const svg=sm.querySelector("svg");if(!svg)return;
+    const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
+    const q=pt.matrixTransform(svg.getScreenCTM().inverse());
+    pickAt(MB.lat0-q.y/MB.H*(MB.lat0-MB.lat1),MB.lng0+q.x/MB.W*(MB.lng1-MB.lng0));
+  };
+}
+
 function legHTML(lg,x){
   const m=k=>{const v=lg[k];const on=lg.mode===k;return `<span class="mode${on?" on":""}">${x.modes[k]} ${v===null?"—":v+x.min}</span>`};
   return `<div class="leg"><div class="modes">${m("walk")}${m("taxi")}${m("bus")}</div><span class="move"><b>${x.recLbl} ${x.modes[lg.mode]}</b> · ${x.why[lg.why]}</span></div>`;
@@ -46,63 +184,46 @@ function openPrefModal(key,s,a,opener){
 function renderResult(s,a){
   const x=t(),r=plan(),L=state.lang;
   const ordKey=r.ord.includes("O")?"O":r.ord.join("");
-  const ids=r.chosen.map(p=>p.id);
-  const rnd=seeded([state.a.nat,state.a.age,state.a.comp,state.a.weather,state.a.interests.slice().sort().join(),ids.join()].join("|"));
-  const n=40+Math.floor(rnd()*150),pct=48+Math.floor(rnd()*27),rate=(4.3+rnd()*0.5).toFixed(1);
-  const intNames=state.a.interests.map(k=>x.int[k]).join(", ");
-  const reasons=[x.r.int(intNames)];
   const W=state.a.weather;
-  if(W&&W!=="sun"){
-    reasons.push(x.r[W]);
-    const cut=(WX_BLOCK[W]||[]).map(id=>PLACES.find(p=>p.id===id)).filter(Boolean).map(p=>p.name[L].split(" (")[0].split("（")[0]);
-    if(cut.length&&x.wxCut[W])reasons.push(x.wxCut[W](cut.join(", ")));
-    if(x.wxTip[W])reasons.push(x.wxTip[W]);
-  }
-  const hasStairsSkip=(state.a.age==="a70"||state.a.age==="a50")&&!ids.includes("huinnyeoul");
-  if(hasStairsSkip)reasons.push(x.r.stairs);
-  if(state.a.comp==="family"&&ids.includes("museum"))reasons.push(x.r.family);
-  if(crowdOf(r.c.pax)==="high"&&ids.includes("taejongdae")&&ids.includes("museum"))reasons.push(x.r.crowd);
-  if(ids.includes("daiso")||ids.includes("oliveyoung"))reasons.push(x.r.shopYd);
-  if(ids.includes("lotte"))reasons.push(x.r.beauty);
-  if(r.none)reasons.unshift(x.r.tooShort);else if(r.free<=150)reasons.push(x.r.short);
-  if(r.chosen.some(p=>p.meal))reasons.push(x.r.meal);
-  if(r.ord.length>1&&!r.ord.includes("O"))reasons.push(x.r.oneWay);
+  const E=EDT[L]||EDT.en;
 
   // 선호도 칩: 누르면 모달로 그 항목만 다시 고름 (openPrefModal). 나라는 칩에서 뺌
   const chip=(k,v)=>`<button type="button" class="chip" data-edit="${k}" aria-haspopup="dialog">${esc(v)}</button>`;
   const prof=[["age",x.age[state.a.age]],["comp",x.comp[state.a.comp]]].filter(([,v])=>v).map(([k,v])=>chip(k,v)).join("")+state.a.interests.map(k=>chip("interests",x.int[k])).join("");
-  let tl=`<li class="tl"><span class="t">${hm(r.start)}</span><span class="rail"><span class="dot end"></span><span class="line"></span></span><div class="body"><strong>${x.disembark}</strong><span class="d">${r.c.name}</span></div></li>`;
+  let tl=`<li class="tl"><span class="t">${hm(r.start)}</span><span class="rail"><span class="dot end"></span><span class="line"></span></span><div class="body"><strong>${x.disembark}</strong><span class="d">${r.c.name}</span>${addBtnHTML(0)}</div></li>`;
+  if(state.addAt===0)tl+=addPanelHTML(r,0);
   const nearAll=nearAds(r);
   r.sim.stops.forEach((st,i)=>{
-    tl+=`<li class="tl"><span class="t">${hm(st.at)}</span><span class="rail"><span class="dot"></span><span class="line"></span></span><div class="body">
+    tl+=`<li class="tl stop" data-i="${i}" data-id="${st.p.id}"><span class="swipedel" aria-hidden="true">${E.swipeDel}</span><span class="t">${hm(st.at)}</span><span class="rail"><span class="dot"></span><span class="line"></span></span><div class="body">
       ${legHTML(st.lg,x)}
       <strong>${i+1}. ${esc(st.p.name[L])}${st.p.out?`<span class="tag-out">${x.outside}</span>`:""}</strong>
-      <span class="rt" aria-label="${x.rtAria} ${placeRating(st.p.id).avg}/5"><span class="st">★</span> ${placeRating(st.p.id).avg} <small>(${placeRating(st.p.id).n})</small></span>
-      <span class="d"><span class="envb ${ENV[st.p.id]||"out"}">${x.env[ENV[st.p.id]||"out"]}</span> ${esc(st.p.d[L])} · ${st.p.dwell}${x.min}</span>
+      ${st.p.custom?"":`<span class="rt" aria-label="${x.rtAria} ${placeRating(st.p.id).avg}/5"><span class="st">★</span> ${placeRating(st.p.id).avg} <small>(${placeRating(st.p.id).n})</small></span>`}
+      <span class="d">${st.p.custom?"":`<span class="envb ${ENV[st.p.id]||"out"}">${x.env[ENV[st.p.id]||"out"]}</span> `}${esc(st.p.d[L])} · ${st.p.dwell}${x.min}</span>
       ${mapLinks(st.p,L)}
-      ${state.adsOn?(()=>{const g=nearAll.filter(v=>v.i===i);return g.length?`<span class="adnear"><b>${ADT[L].nearStop}</b>${g.map(v=>`<button type="button" data-ad="${v.a.id}"><span class="dot"></span>${esc(adName(v.a,L))} · ${ADT[L].walkN(v.walk)}</button>`).join("")}</span>`:""})():""}</div></li>`;
+      ${state.adsOn?(()=>{const g=nearAll.filter(v=>v.i===i);return g.length?`<span class="adnear"><b>${ADT[L].nearStop}</b>${g.map(v=>`<button type="button" data-ad="${v.a.id}"><span class="dot"></span>${esc(adName(v.a,L))} · ${ADT[L].walkN(v.walk)}</button>`).join("")}</span>`:""})():""}
+      ${addBtnHTML(i+1)}</div>
+      ${state.editing?`<span class="edtools">
+        <button type="button" class="mvbtn" data-mv="-1" aria-label="${esc(E.upAria(st.p.name[L]))}" ${i===0?"disabled":""}>▲ ${E.up}</button>
+        <button type="button" class="mvbtn" data-mv="1" aria-label="${esc(E.downAria(st.p.name[L]))}" ${i===r.sim.stops.length-1?"disabled":""}>▼ ${E.down}</button>
+        <button type="button" class="delbtn" aria-label="${esc(E.delAria(st.p.name[L]))}">✕ ${E.swipeDel}</button></span>`:""}</li>`;
+    if(state.addAt===i+1)tl+=addPanelHTML(r,i+1);
   });
   tl+=`<li class="tl"><span class="t">${hm(r.sim.end)}</span><span class="rail"><span class="dot end"></span></span><div class="body">${legHTML(r.sim.backLeg,x)}<strong>${x.terminal}</strong></div></li>`;
-
-  const fb=state.fbSent?`<p style="color:var(--good);font-size:14px">${x.fbThanks}</p>`:`
-    <div class="stars">${[1,2,3,4,5].map(i=>`<button type="button" id="star-${i}" data-s="${i}" aria-pressed="${state.rating>=i}" aria-label="${i}/5">★</button>`).join("")}</div>
-    <label class="f" for="fbLong">${x.fbLong}<select id="fbLong">${r.chosen.map(p=>`<option value="${p.id}">${esc(p.name[L])}</option>`).join("")}</select></label>
-    <label class="f" for="fbText">${x.fbText}<textarea id="fbText" style="min-height:64px"></textarea></label>
-    <button class="btn sea" id="fbSave" type="button" ${state.rating?"":"disabled"}>${x.fbSave}</button>`;
 
   s.innerHTML=`
   <div style="display:flex;flex-direction:column;gap:8px">
     <p class="muted">${x.resultT} · ${state.cdate&&ALLC.length?(()=>{const x=new Date(state.cdate+"T00:00"),D=DT[L];return D.fmt(x.getMonth()+1,x.getDate(),D.wd[x.getDay()])+" · "})():""}${esc(r.c.name)} · ${hmD(r.c.arr)}–${hmD(r.c.dep)}</p>
-    <div class="course-name">${x.course[ordKey]}</div>
+    <div class="course-name">${r.custom?E.course:x.course[ordKey]}</div>
     ${W&&W!=="sun"?(()=>{const c={in:0,semi:0,out:0};r.chosen.forEach(p=>c[ENV[p.id]||"out"]++);return `<div class="wxbar ${W}"><b>${x.wxDay} · ${esc(x.wx[W])}</b><span>${x.env.in} ${c.in}${x.cnt} · ${x.env.semi} ${c.semi}${x.cnt} · ${x.env.out} ${c.out}${x.cnt}</span></div>`})():""}
     <div class="chips">${prof}</div>
   </div>
   ${state.aiNote?`<div class="ainote"><b>${x.aiSays}</b><br>${esc(state.aiNote)}</div>`:""}
   ${state.aiMsg&&!state.aiNote?`<p class="muted">${esc(state.aiMsg)}</p>`:""}
-  <div class="alert" role="note"><span>${x.leaveBy} <strong>${hmD(r.sim.leave)}</strong> · ${x.returnBy} <strong>${hmD(r.allAboard)}</strong></span><span class="muted">${x.alertP} (${x.dep} ${hmD(r.c.dep)})</span>${(()=>{const sp=r.allAboard-r.sim.end;return !r.none&&sp>=20?`<span class="spare"><b>${x.spare(fmtDur(sp,L))}</b> ${x.spareTip}</span>`:""})()}</div>
+  <div class="alert" role="note"><span>${x.leaveBy} <strong>${hmD(r.sim.leave)}</strong> · ${x.returnBy} <strong>${hmD(r.allAboard)}</strong></span><span class="muted">${x.alertP} (${x.dep} ${hmD(r.c.dep)})</span>${(()=>{const sp=r.allAboard-r.sim.end;return !r.none&&sp>=20?`<span class="spare"><b>${x.spare(fmtDur(sp,L))}</b> ${x.spareTip}</span>`:""})()}${r.over?`<span class="over" role="alert">${E.over(hmD(r.sim.end),hmD(r.allAboard))}</span>`:""}</div>
   <nav class="rtabs" id="rtabs" role="tablist" aria-label="${(TABT[L]||TABT.en).aria}">${TAB_KEYS.map(k=>`<button type="button" role="tab" id="tabbtn-${k}" data-tab="${k}" aria-controls="tab-${k}">${(TABT[L]||TABT.en)[k]}</button>`).join("")}</nav>
   <div class="rpanel" id="tab-map" role="tabpanel" aria-labelledby="tabbtn-map">
-  <section class="mapbox" aria-label="map">
+  ${state.picking?`<div class="pickbar" id="pickBar" role="status"><span><b>${esc(state.picking.name)}</b> · ${E.picking}</span><button type="button" class="adtoggle" id="pickCancel" style="color:var(--sea)">${E.cancel}</button></div>`:""}
+  <section class="mapbox${state.picking?" picking":""}" aria-label="map">
     <div id="nmap"></div>
     <div id="smap">${sketchMap(r)}</div>
     ${myLocBtnHTML()}
@@ -112,48 +233,21 @@ function renderResult(s,a){
   <div id="adPanel">${adPanelHTML(r)}</div>
   </div>
   <div class="rpanel" id="tab-tl" role="tabpanel" aria-labelledby="tabbtn-tl" hidden>
-  <ol class="timeline">${tl}</ol>
+  <div class="edbar${state.editing?" on":""}">
+    <button type="button" class="btn ${state.editing?"sea":"ghost"} edtoggle" id="edToggle" aria-pressed="${!!state.editing}">${state.editing?E.done:E.edit}</button>
+    ${state.editing?`<p class="muted">${E.hint}</p>`:""}
+    ${r.custom?`<button type="button" class="link" id="edReset">${E.reset}</button>`:""}
+  </div>
+  <ol class="timeline${state.editing?" editing":""}">${tl}</ol>
   <p class="muted" style="margin-top:-8px">${x.rtSrc} ${x.modeNote}</p>
   </div>
   <div class="rpanel" id="tab-food" role="tabpanel" aria-labelledby="tabbtn-food" hidden>
   <section class="card" id="foodSec">${foodHTML(r)}</section>
   </div>
-  <div class="rpanel" id="tab-why" role="tabpanel" aria-labelledby="tabbtn-why" hidden>
-  <section class="card">
-    <h2 style="font-size:19px">${x.statsT}</h2>
-    <div class="stats">
-      <div class="stat"><div class="n">${n}</div><div class="l">${x.sN}</div></div>
-      <div class="stat"><div class="n">${pct}%</div><div class="l">${x.sPct}</div></div>
-      <div class="stat"><div class="n">${rate}</div><div class="l">${x.sRate} / 5</div></div>
-    </div>
-    <div class="meter" aria-hidden="true"><i style="width:${pct}%"></i></div>
-  </section>
-  <section class="card">
-    <h2 style="font-size:19px">${x.whyT}</h2>
-    <ul class="reasons">${reasons.map(v=>`<li>${esc(v)}</li>`).join("")}</ul>
-  </section>
-  </div>
-  <div class="rpanel" id="tab-fb" role="tabpanel" aria-labelledby="tabbtn-fb" hidden>
-  <section class="card" id="fb">
-    <h2 style="font-size:19px">${x.fbT}</h2>
-    <p class="muted">${x.fbP}</p>
-    ${fb}
-  </section>
-  </div>
   <p class="demo">${x.demo}</p>`;
-  lastR=r;naverMap(r);wireAds(r);wireWc(r);wireMyLoc(r);wireFood(r);wireTabs();
+  lastR=r;naverMap(r);wireAds(r);wireWc(r);wireMyLoc(r);wireFood(r);wireTabs();wireEdit(r,s,a);
   s.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openPrefModal(b.dataset.edit,s,a,b));
-  s.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{
-    state.rating=+b.dataset.s;
-    s.querySelectorAll("[data-s]").forEach(o=>o.setAttribute("aria-pressed",String(+o.dataset.s<=state.rating)));
-    const sv=document.getElementById("fbSave");if(sv)sv.disabled=false;
-  });
-  const sv=document.getElementById("fbSave");
-  if(sv)sv.onclick=()=>{
-    saveReview({stars:state.rating,place:document.getElementById("fbLong").value,nat:state.a.nat||{ko:"kr",ja:"ja",zh:"zh",en:"us"}[state.lang]||"other",text:document.getElementById("fbText").value.trim().slice(0,200),mine:true});
-    state.fbSent=true;renderResult(s,a);document.getElementById("fb").scrollIntoView({block:"center"});
-  };
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="againBtn" type="button">${x.again}</button>`;
   document.getElementById("backBtn").onclick=()=>{state.screen="q";state.q=QUESTIONS.length-1;render()};
-  document.getElementById("againBtn").onclick=()=>{wcStop();myLocReset();if(wcPrevFull!==null){state.mapFull=wcPrevFull;wcPrevFull=null}state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",fbSent:false};render()};
+  document.getElementById("againBtn").onclick=()=>{wcStop();myLocReset();if(wcPrevFull!==null){state.mapFull=wcPrevFull;wcPrevFull=null}state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",fbSent:false,route:null,picking:null,addAt:null,editing:false};render()};
 }

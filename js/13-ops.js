@@ -3,7 +3,7 @@
 
 /* ---------- operator view (Korean only): stay time, reviews, spending patterns ---------- */
 function renderOps(s,a){
-  const nm=id=>PLACES.find(p=>p.id===id).name.ko.replace(/ \(.*\)/,"");
+  const nm=id=>(findPlace(id)?.name.ko||id).replace(/ \(.*\)/,""); // 내가 추가한 장소 후기도 이름으로 보여줌
   const rows=PLACES.map(p=>({id:p.id,plan:p.dwell,act:DWELL[p.id],diff:DWELL[p.id]-p.dwell})).sort((x,y)=>y.diff-x.diff);
   const top=rows[0],low=rows[rows.length-1];
   const maxM=Math.max(...rows.map(r=>Math.max(r.plan,r.act)));
