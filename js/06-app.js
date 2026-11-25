@@ -24,7 +24,7 @@ function renderLang(){
   document.documentElement.lang=state.lang==="zh"?"zh-CN":state.lang;
 }
 
-const QUESTIONS=["nat","age","comp","interests","weather","ship"];
+const QUESTIONS=["age","comp","interests","ship"];  // 나라(nat)·날씨(weather) 질문은 뺌. weather가 비어 있으면 맑음으로 계산
 
 function render(){
   parkNaverMap(); // 화면을 바꾸기 전에 지도 상자를 보관함으로 옮김
