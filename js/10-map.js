@@ -9,10 +9,10 @@
 const CONFIG={NAVER_KEY_ID:"yre6gldlbd"};
 const TERM_NAME={ko:"크루즈터미널",en:"Cruise Terminal",ja:"クルーズターミナル",zh:"邮轮码头"};
 const MAPT={
-ko:{full:"전체 보기",zoom:"동선 확대",sketch:"영도 약도 · 위치는 대략적이에요",real:"지도 데이터 © NAVER Corp.",legend:"숫자 = 방문 순서"},
-en:{full:"Whole island",zoom:"Zoom to route",sketch:"Sketch map of Yeongdo · positions approximate",real:"Map data © NAVER Corp.",legend:"Numbers = visit order"},
-ja:{full:"全体表示",zoom:"ルート拡大",sketch:"影島の略図・位置はおおよそです",real:"地図データ © NAVER Corp.",legend:"数字＝訪問順"},
-zh:{full:"查看全岛",zoom:"放大路线",sketch:"影岛示意图·位置为大致",real:"地图数据 © NAVER Corp.",legend:"数字＝游览顺序"}};
+ko:{full:"전체 보기",zoom:"동선 확대",photoShow:"📷 사진 켜기",photoHide:"📷 사진 끄기",noPhoto:"사진 준비 중",sketch:"영도 약도 · 위치는 대략적이에요",real:"지도 데이터 © NAVER Corp.",legend:"숫자 = 방문 순서"},
+en:{full:"Whole island",zoom:"Zoom to route",photoShow:"📷 Show photos",photoHide:"📷 Hide photos",noPhoto:"Photo coming soon",sketch:"Sketch map of Yeongdo · positions approximate",real:"Map data © NAVER Corp.",legend:"Numbers = visit order"},
+ja:{full:"全体表示",zoom:"ルート拡大",photoShow:"📷 写真を表示",photoHide:"📷 写真を隠す",noPhoto:"写真準備中",sketch:"影島の略図・位置はおおよそです",real:"地図データ © NAVER Corp.",legend:"数字＝訪問順"},
+zh:{full:"查看全岛",zoom:"放大路线",photoShow:"📷 显示照片",photoHide:"📷 隐藏照片",noPhoto:"照片准备中",sketch:"影岛示意图·位置为大致",real:"地图数据 © NAVER Corp.",legend:"数字＝游览顺序"}};
 /* 결과 화면 카테고리 탭 이름 */
 const TABT={
 ko:{aria:"결과 바로가기",map:"🗺️ 지도",tl:"🕒 일정",food:"🍜 맛집",why:"💡 추천 이유",fb:"⭐ 후기"},
@@ -109,8 +109,16 @@ function wireAds(r){
     el.onclick=()=>sel(el.dataset.ad,el);
     el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();sel(el.dataset.ad,el)}};
   });
-  const zt=document.getElementById("zoomToggle");
-  if(zt)zt.onclick=()=>{state.mapFull=!state.mapFull;zt.textContent=state.mapFull?MAPT[state.lang].zoom:MAPT[state.lang].full;refreshMap(r)};
+  // 📷 약도의 사진 카드 누르기 (키보드 Enter·스페이스도 됨)
+  document.querySelectorAll("#smap [data-photo]").forEach(el=>{
+    const i=+el.dataset.photo;
+    el.onclick=e=>{e.stopPropagation();togglePhoto(i,r);document.querySelector(`#smap [data-photo="${i}"]`)?.focus()};
+    el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.onclick(e)}};
+  });
+  // 📷 사진 켜기/끄기 (예전 '전체 보기/동선 확대' 자리)
+  const pt=document.getElementById("photoToggle");
+  if(pt)pt.onclick=()=>{state.photosOn=!state.photosOn;if(!state.photosOn)state.photoBig=null;
+    pt.textContent=state.photosOn?MAPT[state.lang].photoHide:MAPT[state.lang].photoShow;pt.setAttribute("aria-pressed",String(state.photosOn));refreshMap(r)};
   const tg=document.getElementById("adToggle");
   if(tg)tg.onclick=()=>{state.adsOn=!state.adsOn;if(!state.adsOn)state.adSel=null;refreshMap(r)};
 }
@@ -130,8 +138,51 @@ function refreshMap(r){
   const sm=document.getElementById("smap");if(sm)sm.innerHTML=sketchMap(r);
   const ap=document.getElementById("adPanel");if(ap)ap.innerHTML=adPanelHTML(r);
   const tg=document.getElementById("adToggle");if(tg)tg.setAttribute("aria-pressed",String(state.adsOn));
-  if(nmapObj)drawNaverAds(r);
+  if(nmapObj){drawNaverAds(r);drawNaverPhotos(r)}
   wireAds(r);wireWc(r);
+}
+
+/* ---------- 📷 도착지 사진 카드 ----------
+   추천 코스의 각 도착지(1~5번) 번호 바로 위(12시 방향)에 작은 사진 카드를 띄움.
+   사진 파일: images/places/<장소 id>.jpg  (예: images/places/huinnyeoul.jpg)
+   파일이 없으면 사진이 안 덮여서 "사진 준비 중" 카드가 그대로 보임. */
+const photoSrc=p=>`images/places/${encodeURIComponent(p.id)}.jpg`;
+function photoSvg(r,xy,k){
+  if(!state.photosOn)return "";
+  const W=46,H=34,B=17,BIG=3; // 카드 너비·높이, 번호 동그라미 위로 띄우는 거리, 눌렀을 때 확대 배율
+  const L=state.lang,cards=r.sim.stops.map((st,i)=>{
+    const [x,y]=xy[i+1],cid="pclip"+i,t=MAPT[L].noPhoto,big=state.photoBig===i;
+    // 확대할 때는 꼬리 끝(번호 동그라미 바로 위)을 기준으로 키움 → 카드가 위쪽으로 커짐
+    const tip=-B+5,zoom=big?` translate(0 ${tip}) scale(${BIG}) translate(0 ${-tip})`:"";
+    const name=esc(st.p.name[L].split(" (")[0].split("（")[0]);
+    return `<g class="ph-pin${big?" big":""}" data-photo="${i}" tabindex="0" role="button" aria-pressed="${big}" aria-label="📷 ${name}" transform="translate(${x} ${y}) scale(${k.toFixed(3)})${zoom}">
+      <clipPath id="${cid}"><rect x="${-W/2}" y="${-B-H}" width="${W}" height="${H}" rx="5"/></clipPath>
+      <path d="M-5 ${-B-1}L0 ${-B+5}L5 ${-B-1}z" fill="#fff"/>
+      <rect x="${-W/2-2}" y="${-B-H-2}" width="${W+4}" height="${H+4}" rx="6" fill="#fff" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))"/>
+      <rect x="${-W/2}" y="${-B-H}" width="${W}" height="${H}" rx="5" fill="#e3eef0"/>
+      <text y="${-B-H/2-1}" text-anchor="middle" font-size="11">📷</text>
+      <text y="${-B-5}" text-anchor="middle" font-size="6.5" fill="#5b6f74">${esc(t)}</text>
+      <image href="${photoSrc(st.p)}" x="${-W/2}" y="${-B-H}" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${cid})" onerror="this.remove()"/></g>`;
+  });
+  // 확대한 카드는 다른 카드들에 가려지지 않게 맨 마지막(맨 앞)에 그림
+  if(cards[state.photoBig])cards.push(cards.splice(state.photoBig,1)[0]);
+  return cards.join("");
+}
+// 사진 카드를 누르면 확대, 같은 카드를 다시 누르면 원래 크기 (다른 카드를 누르면 그 카드로 바뀜)
+function togglePhoto(i,r){state.photoBig=state.photoBig===i?null:i;refreshMap(r)}
+let nPhotos=[];
+function drawNaverPhotos(r){
+  clearOverlays(nPhotos);
+  if(!state.photosOn||!nmapObj)return;
+  const N=naver.maps,t=esc(MAPT[state.lang].noPhoto);
+  r.sim.stops.forEach((st,i)=>{
+    const big=state.photoBig===i;
+    const html=`<div class="nphoto${big?" big":""}" data-photo="${i}" role="button" aria-pressed="${big}"><div class="box"><span class="ph">📷<small>${t}</small></span><img src="${photoSrc(st.p)}" alt="" onerror="this.remove()"></div></div>`;
+    // 카드 아래 꼬리 끝이 번호 핀(26px) 윗부분에 닿도록 기준점을 카드 아래쪽 가운데로 (크기는 style.css의 .nphoto와 맞춤)
+    const mk=new N.Marker({map:nmapObj,position:new N.LatLng(...COORD[st.p.id]),icon:{content:html,anchor:big?new N.Point(102,169):new N.Point(34,69)},zIndex:big?10:3});
+    N.Event.addListener(mk,"click",()=>togglePhoto(i,r));
+    nPhotos.push(mk);
+  });
 }
 
 const MB={lat0:35.101,lat1:35.047,lng0:129.026,lng1:129.094,W:400,H:390};
@@ -173,6 +224,7 @@ function sketchMap(r){
       <text y="4.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">${i+1}</text>
       <text x="${left?-16:16}" y="4" text-anchor="${left?"end":"start"}" font-size="12" font-weight="500" fill="#1b2a30" stroke="#fff" stroke-width="3.5" paint-order="stroke">${esc(short(st.p))}</text></g>`;
   });
+  marks+=photoSvg(r,xy,k);
   const [tx,ty]=xy[0];
   const np=proj(35.1001,129.029),yd=proj(35.0735,129.066);
   return `<svg viewBox="${vb.join(" ")}" role="img" aria-label="${esc(MAPT[L].sketch)}" font-family="Noto Sans KR, sans-serif">
@@ -282,7 +334,7 @@ function naverMap(r){
       const map=nmapObj;
       map.setSize(new N.Size(slot.clientWidth||nmapEl.offsetWidth||360,slot.clientHeight||320));
       // 이전 결과의 동선·핀·광고·맛집 표시 지우기
-      clearOverlays(nRoute);clearOverlays(nAds);clearOverlays(nFoods);
+      clearOverlays(nRoute);clearOverlays(nAds);clearOverlays(nFoods);clearOverlays(nPhotos);
       nRoute.push(new N.Polyline({map,path,strokeWeight:5,strokeColor:"#e5533b",strokeOpacity:.9}));
       nRoute.push(new N.Polyline({map,path:[path[path.length-1],path[0]],strokeWeight:3,strokeColor:"#0d4a5c",strokeOpacity:.7,strokeStyle:"shortdash"}));
       path.forEach((p,i)=>nRoute.push(new N.Marker({map,position:p,icon:{content:`<div class="npin${i?"":" t"}">${i||"T"}</div>`,anchor:new N.Point(13,13)},zIndex:2})));
@@ -291,6 +343,6 @@ function naverMap(r){
       const fit=()=>{if(my!==mapToken||!nmapEl.isConnected)return;map.setSize(new N.Size(slot.clientWidth||360,slot.clientHeight||320));map.fitBounds(bounds)};
       fit();
       setTimeout(fit,300); // 한 번 더 크기를 맞춰서 회색 화면 방지
-      drawNaverAds(r);drawNaverFoods(r);drawNaverWc();drawNaverMe();
+      drawNaverAds(r);drawNaverFoods(r);drawNaverWc();drawNaverMe();drawNaverPhotos(r);
     }).catch(()=>{if(my===mapToken)showSketch()}); // 실패하면 약도로 되돌림(지도는 버리지 않음)
 }

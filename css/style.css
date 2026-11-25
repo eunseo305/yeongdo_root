@@ -144,6 +144,21 @@ button.chip:hover{filter:brightness(.95)}
 .nad .ic{position:relative;width:30px;height:30px;border-radius:8px;background:#e0442d;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);display:grid;place-items:center}
 .nad .ic i{position:absolute;top:-7px;right:-9px;font:700 8.5px/1 var(--body);font-style:normal;background:#fff;color:#e0442d;border:1px solid #e0442d;border-radius:3px;padding:1px 2px}
 .nad .nm{font:600 11.5px var(--body);color:#1b2a30;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;margin-top:2px;white-space:nowrap}
+/* 📷 네이버 지도 도착지 사진 카드 (번호 핀 위 12시 방향). 크기를 바꾸면 10-map.js의 anchor도 같이 바꿔 주세요 */
+.nphoto{position:relative;width:68px;height:56px;cursor:pointer}
+.nphoto .box{position:relative;box-sizing:border-box;width:68px;height:50px;border:2px solid #fff;border-radius:7px;overflow:hidden;background:#e3eef0;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.nphoto::after{content:"";position:absolute;left:50%;bottom:0;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:#fff}
+.nphoto .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:15px;line-height:1.1}
+.nphoto .ph small{font:500 8.5px var(--body);color:#5b6f74;margin-top:2px;white-space:nowrap}
+.nphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* 눌러서 확대한 카드 (3배). 크기를 바꾸면 10-map.js의 큰 카드 anchor(102,169)도 같이 바꿔 주세요 */
+.nphoto.big{width:204px;height:156px}
+.nphoto.big .box{width:204px;height:150px;border-width:3px;border-radius:10px;box-shadow:0 3px 12px rgba(0,0,0,.4)}
+.nphoto.big .ph{font-size:34px}
+.nphoto.big .ph small{font-size:13px;margin-top:6px}
+#smap .ph-pin{cursor:pointer}
+#smap .ph-pin:focus{outline:none}
+#smap .ph-pin:focus-visible rect:first-of-type{stroke:var(--sea);stroke-width:2}
 .adtoggle{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:3px 10px;font:600 12px var(--body);color:#e0442d;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .adtoggle[aria-pressed="false"]{color:var(--muted)}
 .adtoggle:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
