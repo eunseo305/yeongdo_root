@@ -39,8 +39,9 @@ function score(p){
   if(nat==="ja"&&(p.id==="haenyeo"||p.id==="samjin"))s+=0.8;
   if((nat==="zh"||nat==="tw")&&(p.id==="namhang"||p.id==="lotte"))s+=0.8;
   if(nat==="us"&&p.tags.includes("culture"))s+=0.5;
-  // 날씨: 실내·지붕 있는 곳은 올리고 야외는 내림
+  // 날씨: 맑으면 야외를 올리고, 비·더위·추위엔 실내·지붕 있는 곳을 올리고 야외는 내림
   const env=ENV[p.id]||"out";
+  if(weather==="sun")s+={in:0,semi:0.5,out:1.5}[env];
   if(weather==="rain"){s+={in:3,semi:0.5,out:-3.5}[env];if(p.stairs)s-=2} // 비 오면 계단길이 미끄러움
   if(weather==="hot"){s+={in:1.5,semi:0.3,out:-1}[env];if(p.tags.includes("cafe"))s+=0.8}
   if(weather==="cold"){s+={in:1,semi:0.3,out:-1.5}[env];if(p.tags.includes("cafe"))s+=0.5}

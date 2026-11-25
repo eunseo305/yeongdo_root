@@ -105,8 +105,14 @@ async function main() {
 
   // 1) 단기예보 (시간별)
   const vf = await firstOk("getVilageFcst", vilageBases(), 2000);
-  const hourly = {};
+  const hourly = {}, daily = {};
   for (const it of vf.items) {
+    // 일 최저(TMN)·최고(TMX) 기온은 날짜별로 따로 모음
+    if (it.category === "TMN" || it.category === "TMX") {
+      const dk = key(it.fcstDate, "0000").slice(0, 10), d = daily[dk] || (daily[dk] = {});
+      d[it.category === "TMN" ? "tmn" : "tmx"] = num(it.fcstValue);
+      continue;
+    }
     const k = key(it.fcstDate, it.fcstTime);
     const h = hourly[k] || (hourly[k] = {});
     const v = it.fcstValue;
@@ -125,6 +131,9 @@ async function main() {
   const today = key(ymd(kstNow()), "0000").slice(0, 10);
   if (prev?.hourly) for (const [k, v] of Object.entries(prev.hourly)) if (k.slice(0, 10) >= today && !hourly[k]) hourly[k] = v;
   const sorted = Object.fromEntries(Object.entries(hourly).sort(([a], [b]) => a.localeCompare(b)));
+  // 오늘 최저·최고는 새벽 2시 발표에만 들어 있으므로, 새 예보에 없으면 이전 파일 값을 남김
+  if (prev?.daily) for (const [k, v] of Object.entries(prev.daily)) if (k >= today) daily[k] = { ...v, ...daily[k] };
+  const dailySorted = Object.fromEntries(Object.entries(daily).sort(([a], [b]) => a.localeCompare(b)));
 
   // 2) 초단기실황 (지금) — 실패해도 예보만으로 저장
   let now = null;
@@ -147,6 +156,7 @@ async function main() {
     grid: { nx, ny },
     base: key(vf.base.date, vf.base.time),
     now,
+    daily: dailySorted,
     hourly: sorted
   };
   await writeFile(OUT, JSON.stringify(out) + "\n");
