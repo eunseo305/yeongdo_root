@@ -127,8 +127,36 @@ async function main() {
       case "REH": h.reh = num(v); break;        // 습도 %
     }
   }
+  // 오늘 최저(TMN)·최고(TMX)와 오늘 새벽~지금까지의 시간별 기온은 "오늘 02시 발표"에만 들어 있음.
+  // 최신 발표가 그보다 뒤면 오늘 02시 발표(아직 안 나왔으면 어제 23시 발표)도 받아서 빈 곳을 채움.
+  const todayYmd = ymd(kstNow()), today = key(todayYmd, "0000").slice(0, 10);
+  if (!(vf.base.date === todayYmd && vf.base.time === "0200")) {
+    try {
+      const early = await firstOk("getVilageFcst",
+        [{ date: todayYmd, time: "0200" }, { date: ymd(new Date(kstNow().getTime() - 864e5)), time: "2300" }], 1000);
+      const eh = {}, ed = {};
+      for (const it of early.items) {
+        if (!it.fcstDate || it.fcstDate.length !== 8) continue;
+        const dk = key(it.fcstDate, "0000").slice(0, 10);
+        if (it.category === "TMN" || it.category === "TMX") {
+          (ed[dk] || (ed[dk] = {}))[it.category === "TMN" ? "tmn" : "tmx"] = num(it.fcstValue); continue;
+        }
+        if (dk !== today) continue;
+        const h = eh[key(it.fcstDate, it.fcstTime)] || (eh[key(it.fcstDate, it.fcstTime)] = {}), v = it.fcstValue;
+        if (it.category === "TMP") h.t = num(v);
+        if (it.category === "POP") h.p = num(v);
+        if (it.category === "PTY") h.pty = num(v);
+        if (it.category === "PCP") h.mm = pcpMm(v);
+        if (it.category === "SKY") h.sky = num(v);
+        if (it.category === "WSD") h.w = num(v);
+        if (it.category === "REH") h.reh = num(v);
+      }
+      for (const [k, v] of Object.entries(eh)) if (!hourly[k]) hourly[k] = v;
+      if (ed[today]) daily[today] = { ...ed[today], ...daily[today] };
+      console.log(`오늘 새벽 예보 보충 (발표 ${early.base.date} ${early.base.time}): 최저 ${daily[today]?.tmn ?? "-"}° 최고 ${daily[today]?.tmx ?? "-"}°`);
+    } catch (e) { console.warn(`오늘 새벽 예보 보충 건너뜀: ${e.message}`); }
+  }
   // 오늘 이미 지난 시간(새 예보에 없는 시간)은 이전 파일에서 가져와 남김
-  const today = key(ymd(kstNow()), "0000").slice(0, 10);
   if (prev?.hourly) for (const [k, v] of Object.entries(prev.hourly)) if (k.slice(0, 10) >= today && !hourly[k]) hourly[k] = v;
   const sorted = Object.fromEntries(Object.entries(hourly).sort(([a], [b]) => a.localeCompare(b)));
   // 오늘 최저·최고는 새벽 2시 발표에만 들어 있으므로, 새 예보에 없으면 이전 파일 값을 남김
