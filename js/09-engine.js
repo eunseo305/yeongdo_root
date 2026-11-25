@@ -44,6 +44,12 @@ const DEPART_AFTER=60;
 function plan(){
   const c=CRUISES.find(x=>x.id===state.ship);
   const start=c.arr+DEPART_AFTER, limit=c.dep-RETURN_BEFORE, allAboard=limit;
+  // 사용자가 경로를 직접 고쳤으면 그 순서 그대로 시간표만 계산
+  if(state.route){
+    const chosen=state.route.map(findPlace).filter(Boolean);
+    const sim=simulate(chosen,start);
+    return {c,start,allAboard,sim,ord:[...new Set(chosen.map(p=>p.zone))],chosen,dur:c.dep-c.arr,free:limit-start,none:false,custom:true,over:sim.end>limit};
+  }
   const W=state.a.weather,OUTMAX={rain:1,cold:2,hot:3}[W]??99;
   const isOut=p=>(ENV[p.id]||"out")==="out";
   // 비 오는 날 야외는 관심사와 아주 잘 맞는 곳(점수 3 이상) 한 곳까지만
@@ -68,5 +74,17 @@ function plan(){
   if(!best){best={ord:["E"],chosen:[],total:0,none:true}}
   const sim=simulate(best.chosen,start);
   return {c,start,allAboard,sim,ord:best.ord,chosen:best.chosen,dur:c.dep-c.arr,free:limit-start,none:!!best.none};
+}
+// 기본 장소 + 사용자가 추가한 장소에서 id로 찾기
+function findPlace(id){return PLACES.find(p=>p.id===id)||state.customPlaces.find(p=>p.id===id)}
+// 새 장소를 넣었을 때 터미널 복귀가 가장 빠른 자리에 끼워 넣음
+function insertBest(ids,newId,start){
+  let best=null;
+  for(let i=0;i<=ids.length;i++){
+    const trial=[...ids.slice(0,i),newId,...ids.slice(i)];
+    const end=simulate(trial.map(findPlace),start).end;
+    if(!best||end<best.end)best={trial,end};
+  }
+  return best.trial;
 }
 function seeded(str){let h=2166136261;for(const ch of str){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%10000)/10000}}

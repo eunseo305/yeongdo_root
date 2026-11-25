@@ -269,7 +269,11 @@ function naverMap(r){
       if(!nmapEl){nmapEl=document.createElement("div");nmapEl.style.cssText="width:100%;height:100%"}
       if(nmapEl.parentNode!==slot)slot.appendChild(nmapEl); // 지도 상자를 새 화면으로 옮김
       const path=["T",...r.sim.stops.map(st=>st.p.id)].map(id=>new N.LatLng(...COORD[id]));
-      if(!nmapObj)nmapObj=new N.Map(nmapEl,{center:path[0],zoom:14});
+      if(!nmapObj){
+        nmapObj=new N.Map(nmapEl,{center:path[0],zoom:14});
+        // 경로 수정: '지도에서 위치 찍기' 중이면 누른 곳을 새 장소로 추가
+        N.Event.addListener(nmapObj,"click",e=>{if(state.picking)pickAt(e.coord.lat(),e.coord.lng())});
+      }
       const map=nmapObj;
       map.setSize(new N.Size(slot.clientWidth||nmapEl.offsetWidth||360,slot.clientHeight||320));
       // 이전 결과의 동선·핀·광고·맛집 표시 지우기

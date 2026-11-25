@@ -216,6 +216,44 @@ label.f{display:grid;gap:4px;font-size:14px;color:var(--muted)}
 .rpanel{display:flex;flex-direction:column;gap:18px}
 .rpanel[hidden]{display:none}
 .mapbox{isolation:isolate}
+/* 경로 수정 */
+.edbar{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:-6px}
+.edbar .edtoggle{flex:0 0 auto;min-height:44px;padding:10px 18px;font-size:15px}
+.edbar .link{min-height:36px;padding:4px 0}
+.timeline{overflow-x:clip}
+.tl.stop{position:relative;background:var(--paper)}
+.timeline.editing .tl.stop{grid-template-columns:52px 18px 1fr 64px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.tl.stop.swiping{transition:none}
+.tl.stop:not(.swiping){transition:transform .18s ease}
+.swipedel{position:absolute;top:0;bottom:0;left:100%;width:110px;display:flex;align-items:center;padding-left:14px;background:#f3d2cb;color:#a7341f;font-weight:700;font-size:14px;border-radius:0 10px 10px 0;visibility:hidden}
+.tl.stop.swiping .swipedel{visibility:visible}
+.tl.stop.willdel .swipedel{background:#e0442d;color:#fff}
+.edtools{display:flex;flex-direction:column;align-items:center;gap:5px;align-self:start;width:100%}
+/* ▲ 위로 / ▼ 아래로: 글자까지 넣어 무슨 버튼인지 바로 알 수 있게 */
+.mvbtn{width:100%;min-height:34px;padding:4px 2px;border:1px solid #c9dcf5;background:#eef5fe;border-radius:8px;font:700 12.5px/1.1 var(--body);color:var(--sea);cursor:pointer;white-space:nowrap}
+.mvbtn:hover:not(:disabled){background:#dceafd;border-color:var(--sea)}
+.mvbtn:disabled{background:none;border-color:var(--line);color:#c3cad1;cursor:default}
+.mvbtn:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.delbtn{width:100%;min-height:34px;padding:4px 2px;border:1px solid #f3c6bd;background:#fff7f5;border-radius:8px;font:700 12.5px/1.1 var(--body);color:#a7341f;cursor:pointer;white-space:nowrap}
+.delbtn:hover{background:#fdece8;border-color:#f3c6bd}
+.delbtn:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.addbtn:focus-visible,.edin:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+/* ＋ 여기에 장소 추가: 장소 사이에 넓고 눈에 띄게 */
+.addbtn{align-self:stretch;margin-top:10px;border:2px dashed var(--sea);background:#eef5fe;border-radius:12px;padding:10px 12px;font:700 14.5px var(--body);color:var(--sea);cursor:pointer;min-height:46px;text-align:center}
+.addbtn:hover{background:#dceafd;border-style:solid}
+.addbtn[aria-expanded="true"]{background:var(--sea);border-style:solid;color:#fff}
+.addpanel{list-style:none;margin:0 0 16px 80px}
+.addpanel .card{background:#f7fafa}
+.aphead{display:flex;justify-content:space-between;align-items:center}
+.aphead .link{min-height:36px;padding:4px 0}
+.edrow{display:flex;gap:8px;align-items:flex-end}
+.edrow select{flex:1;min-width:0}
+.edrow .edadd{flex:0 0 auto;padding:10px 16px;min-height:44px}
+.edin{width:100%;min-height:44px;border:1px solid var(--line);border-radius:10px;padding:0 10px;font:16px var(--body);color:var(--ink);background:#fff}
+.edin[aria-invalid="true"]{border-color:var(--buoy)}
+.pickbar{display:flex;justify-content:space-between;align-items:center;gap:8px;border-radius:10px;padding:10px 12px;background:#fdece8;color:#a7341f;font-size:14px}
+.mapbox.picking #smap,.mapbox.picking #nmap{cursor:crosshair;outline:3px dashed var(--buoy);outline-offset:-3px}
+.alert .over{display:block;margin-top:6px;font-weight:700;color:#a7341f}
 @media (prefers-reduced-motion:no-preference){
   main>*{animation:rise .28s ease both}
   @keyframes rise{from{transform:translateY(6px)}to{transform:none}}
