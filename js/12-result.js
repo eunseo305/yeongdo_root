@@ -148,6 +148,39 @@ function fmtDur(m,L){const h=Math.floor(m/60),n=m%60;
   if(L==="ja")return (h?h+"時間":"")+(n?n+"分":"");
   if(L==="zh")return (h?h+"小时":"")+(n?n+"分钟":"");
   return (h?h+"시간 ":"")+(n?n+"분":"");}
+/* 선호도 다시 고르기 모달 (결과 화면 위에 뜸)
+   - 연령·동행: 하나 누르면 바로 반영하고 닫힘
+   - 관심사: 여러 개 고른 뒤 "결과 보기"로 반영
+   - 바깥 클릭 / Esc: 바꾼 것 취소 (이전 버튼은 없음) */
+function openPrefModal(key,s,a,opener){
+  const x=t(),b=qBody(key),snap={...state.a,interests:state.a.interests.slice()};
+  const m=document.createElement("div");m.className="pmodal";
+  m.innerHTML=`<div class="pm-box" role="dialog" aria-modal="true" aria-labelledby="pm-t">
+    <div class="qhead"><h2 id="pm-t">${b.title}</h2>${b.sub?`<p class="muted">${b.sub}</p>`:""}</div>
+    <div class="qblock pm-body" data-key="${key}">${b.opts}</div>
+    ${key==="interests"?`<div class="pm-act"><button class="btn" type="button" data-pm="ok">${x.see}</button></div>`:""}</div>`;
+  document.body.appendChild(m);
+  const prevOv=document.body.style.overflow;document.body.style.overflow="hidden";
+  const close=apply=>{
+    if(!apply)state.a=snap;
+    document.removeEventListener("keydown",onKey);document.body.style.overflow=prevOv;m.remove();
+    if(apply){renderResult(s,a);const c=s.querySelector(`[data-edit="${key}"]`);if(c)c.focus()}else opener.focus();
+  };
+  const onKey=e=>{if(e.key==="Escape")close(false)};
+  document.addEventListener("keydown",onKey);
+  const ok=()=>{const o=m.querySelector('[data-pm="ok"]');if(o)o.disabled=!qFilled(key)};
+  m.onclick=e=>{
+    if(e.target===m)return close(false);
+    const pm=e.target.closest("[data-pm]");
+    if(pm)return pm.dataset.pm==="ok"?(qFilled(key)&&close(true)):close(false);
+    const v=e.target.closest("[data-v]");if(!v)return;
+    qApply(m.querySelector(".pm-body"),key,v.dataset.v);
+    if(key==="interests")ok();else close(true);
+  };
+  ok();
+  (m.querySelector('[aria-pressed="true"]')||m.querySelector("[data-v]")).focus();
+}
+
 function renderResult(s,a){
   const x=t(),r=plan(),L=state.lang;
   const ordKey=r.ord.includes("O")?"O":r.ord.join("");
@@ -159,23 +192,29 @@ function renderResult(s,a){
   const W=state.a.weather;
   if(W&&W!=="sun"){
     reasons.push(x.r[W]);
-    const cut=(WX_BLOCK[W]||[]).map(id=>PLACES.find(p=>p.id===id)).filter(Boolean).map(p=>p.name[L].split(" (")[0].split("（")[0]);
+    const cut=(WX_BLOCK[W]||[]).map(id=>PLACES.find(p=>p.id===id)).filter(p=>p&&!p.alt).map(p=>p.name[L].split(" (")[0].split("（")[0]);
     if(cut.length&&x.wxCut[W])reasons.push(x.wxCut[W](cut.join(", ")));
     if(x.wxTip[W])reasons.push(x.wxTip[W]);
   }
   const hasStairsSkip=(state.a.age==="a70"||state.a.age==="a50")&&!ids.includes("huinnyeoul");
   if(hasStairsSkip)reasons.push(x.r.stairs);
-  if(state.a.comp==="family"&&ids.includes("museum"))reasons.push(x.r.family);
+  if(state.a.comp==="family"&&(ids.includes("museum")||ids.includes("arte")))reasons.push(x.r.family);
+  if(ids.includes("dongsam"))reasons.push(x.r.booking);
   if(crowdOf(r.c.pax)==="high"&&ids.includes("taejongdae")&&ids.includes("museum"))reasons.push(x.r.crowd);
   if(ids.includes("daiso")||ids.includes("oliveyoung"))reasons.push(x.r.shopYd);
   if(ids.includes("lotte"))reasons.push(x.r.beauty);
+  const shut=PLACES.filter(p=>!p.alt&&p.closed&&p.closed.includes(cruiseDow())&&p.tags.some(g=>state.a.interests.includes(g))).map(p=>p.name[L].split(" (")[0].split("（")[0]);
+  if(shut.length)reasons.push(x.r.closedDay(shut.join(", ")));
+  if(r.alt)reasons.unshift(x.r.alt);
   if(r.none)reasons.unshift(x.r.tooShort);else if(r.free<=150)reasons.push(x.r.short);
   if(r.chosen.some(p=>p.meal))reasons.push(x.r.meal);
   if(r.ord.length>1&&!r.ord.includes("O")&&!r.custom)reasons.push(x.r.oneWay);
   const E=EDT[L]||EDT.en;
   if(r.custom)reasons.unshift(E.reason);
 
-  const prof=[x.nat[state.a.nat],x.age[state.a.age],x.comp[state.a.comp],state.a.weather?x.wx[state.a.weather]:null].filter(Boolean).map(v=>`<span class="chip">${esc(v)}</span>`).join("")+state.a.interests.map(k=>`<span class="chip">${esc(x.int[k])}</span>`).join("");
+  // 선호도 칩: 누르면 모달로 그 항목만 다시 고름 (openPrefModal). 나라는 칩에서 뺌
+  const chip=(k,v)=>`<button type="button" class="chip" data-edit="${k}" aria-haspopup="dialog">${esc(v)}</button>`;
+  const prof=[["age",x.age[state.a.age]],["comp",x.comp[state.a.comp]]].filter(([,v])=>v).map(([k,v])=>chip(k,v)).join("")+state.a.interests.map(k=>chip("interests",x.int[k])).join("");
   let tl=`<li class="tl"><span class="t">${hm(r.start)}</span><span class="rail"><span class="dot end"></span><span class="line"></span></span><div class="body"><strong>${x.disembark}</strong><span class="d">${r.c.name}</span>${addBtnHTML(0)}</div></li>`;
   if(state.addAt===0)tl+=addPanelHTML(r,0);
   const nearAll=nearAds(r);
@@ -258,6 +297,7 @@ function renderResult(s,a){
   </div>
   <p class="demo">${x.demo}</p>`;
   lastR=r;naverMap(r);wireAds(r);wireFood(r);wireTabs();wireEdit(r,s,a);
+  s.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openPrefModal(b.dataset.edit,s,a,b));
   s.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{
     state.rating=+b.dataset.s;
     s.querySelectorAll("[data-s]").forEach(o=>o.setAttribute("aria-pressed",String(+o.dataset.s<=state.rating)));
@@ -265,7 +305,7 @@ function renderResult(s,a){
   });
   const sv=document.getElementById("fbSave");
   if(sv)sv.onclick=()=>{
-    saveReview({stars:state.rating,place:document.getElementById("fbLong").value,nat:state.a.nat,text:document.getElementById("fbText").value.trim().slice(0,200),mine:true});
+    saveReview({stars:state.rating,place:document.getElementById("fbLong").value,nat:state.a.nat||{ko:"kr",ja:"ja",zh:"zh",en:"us"}[state.lang]||"other",text:document.getElementById("fbText").value.trim().slice(0,200),mine:true});
     state.fbSent=true;renderResult(s,a);document.getElementById("fb").scrollIntoView({block:"center"});
   };
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="againBtn" type="button">${x.again}</button>`;
