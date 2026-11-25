@@ -144,9 +144,23 @@ function refreshMap(r){
 
 /* ---------- 📷 도착지 사진 카드 ----------
    추천 코스의 각 도착지(1~5번) 번호 바로 위(12시 방향)에 작은 사진 카드를 띄움.
-   사진 파일: images/places/<장소 id>.jpg  (예: images/places/huinnyeoul.jpg)
+   사진 파일: img/places/ 폴더 (팀원이 올린 사진, 번호는 img/places/장소_목록.txt 참고)
+   아래 PHOTO 표에 없는 장소는 img/places/<장소 id>.jpg 를 찾음 (img/places/README.md 규칙)
    파일이 없으면 사진이 안 덮여서 "사진 준비 중" 카드가 그대로 보임. */
-const photoSrc=p=>`images/places/${encodeURIComponent(p.id)}.jpg`;
+const PHOTO={
+  samjin:"1.jpg",       // 삼진어묵
+  haenyeo:"2.jpg",      // 해녀촌
+  namhang:"3.jpg",      // 남항시장
+  momos:"4.webp",       // 모모스커피
+  peak:"5.avif",        // 피아크
+  // heilleu(헤일르, 6번)은 사진 없음
+  huinnyeoul:"huinnyeoul.jpg", // 흰여울문화마을 (7.jpg도 있지만 출처가 확인된 사진 사용, CREDITS.md)
+  isongdo:"8.jpg",      // 이송도 전망대
+  museum:"9.jpg",       // 국립해양박물관
+  arte:"10.png",        // 아르떼뮤지엄
+  jonaegi:"11.jpg"      // 조내기 고구마 역사공원
+};
+const photoSrc=p=>"img/places/"+encodeURIComponent(PHOTO[p.id]||p.id+".jpg");
 function photoSvg(r,xy,k){
   if(!state.photosOn)return "";
   const W=46,H=34,B=17,BIG=3; // 카드 너비·높이, 번호 동그라미 위로 띄우는 거리, 눌렀을 때 확대 배율
