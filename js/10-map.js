@@ -146,9 +146,12 @@ let ZK=1; // 약도 확대 배율 (마커·글자는 배율과 상관없이 같�
 function routeView(xy){
   // 동선(터미널+방문지)이 화면을 꽉 채우도록 viewBox 계산. 너무 가까이 가지 않게 최소 폭 제한
   if(state.mapFull)return [0,0,MB.W,MB.H];
-  const xs=xy.map(p=>p[0]),ys=xy.map(p=>p[1]),pad=34;
+  // 화장실이 켜져 있으면 동선 대신 "내 위치 + 가까운 화장실 5곳"으로 확대 (13b-toilets.js)
+  const wv=typeof wcViewPts==="function"?wcViewPts():null;
+  if(wv)xy=wv;
+  const xs=xy.map(p=>p[0]),ys=xy.map(p=>p[1]),pad=wv?24:34,mw=wv?70:130;
   let x0=Math.min(...xs)-pad,x1=Math.max(...xs)+pad,y0=Math.min(...ys)-pad,y1=Math.max(...ys)+pad;
-  let w=Math.max(x1-x0,130),h=Math.max(y1-y0,130*MB.H/MB.W);
+  let w=Math.max(x1-x0,mw),h=Math.max(y1-y0,mw*MB.H/MB.W);
   if(w/h>MB.W/MB.H)h=w*MB.H/MB.W;else w=h*MB.W/MB.H;
   const cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2;
   return [cx-w/2,cy-h/2,w,h].map(v=>+v.toFixed(1));

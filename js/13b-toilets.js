@@ -111,18 +111,29 @@ function wcStop(){
 }
 
 /* ---------- 지도 화면 맞추기 ---------- */
-// 켤 때: 기준점 + 5곳이 다 보이게 (약도는 전체 보기로)
+// 켤 때: 내 위치(기준점)를 한가운데 두고, 가까운 5곳이 다 보이는 만큼만 자동 확대
 function fitWc(){
   if(!wcBase)return;
   if(nmapObj&&document.getElementById("nmap")?.style.display!=="none"){
-    const N=naver.maps,pts=[wcBase.ll,...wcNear.map(v=>v.w.ll)];
-    const la=pts.map(p=>p[0]),ln=pts.map(p=>p[1]);
-    nmapObj.fitBounds(new N.LatLngBounds(new N.LatLng(Math.min(...la),Math.min(...ln)),new N.LatLng(Math.max(...la),Math.max(...ln))));
+    // 기준점에서 가장 먼 화장실까지의 거리만큼 위아래·좌우로 똑같이 잡음 → 기준점이 화면 가운데
+    const N=naver.maps,c=wcBase.ll,MIN=0.002; // 0.002도 ≈ 200m: 너무 바짝 확대되지 않게
+    const dla=Math.max(MIN,...wcNear.map(v=>Math.abs(v.w.ll[0]-c[0])))*1.15;
+    const dln=Math.max(MIN,...wcNear.map(v=>Math.abs(v.w.ll[1]-c[1])))*1.15;
+    nmapObj.fitBounds(new N.LatLngBounds(new N.LatLng(c[0]-dla,c[1]-dln),new N.LatLng(c[0]+dla,c[1]+dln)));
     if(nmapObj.getZoom()>17)nmapObj.setZoom(17);
+    nmapObj.setCenter(new N.LatLng(...c));
   }else{
+    // 약도: 전체 보기를 끄면 routeView(10-map.js)가 wcViewPts() 범위로 확대해서 그림
     if(wcPrevFull===null)wcPrevFull=state.mapFull;
-    state.mapFull=true;const zt=document.getElementById("zoomToggle");if(zt)zt.textContent=MAPT[state.lang].zoom;
+    state.mapFull=false;const zt=document.getElementById("zoomToggle");if(zt)zt.textContent=MAPT[state.lang].full;
   }
+}
+/* 약도 확대 범위: 기준점을 가운데 두고 5곳이 다 들어가는 네모의 두 모서리 (화장실이 꺼져 있으면 null) */
+function wcViewPts(){
+  if(!wcOn||!wcBase||!wcNear.length)return null;
+  const c=proj(...wcBase.ll),ps=wcNear.map(v=>proj(...v.w.ll));
+  const dx=Math.max(...ps.map(p=>Math.abs(p[0]-c[0]))),dy=Math.max(...ps.map(p=>Math.abs(p[1]-c[1])));
+  return [[c[0]-dx,c[1]-dy],[c[0]+dx,c[1]+dy]];
 }
 // 끌 때: 원래 동선 화면으로
 function unfitWc(){
