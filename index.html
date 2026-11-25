@@ -14,10 +14,24 @@
 <div class="app">
   <header class="top">
     <div class="brand" aria-label="Yeongdo Route">
-      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v4M12 6l7 9H5l7-9z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M2 18c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0 2-1 2-1" fill="none" stroke="#e5533b" stroke-width="2" stroke-linecap="round"/></svg>
-      <span id="brandText">영도 루트</span>
+      <!-- 로고: 등대 + 크루즈 배 + 파도 + 갈매기 -->
+      <svg class="logo" width="46" height="34" viewBox="0 0 46 34" aria-hidden="true">
+        <path d="M27 5q1.5-1.5 3 0q1.5-1.5 3 0M35 2q1-1 2 0q1-1 2 0" fill="none" stroke="#0b2350" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M6.5 25V13l1-3h3l1 3v12z" fill="#0b2350"/><rect x="7.6" y="6.5" width="2.8" height="3" fill="#0b2350"/><path d="M7 6.5l2-2 2 2z" fill="#0b2350"/>
+        <path d="M13 23h31l-4.5 5H17.5z" fill="#1d6fe8"/>
+        <path d="M16 23l3.5-5.5h16.5l4.5 5.5z" fill="#fff" stroke="#0b2350" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M21.5 17.5l2-3h9.5l2 3" fill="#fff" stroke="#0b2350" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M20.5 20.5h17" stroke="#0b2350" stroke-width="1.3" stroke-dasharray="1.6 1.4"/>
+        <path d="M1 30c5 3 10 3 15 0s10-3 15 0 10 3 14 0" fill="none" stroke="#3b9bf5" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-txt"><span id="brandText">영도 루트</span><small>YEONGDO ROUTE</small></span>
     </div>
     <div class="lang" id="langBar"></div>
+    <!-- 헤더 아래쪽 물결 장식 -->
+    <svg class="top-wave" viewBox="0 0 440 24" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 14c60-12 120-12 190 0s140 10 250-4v14H0z" fill="#cfe5fb" opacity=".55"/>
+      <path d="M0 18c80-8 150-6 220 2s150 6 220-6v10H0z" fill="#e6f1fd"/>
+    </svg>
   </header>
   <main id="screen" aria-live="polite"></main>
 </div>

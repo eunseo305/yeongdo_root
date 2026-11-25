@@ -28,13 +28,56 @@ function qFilled(key){
   return key==="interests"?state.a.interests.length>0:key==="ship"?!!state.ship:!!state.a[key];
 }
 
+/* ---- 참고 사진 디자인용 그림·아이콘 (2026-11-25) ---- */
+const QI={ // 질문 제목 앞 아이콘 (선 그림)
+  age:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+  comp:'<path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.3a3.5 3.5 0 0 1 0 6.4M18 14.3c2 .8 3.5 2.8 3.5 5.7"/>',
+  ship:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M7.5 14h2M11 14h2M14.5 14h2M7.5 17.5h2M11 17.5h2"/>',
+  interests:'<path d="M10 3l1.8 5.2L17 10l-5.2 1.8L10 17l-1.8-5.2L3 10l5.2-1.8zM18 14l.8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8z"/>'
+};
+const QHL={ // 질문 제목에서 파랗게 칠할 단어
+  ko:{age:"연령대",comp:"누구",interests:"관심",ship:"크루즈"},
+  en:{age:"age group",comp:"Who",interests:"What",ship:"cruise"},
+  ja:{age:"年代",comp:"どなた",interests:"興味",ship:"クルーズ"},
+  zh:{age:"年龄段",comp:"谁",interests:"感兴趣",ship:"邮轮"}};
+const svgI=(p,sz=22)=>`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+// 크루즈 질문 오른쪽 위 그림: 다리 + 산 + 전망대 + 크루즈선 + 바다
+const SHIP_ART=`<svg class="ship-art" viewBox="0 0 240 120" aria-hidden="true">
+  <defs><linearGradient id="saSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc0f5"/><stop offset="1" stop-color="#2f86e0"/></linearGradient>
+  <linearGradient id="saFade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="1"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+  <path d="M150 74c10-30 30-46 50-52 18-4 30 4 40 10v42z" fill="#3f8f5a"/><path d="M175 74c8-18 22-28 40-30 12 0 20 6 25 10v20z" fill="#5aa86e"/>
+  <rect x="204" y="10" width="5" height="22" fill="#e8eef6"/><ellipse cx="206.5" cy="10" rx="6" ry="3" fill="#2f7be8"/>
+  <path d="M196 58h10v16h-10zM210 54h12v20h-12zM226 60h10v14h-10z" fill="#fff" stroke="#c7d3e2"/>
+  <path d="M40 66h120" stroke="#9db6cf" stroke-width="2"/><path d="M98 30v36M102 30v36" stroke="#8aa3bd" stroke-width="2"/><path d="M100 32L60 66M100 32l40 34M100 40L74 66M100 40l26 26" stroke="#b5c8db" stroke-width="1"/>
+  <path d="M0 74h240v46H0z" fill="url(#saSea)"/>
+  <path d="M120 72h96l-8 12h-80z" fill="#fff" stroke="#9fb3c9"/><path d="M128 72l6-10h64l8 10z" fill="#fff" stroke="#9fb3c9"/><path d="M140 62l4-6h44l4 6z" fill="#fff" stroke="#9fb3c9"/>
+  <path d="M132 67h70M136 77h72" stroke="#3a5a80" stroke-width="1.6" stroke-dasharray="2 2"/><path d="M128 84h80" stroke="#d64b3b" stroke-width="2"/>
+  <path d="M0 96c40-8 80-8 120 0s80 8 120-2" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2"/>
+  <rect width="240" height="120" fill="url(#saFade)"/></svg>`;
+// 크루즈 카드 왼쪽 썸네일: 바다 위 크루즈선
+const SHIP_THUMB=`<svg class="ship-thumb" viewBox="0 0 90 64" aria-hidden="true">
+  <defs><linearGradient id="stSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe0ff"/><stop offset=".6" stop-color="#e9f4ff"/><stop offset=".6" stop-color="#3d8fe0"/><stop offset="1" stop-color="#1a5fbf"/></linearGradient></defs>
+  <rect width="90" height="64" fill="url(#stSky)"/>
+  <path d="M8 40h74l-7 9H16z" fill="#fff" stroke="#8ea3bb"/><path d="M14 40l5-8h50l6 8z" fill="#fff" stroke="#8ea3bb"/><path d="M24 32l4-6h32l4 6z" fill="#fff" stroke="#8ea3bb"/>
+  <rect x="52" y="20" width="6" height="6" fill="#d64b3b"/>
+  <path d="M18 36h54M14 44h64" stroke="#2c4a70" stroke-width="1.4" stroke-dasharray="1.6 1.6"/>
+  <path d="M0 54c15-3 30-3 45 0s30 3 45 0" stroke="#fff" stroke-opacity=".5" fill="none"/></svg>`;
+
 function shipOptsHTML(){
   const x=t();
   return `${dateBarHTML()}${!CRUISES.length&&ALLC.length?`<p class="nodate">${DT[state.lang].none}</p>`:""}<div class="options one">${CRUISES.map(c=>{const cr=crowdOf(c.pax);return `
     <button type="button" class="ship" id="ship-${c.id}" data-v="${c.id}" aria-pressed="${state.ship===c.id}">
-      <span class="row"><strong>${c.date?`<span class="muted" style="font-weight:500">${c.date}</span> `:""}${esc(c.name)}</strong><span class="pill ${cr}">${x.crowd[cr]}</span></span>
-      <span class="row times"><span>${x.arr} ${hmD(c.arr)} · ${x.dep} ${hmD(c.dep)}</span><span>${c.pax.toLocaleString()}${x.pax==="pax"?" pax":x.pax}</span></span>
-    </button>`}).join("")}</div><p class="muted" style="font-size:12.5px">${CSRC[state.lang][cruiseSrc]}</p>`;
+      ${SHIP_THUMB}
+      <span class="ship-main">
+        <span class="row"><strong>${esc(c.name)}</strong><span class="pill ${cr}">${x.crowd[cr]}</span></span>
+        ${c.date?`<span class="ship-date">${c.date}</span>`:""}
+        <span class="row times">
+          <span class="ship-t"><span>${svgI('<circle cx="12" cy="5" r="2"/><path d="M12 7v14M5 12H3a9 9 0 0 0 18 0h-2M8 10h8"/>',17)}${x.arr} ${hmD(c.arr)}</span><i></i><span>${svgI('<path d="M12 3v14M12 4l7 11h-7M11 6L5 15h6M3 18h18l-2 3H5z"/>',17)}${x.dep} ${hmD(c.dep)}</span></span>
+          <span class="ship-pax">${svgI('<path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.3a3.5 3.5 0 0 1 0 6.4M18 14.3c2 .8 3.5 2.8 3.5 5.7"/>',16)}${c.pax.toLocaleString()}${x.pax==="pax"?" pax":x.pax}</span>
+        </span>
+      </span>
+    </button>`}).join("")}</div>
+    <p class="srcbox">${svgI('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',20)}<span>${CSRC[state.lang][cruiseSrc]}</span></p>`;
 }
 
 function qBody(key){
@@ -49,8 +92,11 @@ function qBody(key){
 
 function qBlockHTML(i,enter){
   const key=QUESTIONS[i],b=qBody(key);
-  return `<section class="qblock${enter?" enter":""}" id="qb-${key}" data-key="${key}" data-i="${i}" aria-labelledby="qt-${key}">
-    <div class="qhead"><span class="qnum">${i+1} / ${QUESTIONS.length}</span><h2 id="qt-${key}">${b.title}</h2>${b.sub?`<p class="muted">${b.sub}</p>`:""}</div>${b.opts}</section>`;
+  const w=(QHL[state.lang]||{})[key];
+  const title=w&&b.title.includes(w)?b.title.replace(w,`<em>${w}</em>`):b.title;
+  return `<section class="qblock q-${key}${enter?" enter":""}" id="qb-${key}" data-key="${key}" data-i="${i}" aria-labelledby="qt-${key}">
+    ${key==="ship"?SHIP_ART:""}
+    <div class="qhead"><span class="qnum">${i+1} / ${QUESTIONS.length}</span><h2 id="qt-${key}"><span class="q-ic">${svgI(QI[key]||"",26)}</span><span>${title}</span></h2>${b.sub?`<p class="muted">${b.sub}</p>`:""}</div>${b.opts}</section>`;
 }
 
 function qProgHTML(){
@@ -140,9 +186,11 @@ function dateBarHTML(){
   if(state.cdate&&!ds.includes(state.cdate))ds=[state.cdate,...ds].sort();
   const lab=d=>{const x=new Date(d+"T00:00");return d===today?D.today:D.fmt(x.getMonth()+1,x.getDate(),D.wd[x.getDay()])};
   const first=ymdOf(ALLC[0].a),last=ymdOf(ALLC[ALLC.length-1].d);
-  return `<div class="datebar"><p class="dl">${D.lbl}</p>
-    <div class="dchips" role="group" aria-label="${esc(D.lbl)}">${ds.map(d=>`<button type="button" id="cd-${d}" data-cd="${d}" aria-pressed="${state.cdate===d}">${lab(d)}</button>`).join("")}</div>
-    <label class="dpick" for="cdate">${D.other}<input type="date" id="cdate" value="${state.cdate||""}" min="${first}" max="${last}"></label></div>`;
+  const cal='<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>';
+  const chk='<svg class="dck" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fff"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#1d6fe8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  return `<div class="datebar"><p class="dl">${svgI('<path d="M3 17h18l-3 4H6zM5 17l2-5h10l2 5M9 12V8h6v4M12 8V5"/>',24)}${D.lbl}</p>
+    <div class="dchips" role="group" aria-label="${esc(D.lbl)}">${ds.map(d=>{const on=state.cdate===d;return `<button type="button" id="cd-${d}" data-cd="${d}" aria-pressed="${on}">${on?svgI(cal,18):""}${lab(d)}${on?chk:""}</button>`}).join("")}</div>
+    <label class="dpick" for="cdate">${svgI(cal+'<path d="M7.5 14h2M11 14h2M14.5 14h2"/>',20)}${D.other}<input type="date" id="cdate" value="${state.cdate||""}" min="${first}" max="${last}"></label></div>`;
 }
 function grid(items,key,multi){
   return `<div class="options">${items.map(([k,l,sub])=>{

@@ -4,7 +4,7 @@
 const LANGS=[["ko","한"],["en","EN"],["ja","日"],["zh","中"]];
 
 const T={
-ko:{brand:"영도 루트",qr:"크루즈터미널 QR로 접속",heroT:"출항 전까지, 영도를 알차게",heroP:"하고 싶은 걸 말로 적거나 질문 몇 개에 답하면, AI가 남은 시간에 맞춰 영도 동선을 짜드려요. 이름이나 연락처는 묻지 않아요.",
+ko:{ai_chips:["가족 여행","해산물","비 오는 날","2~3시간 코스"],brand:"영도 루트",qr:"크루즈터미널 QR로 접속",heroT:"출항 전까지, 영도를 알차게",heroP:"하고 싶은 걸 말로 적거나 질문 몇 개에 답하면, AI가 남은 시간에 맞춰 영도 동선을 짜드려요. 이름이나 연락처는 묻지 않아요.",
 ai_h:"AI에게 말로 물어보기",ai_ph:"예: 부모님이랑 셋이 왔어요. 해산물 좋아하고 많이 못 걸어요. 비가 와요. Sea Aurora 타고 왔어요.",ai_btn:"AI 동선 추천받기",ai_wait:"AI가 동선을 짜는 중…",ai_fail:"AI 연결이 안 돼서 적어주신 단어로 추천했어요.",or:"또는 질문에 하나씩 답하기",
 how:"이렇게 진행돼요",h1:"연령대·동행 선택",h2:"타고 온 크루즈 선택",h3:"관심 있는 테마 선택",h4:"AI 맞춤 동선 확인",start:"질문으로 시작하기",next:"다음",back:"이전",see:"동선 추천받기",
 q_nat:"어느 나라에서 오셨어요?",q_age:"연령대를 골라주세요",q_comp:"누구와 함께 오셨어요?",q_int:"무엇에 관심 있으세요?",q_intS:"여러 개 고를 수 있어요",q_wx:"오늘 날씨는 어때요?",q_wxS:"날씨에 맞춰 실내·실외를 조절해요",q_ship:"타고 오신 크루즈는?",q_shipS:"하선·귀선 시간이 자동으로 들어가요",
@@ -23,7 +23,7 @@ rtAria:"별점",rtSrc:"★ 별점은 영도 루트 이용자 후기 평균이에
 course:{E:"영도 동쪽 해안 코스",W:"영도 서쪽 감성 코스",EW:"영도 한 바퀴 코스",WE:"영도 한 바퀴 코스",O:"영도 + 롯데백화점 쇼핑 코스"},
 r:{closedDay:n=>`이날 쉬는 곳이라 뺐어요: ${n}.`,alt:"고르신 조건에 맞는 추천 장소가 부족해서, 비슷한 다른 장소로 코스를 짰어요.",booking:"동삼어촌체험마을은 사전 예약이 필요해요. 출발 전에 꼭 예약하세요.",int:i=>`고르신 관심사(${i})와 맞는 곳 위주로 골랐어요.`,stairs:"계단이 많은 흰여울문화마을과 언덕 위 조내기 고구마 역사공원은 뺐어요.",family:"아이와 함께 즐기기 좋은 실내 장소를 넣었어요.",crowd:"오늘 입항 인원이 많아 태종대는 붐비는 하선 직후를 피해 뒤로 배치했어요.",beauty:"쇼핑을 좋아하셔서 영도대교 건너 롯데백화점 광복점도 넣었어요. 이 코스에서 유일하게 영도 밖이에요.",shopYd:"쇼핑을 고르셔서 영도 안의 다이소와 올리브영을 넣었어요.",tooShort:"출항 2시간 전까지 돌아오려면 오늘은 다녀올 시간이 부족해요. 터미널 주변에서 쉬어 가세요.",short:"정박 시간이 짧아 터미널 가까운 곳만 넣었어요.",meal:"점심은 동선 중간의 해산물 식당으로 잡았어요.",oneWay:"동쪽과 서쪽을 오가지 않게 한 방향으로 묶었어요.",rain:"비가 와서 실내 장소 위주로 바꿨어요.",hot:"더운 날이라 실내·카페에서 쉬어가도록 넣었어요.",cold:"바람이 차서 바닷가 산책로는 줄였어요."},
 pick:"하나를 골라주세요"},
-en:{brand:"Yeongdo Route",qr:"Opened from the terminal QR",heroT:"Make the most of Yeongdo before you sail",heroP:"Tell us what you'd like in your own words, or answer a few questions, and AI plans a Yeongdo route that fits your time ashore. No name or contact needed.",
+en:{ai_chips:["Family trip","Seafood","Rainy day","2–3 hour route"],brand:"Yeongdo Route",qr:"Opened from the terminal QR",heroT:"Make the most of Yeongdo before you sail",heroP:"Tell us what you'd like in your own words, or answer a few questions, and AI plans a Yeongdo route that fits your time ashore. No name or contact needed.",
 ai_h:"Ask AI in your own words",ai_ph:"e.g. Three of us with my parents. We love seafood but can't walk much. It's raining. We came on Sea Aurora.",ai_btn:"Get my AI route",ai_wait:"AI is planning your route…",ai_fail:"AI isn't reachable, so we planned from the words you typed.",or:"or answer step by step",
 how:"How it works",h1:"Age and travel group",h2:"Choose your cruise",h3:"Pick your interests",h4:"Get your AI route",start:"Start with questions",next:"Next",back:"Back",see:"Get my route",
 q_nat:"Where are you from?",q_age:"Your age group",q_comp:"Who are you travelling with?",q_int:"What are you into?",q_intS:"Choose as many as you like",q_wx:"How's the weather today?",q_wxS:"We balance indoor and outdoor stops",q_ship:"Which cruise did you arrive on?",q_shipS:"Your times ashore fill in automatically",
@@ -42,7 +42,7 @@ rtAria:"Rating",rtSrc:"★ Ratings are the average of Yeongdo Route traveller re
 course:{E:"East Yeongdo Coast",W:"West Yeongdo Village Walk",EW:"Yeongdo Loop",WE:"Yeongdo Loop",O:"Yeongdo + Lotte Shopping"},
 r:{closedDay:n=>`Closed on this day, so left out: ${n}.`,alt:"Not enough of our picks fit today, so this course uses similar nearby places instead.",booking:"Dongsam Fishing Village needs a booking in advance. Reserve before you go.",int:i=>`Stops match your interests (${i}).`,stairs:"Steep stairs at Huinnyeoul Village and the hillside Jonaegi park are left out.",family:"An indoor stop kids enjoy is included.",crowd:"Many passengers today, so Taejongdae comes later to skip the post-disembark rush.",beauty:"You love shopping, so Lotte Department Store Gwangbok, just across Yeongdo Bridge, is added. It's the only stop outside Yeongdo.",shopYd:"You chose shopping, so Daiso and Olive Young in Yeongdo are on the route.",tooShort:"To be back 2 hours before departure, there isn't time for a stop today. Relax around the terminal.",short:"Short stay, so only spots near the terminal.",meal:"Lunch is a seafood stop mid-route.",oneWay:"The route runs one way so you don't cross the island twice.",rain:"It's raining, so indoor stops come first.",hot:"It's hot, so there's an indoor café break.",cold:"It's windy, so the seaside trail is cut back."},
 pick:"Choose one"},
-ja:{brand:"影島ルート",qr:"クルーズターミナルのQRから",heroT:"出航まで、影島をたっぷり",heroP:"やりたいことを言葉で書くか、いくつかの質問に答えると、AIが滞在時間に合わせて影島のルートを作ります。名前や連絡先は不要です。",
+ja:{ai_chips:["家族旅行","海鮮","雨の日","2〜3時間コース"],brand:"影島ルート",qr:"クルーズターミナルのQRから",heroT:"出航まで、影島をたっぷり",heroP:"やりたいことを言葉で書くか、いくつかの質問に答えると、AIが滞在時間に合わせて影島のルートを作ります。名前や連絡先は不要です。",
 ai_h:"AIに言葉で聞く",ai_ph:"例：両親と3人です。海鮮が好きで、あまり歩けません。雨です。Sea Auroraで来ました。",ai_btn:"AIルートを作る",ai_wait:"AIがルートを作成中…",ai_fail:"AIにつながらないため、入力された言葉からおすすめしました。",or:"または質問に答える",
 how:"進め方",h1:"年代・同行者",h2:"ご乗船のクルーズを選ぶ",h3:"興味のあるテーマ",h4:"AIおすすめルート",start:"質問ではじめる",next:"次へ",back:"戻る",see:"ルートを見る",
 q_nat:"どちらの国から？",q_age:"年代を選んでください",q_comp:"どなたと一緒ですか？",q_int:"興味のあることは？",q_intS:"いくつでも選べます",q_wx:"今日の天気は？",q_wxS:"天気に合わせて屋内・屋外を調整します",q_ship:"ご乗船のクルーズは？",q_shipS:"下船・帰船時刻が自動で入ります",
@@ -61,7 +61,7 @@ rtAria:"評価",rtSrc:"★ 評価は影島ルート利用者の感想の平均�
 course:{E:"影島 東海岸コース",W:"影島 西側さんぽコース",EW:"影島一周コース",WE:"影島一周コース",O:"影島＋ロッテ百貨店ショッピング"},
 r:{closedDay:n=>`この日は休みのため外しました：${n}。`,alt:"条件に合うおすすめ先が足りないため、近くの似た場所でコースを組みました。",booking:"東三漁村体験村は事前予約が必要です。出発前に予約してください。",int:i=>`選んだ興味（${i}）に合う場所を中心にしました。`,stairs:"階段の多い白瀬文化村と丘の上のチョネギ公園は外しました。",family:"子どもも楽しめる屋内スポットを入れました。",crowd:"本日は入港人数が多いため、太宗台は下船直後の混雑を避けて後にしました。",beauty:"ショッピング好きの方向けに、影島大橋を渡ってすぐのロッテ百貨店光復店も入れました。影島の外はここだけです。",shopYd:"ショッピングを選ばれたので、影島のダイソーとオリーブヤングを入れました。",tooShort:"出港2時間前に戻るには、今日は観光の時間が足りません。ターミナル周辺でお過ごしください。",short:"停泊が短いので、ターミナル近くだけにしました。",meal:"昼食はルート途中の海鮮店にしました。",oneWay:"東西を行き来しないよう一方向にまとめました。",rain:"雨なので屋内中心にしました。",hot:"暑いので屋内カフェで休めるようにしました。",cold:"風が冷たいので海沿いの散策路は減らしました。"},
 pick:"1つ選んでください"},
-zh:{brand:"影岛路线",qr:"来自邮轮码头二维码",heroT:"开船前，玩转影岛",heroP:"用自己的话写下想做的事，或回答几个问题，AI会根据您的上岸时间规划影岛路线。无需姓名或联系方式。",
+zh:{ai_chips:["家庭出游","海鲜","雨天","2~3小时路线"],brand:"影岛路线",qr:"来自邮轮码头二维码",heroT:"开船前，玩转影岛",heroP:"用自己的话写下想做的事，或回答几个问题，AI会根据您的上岸时间规划影岛路线。无需姓名或联系方式。",
 ai_h:"直接问AI",ai_ph:"例：我和父母三个人，喜欢海鲜，走不了太多路。今天下雨。坐Sea Aurora来的。",ai_btn:"生成AI路线",ai_wait:"AI正在规划路线…",ai_fail:"暂时连不上AI，已根据您输入的词语推荐。",or:"或逐步回答问题",
 how:"使用流程",h1:"年龄·同行",h2:"选择乘坐的邮轮",h3:"感兴趣的主题",h4:"查看AI路线",start:"回答问题开始",next:"下一步",back:"上一步",see:"生成路线",
 q_nat:"您来自哪里？",q_age:"请选择年龄段",q_comp:"和谁一起来？",q_int:"您对什么感兴趣？",q_intS:"可多选",q_wx:"今天天气怎么样？",q_wxS:"根据天气调整室内外安排",q_ship:"您乘坐的邮轮是？",q_shipS:"上岸与返船时间将自动填入",
