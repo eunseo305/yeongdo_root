@@ -184,33 +184,8 @@ function openPrefModal(key,s,a,opener){
 function renderResult(s,a){
   const x=t(),r=plan(),L=state.lang;
   const ordKey=r.ord.includes("O")?"O":r.ord.join("");
-  const ids=r.chosen.map(p=>p.id);
-  const rnd=seeded([state.a.nat,state.a.age,state.a.comp,state.a.weather,state.a.interests.slice().sort().join(),ids.join()].join("|"));
-  const n=40+Math.floor(rnd()*150),pct=48+Math.floor(rnd()*27),rate=(4.3+rnd()*0.5).toFixed(1);
-  const intNames=state.a.interests.map(k=>x.int[k]).join(", ");
-  const reasons=[x.r.int(intNames)];
   const W=state.a.weather;
-  if(W&&W!=="sun"){
-    reasons.push(x.r[W]);
-    const cut=(WX_BLOCK[W]||[]).map(id=>PLACES.find(p=>p.id===id)).filter(p=>p&&!p.alt).map(p=>p.name[L].split(" (")[0].split("（")[0]);
-    if(cut.length&&x.wxCut[W])reasons.push(x.wxCut[W](cut.join(", ")));
-    if(x.wxTip[W])reasons.push(x.wxTip[W]);
-  }
-  const hasStairsSkip=(state.a.age==="a70"||state.a.age==="a50")&&!ids.includes("huinnyeoul");
-  if(hasStairsSkip)reasons.push(x.r.stairs);
-  if(state.a.comp==="family"&&(ids.includes("museum")||ids.includes("arte")))reasons.push(x.r.family);
-  if(ids.includes("dongsam"))reasons.push(x.r.booking);
-  if(crowdOf(r.c.pax)==="high"&&ids.includes("taejongdae")&&ids.includes("museum"))reasons.push(x.r.crowd);
-  if(ids.includes("daiso")||ids.includes("oliveyoung"))reasons.push(x.r.shopYd);
-  if(ids.includes("lotte"))reasons.push(x.r.beauty);
-  const shut=PLACES.filter(p=>!p.alt&&p.closed&&p.closed.includes(cruiseDow())&&p.tags.some(g=>state.a.interests.includes(g))).map(p=>p.name[L].split(" (")[0].split("（")[0]);
-  if(shut.length)reasons.push(x.r.closedDay(shut.join(", ")));
-  if(r.alt)reasons.unshift(x.r.alt);
-  if(r.none)reasons.unshift(x.r.tooShort);else if(r.free<=150)reasons.push(x.r.short);
-  if(r.chosen.some(p=>p.meal))reasons.push(x.r.meal);
-  if(r.ord.length>1&&!r.ord.includes("O")&&!r.custom)reasons.push(x.r.oneWay);
   const E=EDT[L]||EDT.en;
-  if(r.custom)reasons.unshift(E.reason);
 
   // 선호도 칩: 누르면 모달로 그 항목만 다시 고름 (openPrefModal). 나라는 칩에서 뺌
   const chip=(k,v)=>`<button type="button" class="chip" data-edit="${k}" aria-haspopup="dialog">${esc(v)}</button>`;
@@ -234,12 +209,6 @@ function renderResult(s,a){
     if(state.addAt===i+1)tl+=addPanelHTML(r,i+1);
   });
   tl+=`<li class="tl"><span class="t">${hm(r.sim.end)}</span><span class="rail"><span class="dot end"></span></span><div class="body">${legHTML(r.sim.backLeg,x)}<strong>${x.terminal}</strong></div></li>`;
-
-  const fb=state.fbSent?`<p style="color:var(--good);font-size:14px">${x.fbThanks}</p>`:`
-    <div class="stars">${[1,2,3,4,5].map(i=>`<button type="button" id="star-${i}" data-s="${i}" aria-pressed="${state.rating>=i}" aria-label="${i}/5">★</button>`).join("")}</div>
-    <label class="f" for="fbLong">${x.fbLong}<select id="fbLong">${r.chosen.map(p=>`<option value="${p.id}">${esc(p.name[L])}</option>`).join("")}</select></label>
-    <label class="f" for="fbText">${x.fbText}<textarea id="fbText" style="min-height:64px"></textarea></label>
-    <button class="btn sea" id="fbSave" type="button" ${state.rating?"":"disabled"}>${x.fbSave}</button>`;
 
   s.innerHTML=`
   <div style="display:flex;flex-direction:column;gap:8px">
@@ -273,41 +242,9 @@ function renderResult(s,a){
   <div class="rpanel" id="tab-food" role="tabpanel" aria-labelledby="tabbtn-food" hidden>
   <section class="card" id="foodSec">${foodHTML(r)}</section>
   </div>
-  <div class="rpanel" id="tab-why" role="tabpanel" aria-labelledby="tabbtn-why" hidden>
-  <section class="card">
-    <h2 style="font-size:19px">${x.statsT}</h2>
-    <div class="stats">
-      <div class="stat"><div class="n">${n}</div><div class="l">${x.sN}</div></div>
-      <div class="stat"><div class="n">${pct}%</div><div class="l">${x.sPct}</div></div>
-      <div class="stat"><div class="n">${rate}</div><div class="l">${x.sRate} / 5</div></div>
-    </div>
-    <div class="meter" aria-hidden="true"><i style="width:${pct}%"></i></div>
-  </section>
-  <section class="card">
-    <h2 style="font-size:19px">${x.whyT}</h2>
-    <ul class="reasons">${reasons.map(v=>`<li>${esc(v)}</li>`).join("")}</ul>
-  </section>
-  </div>
-  <div class="rpanel" id="tab-fb" role="tabpanel" aria-labelledby="tabbtn-fb" hidden>
-  <section class="card" id="fb">
-    <h2 style="font-size:19px">${x.fbT}</h2>
-    <p class="muted">${x.fbP}</p>
-    ${fb}
-  </section>
-  </div>
   <p class="demo">${x.demo}</p>`;
   lastR=r;naverMap(r);wireAds(r);wireFood(r);wireTabs();wireEdit(r,s,a);
   s.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openPrefModal(b.dataset.edit,s,a,b));
-  s.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{
-    state.rating=+b.dataset.s;
-    s.querySelectorAll("[data-s]").forEach(o=>o.setAttribute("aria-pressed",String(+o.dataset.s<=state.rating)));
-    const sv=document.getElementById("fbSave");if(sv)sv.disabled=false;
-  });
-  const sv=document.getElementById("fbSave");
-  if(sv)sv.onclick=()=>{
-    saveReview({stars:state.rating,place:document.getElementById("fbLong").value,nat:state.a.nat||{ko:"kr",ja:"ja",zh:"zh",en:"us"}[state.lang]||"other",text:document.getElementById("fbText").value.trim().slice(0,200),mine:true});
-    state.fbSent=true;renderResult(s,a);document.getElementById("fb").scrollIntoView({block:"center"});
-  };
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="againBtn" type="button">${x.again}</button>`;
   document.getElementById("backBtn").onclick=()=>{state.screen="q";state.q=QUESTIONS.length-1;render()};
   document.getElementById("againBtn").onclick=()=>{state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",fbSent:false,route:null,picking:null,addAt:null,editing:false};render()};

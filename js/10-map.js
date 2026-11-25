@@ -19,7 +19,7 @@ ko:{aria:"결과 바로가기",map:"🗺️ 지도",tl:"🕒 일정",food:"🍜 
 en:{aria:"Jump to section",map:"🗺️ Map",tl:"🕒 Schedule",food:"🍜 Food",why:"💡 Why",fb:"⭐ Review"},
 ja:{aria:"セクションへ移動",map:"🗺️ 地図",tl:"🕒 日程",food:"🍜 グルメ",why:"💡 理由",fb:"⭐ 感想"},
 zh:{aria:"跳转到",map:"🗺️ 地图",tl:"🕒 行程",food:"🍜 美食",why:"💡 理由",fb:"⭐ 评价"}};
-const TAB_KEYS=["map","tl","food","why","fb"];
+const TAB_KEYS=["map","tl","food"];
 /* 탭 전환: 누른 탭의 내용만 보이고 나머지는 숨김. init=true는 화면을 처음 그릴 때(지도는 renderResult가 이미 그림) */
 function showTab(k,init){
   if(!TAB_KEYS.includes(k))k="map";
