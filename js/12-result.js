@@ -21,16 +21,20 @@ function renderResult(s,a){
   const W=state.a.weather;
   if(W&&W!=="sun"){
     reasons.push(x.r[W]);
-    const cut=(WX_BLOCK[W]||[]).map(id=>PLACES.find(p=>p.id===id)).filter(Boolean).map(p=>p.name[L].split(" (")[0].split("（")[0]);
+    const cut=(WX_BLOCK[W]||[]).map(id=>PLACES.find(p=>p.id===id)).filter(p=>p&&!p.alt).map(p=>p.name[L].split(" (")[0].split("（")[0]);
     if(cut.length&&x.wxCut[W])reasons.push(x.wxCut[W](cut.join(", ")));
     if(x.wxTip[W])reasons.push(x.wxTip[W]);
   }
   const hasStairsSkip=(state.a.age==="a70"||state.a.age==="a50")&&!ids.includes("huinnyeoul");
   if(hasStairsSkip)reasons.push(x.r.stairs);
-  if(state.a.comp==="family"&&ids.includes("museum"))reasons.push(x.r.family);
+  if(state.a.comp==="family"&&(ids.includes("museum")||ids.includes("arte")))reasons.push(x.r.family);
+  if(ids.includes("dongsam"))reasons.push(x.r.booking);
   if(crowdOf(r.c.pax)==="high"&&ids.includes("taejongdae")&&ids.includes("museum"))reasons.push(x.r.crowd);
   if(ids.includes("daiso")||ids.includes("oliveyoung"))reasons.push(x.r.shopYd);
   if(ids.includes("lotte"))reasons.push(x.r.beauty);
+  const shut=PLACES.filter(p=>!p.alt&&p.closed&&p.closed.includes(cruiseDow())&&p.tags.some(g=>state.a.interests.includes(g))).map(p=>p.name[L].split(" (")[0].split("（")[0]);
+  if(shut.length)reasons.push(x.r.closedDay(shut.join(", ")));
+  if(r.alt)reasons.unshift(x.r.alt);
   if(r.none)reasons.unshift(x.r.tooShort);else if(r.free<=150)reasons.push(x.r.short);
   if(r.chosen.some(p=>p.meal))reasons.push(x.r.meal);
   if(r.ord.length>1&&!r.ord.includes("O"))reasons.push(x.r.oneWay);
