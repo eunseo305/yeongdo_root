@@ -105,8 +105,10 @@ function renderResult(s,a){
   <section class="mapbox" aria-label="map">
     <div id="nmap"></div>
     <div id="smap">${sketchMap(r)}</div>
-    <div class="map-cap"><span id="mapCap">${MAPT[L].sketch}</span><span style="display:flex;gap:6px"><button type="button" class="adtoggle" id="zoomToggle" style="color:var(--sea)">${state.mapFull?MAPT[L].zoom:MAPT[L].full}</button><button type="button" class="adtoggle" id="adToggle" aria-pressed="${state.adsOn}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="5" fill="currentColor"/></svg>${ADT[L].toggle}</button></span></div>
+    ${myLocBtnHTML()}
+    <div class="map-cap"><span id="mapCap">${MAPT[L].sketch}</span><span class="map-btns">${wcBtnHTML()}<button type="button" class="adtoggle" id="zoomToggle" style="color:var(--sea)">${state.mapFull?MAPT[L].zoom:MAPT[L].full}</button><button type="button" class="adtoggle" id="adToggle" aria-pressed="${state.adsOn}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="5" fill="currentColor"/></svg>${ADT[L].toggle}</button></span></div>
   </section>
+  <div id="wcPanel"></div>
   <div id="adPanel">${adPanelHTML(r)}</div>
   </div>
   <div class="rpanel" id="tab-tl" role="tabpanel" aria-labelledby="tabbtn-tl" hidden>
@@ -139,7 +141,7 @@ function renderResult(s,a){
   </section>
   </div>
   <p class="demo">${x.demo}</p>`;
-  lastR=r;naverMap(r);wireAds(r);wireFood(r);wireTabs();
+  lastR=r;naverMap(r);wireAds(r);wireWc(r);wireMyLoc(r);wireFood(r);wireTabs();
   s.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openPrefModal(b.dataset.edit,s,a,b));
   s.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{
     state.rating=+b.dataset.s;
@@ -153,5 +155,5 @@ function renderResult(s,a){
   };
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="againBtn" type="button">${x.again}</button>`;
   document.getElementById("backBtn").onclick=()=>{state.screen="q";state.q=QUESTIONS.length-1;render()};
-  document.getElementById("againBtn").onclick=()=>{state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",fbSent:false};render()};
+  document.getElementById("againBtn").onclick=()=>{wcStop();myLocReset();if(wcPrevFull!==null){state.mapFull=wcPrevFull;wcPrevFull=null}state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",fbSent:false};render()};
 }

@@ -131,7 +131,7 @@ function refreshMap(r){
   const ap=document.getElementById("adPanel");if(ap)ap.innerHTML=adPanelHTML(r);
   const tg=document.getElementById("adToggle");if(tg)tg.setAttribute("aria-pressed",String(state.adsOn));
   if(nmapObj)drawNaverAds(r);
-  wireAds(r);
+  wireAds(r);wireWc(r);
 }
 
 const MB={lat0:35.101,lat1:35.047,lng0:129.026,lng1:129.094,W:400,H:390};
@@ -185,7 +185,9 @@ function sketchMap(r){
     <polyline points="${out}" fill="none" stroke="#e5533b" stroke-width="${f(3.5)}" stroke-linejoin="round" marker-mid="url(#marr)"/>
     ${adsSvg(r)}
     ${foodSvg(r)}
+    ${wcSvg()}
     ${marks}
+    ${myLocSvg()}
     <g transform="translate(${tx} ${ty}) scale(${k.toFixed(3)})">
       <rect x="-13" y="-13" width="26" height="26" rx="7" fill="#0d4a5c" stroke="#fff" stroke-width="2.5"/>
       <text y="4.5" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">T</text>
@@ -282,6 +284,6 @@ function naverMap(r){
       const fit=()=>{if(my!==mapToken||!nmapEl.isConnected)return;map.setSize(new N.Size(slot.clientWidth||360,slot.clientHeight||320));map.fitBounds(bounds)};
       fit();
       setTimeout(fit,300); // 한 번 더 크기를 맞춰서 회색 화면 방지
-      drawNaverAds(r);drawNaverFoods(r);
+      drawNaverAds(r);drawNaverFoods(r);drawNaverWc();drawNaverMe();
     }).catch(()=>{if(my===mapToken)showSketch()}); // 실패하면 약도로 되돌림(지도는 버리지 않음)
 }

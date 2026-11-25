@@ -147,6 +147,40 @@ button.chip:hover{filter:brightness(.95)}
 .adtoggle{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:3px 10px;font:600 12px var(--body);color:#e0442d;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .adtoggle[aria-pressed="false"]{color:var(--muted)}
 .adtoggle:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+/* 공중화장실 버튼·마커 (js/13b-toilets.js). 보라색 = 화장실 (관광지 빨강·파랑, 광고 빨강, 맛집 초록과 구분) */
+.map-btns{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
+.wctoggle[aria-pressed="false"]{color:var(--muted)}
+.wctoggle[aria-pressed="true"]{background:#7b4fd6;border-color:#7b4fd6;color:#fff}
+.wctoggle:disabled{opacity:.6;cursor:wait}
+.wc-pin{cursor:pointer}
+.nwc{display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.nwc .ic{width:20px;height:20px;border-radius:5px;background:#7b4fd6;border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35);display:grid;place-items:center;font-size:11px;line-height:1}
+.nwc.on .ic{border-color:#191f28}
+.nwc .nm{font:600 11.5px var(--body);color:#4a2a9a;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;margin-top:2px;white-space:nowrap}
+@media (max-width:380px){.map-btns .adtoggle{padding:3px 8px;font-size:11.5px}}
+/* 내 위치 버튼 (js/13c-myloc.js): 지도 오른쪽 위 동그란 ⌖ 버튼 */
+.mapbox{position:relative}
+.locbtn{position:absolute;top:10px;right:10px;z-index:5;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;color:#5f7178;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.locbtn[aria-pressed="true"]{color:#1a73e8}
+.locbtn.busy svg{animation:locspin 1s linear infinite}
+.locbtn:focus-visible{outline:3px solid #1a73e8;outline-offset:2px}
+@keyframes locspin{to{transform:rotate(360deg)}}
+/* 내 위치 점 + 가까운 화장실 5곳 목록 */
+.nme{width:26px;height:26px;border-radius:50%;background:rgba(26,115,232,.18);display:grid;place-items:center}
+.nme::after{content:"";width:13px;height:13px;border-radius:50%;background:#1a73e8;border:2.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.wcpanel{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.wch{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 8px;font-size:14.5px}
+.wch .muted{font-size:12px}
+.wcnote{font-size:12.5px;color:var(--warn)}
+.wclist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.wclist button{width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.wclist button[aria-pressed="true"]{border-color:#7b4fd6;box-shadow:0 0 0 1px #7b4fd6 inset}
+.wclist button:focus-visible{outline:3px solid #7b4fd6;outline-offset:2px}
+.wclist .n{flex:none;width:22px;height:22px;border-radius:5px;background:#7b4fd6;color:#fff;display:grid;place-items:center;font:700 12px var(--body)}
+.wclist .t{flex:1;display:flex;flex-direction:column;min-width:0}
+.wclist .t b{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wclist .t small{font-size:12px;color:var(--muted)}
+.wclist .d{flex:none;font:700 13.5px var(--body);color:#4a2a9a}
 .adcard{border:1.5px solid #f3c6bd;background:#fff7f5;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
 .adcard .top{display:flex;align-items:center;gap:8px;justify-content:space-between}
 .adcard .lbl{font:700 10.5px var(--body);color:#e0442d;border:1px solid #e0442d;border-radius:4px;padding:1px 5px;flex:none}
