@@ -2,7 +2,7 @@
    담당: ② 화면 */
 
 const blankA=()=>({nat:null,age:null,comp:null,interests:[],weather:null});
-let state={resTab:"map",foodCat:"all",foodMore:false,mapFull:false,photosOn:false,photoBig:null,adsOn:false,adSel:null,lang:detectLang(),screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiBusy:false,aiMsg:"",fbSent:false,route:null,customPlaces:[],picking:null,addAt:null,editing:false};
+let state={resTab:"map",foodCat:"all",foodMore:false,mapFull:false,photosOn:false,photoBig:null,adsOn:true,adSel:null,lang:detectLang(),screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiBusy:false,aiMsg:"",fbSent:false,route:null,customPlaces:[],picking:null,addAt:null,editing:false};
 // route: 사용자가 고친 경로(장소 id 순서). null이면 자동 추천 경로
 // customPlaces: 사용자가 지도에서 직접 찍어 추가한 장소. picking: 위치 찍는 중인 장소 {name,dwell,at}
 // addAt: 일정에서 '＋ 여기에 추가'를 펼친 자리 (null이면 닫힘)
