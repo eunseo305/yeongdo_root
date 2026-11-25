@@ -1,0 +1,37 @@
+# 매일 새벽 4시(한국 시간) 영도 맛집 목록 foods.json을 새로 받아 저장한다.
+# 필요한 것: 저장소 Settings → Secrets and variables → Actions → TOURAPI_KEY (공공데이터포털 인증키)
+name: 영도 맛집 목록 갱신
+
+on:
+  schedule:
+    - cron: "0 19 * * *" # UTC 19:00 = 한국 04:00
+  workflow_dispatch: # Actions 탭에서 손으로도 실행 가능
+
+permissions:
+  contents: write
+
+jobs:
+  foods:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: TourAPI에서 영도 음식점 받기
+        env:
+          TOURAPI_KEY: ${{ secrets.TOURAPI_KEY }}
+        run: |
+          if [ -z "$TOURAPI_KEY" ]; then
+            echo "TOURAPI_KEY가 아직 없어 건너뜁니다. 페이지는 기본 맛집 목록을 씁니다."
+            exit 0
+          fi
+          node scripts/fetch-foods.mjs
+      - name: 바뀌었으면 저장
+        if: hashFiles('foods.json') != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add foods.json
+          git diff --cached --quiet || git commit -m "맛집 목록 자동 갱신 $(date -u +%F)"
+          git push
