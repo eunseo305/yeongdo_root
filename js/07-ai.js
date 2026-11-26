@@ -36,11 +36,21 @@ function fillDefaults(a){
 }
 // 꼭 알아야 하는 것 = 질문 화면의 질문(QUESTIONS). 그중 글에서 못 알아낸 것만 골라냄 (순서 = 질문 순서)
 function aiMissing(){return QUESTIONS.filter(k=>!qFilled(k))}
+// Cloudflare 중계 서버 주소 (worker/ 폴더를 배포하면 나오는 https://yeongdo-ai.<계정>.workers.dev). 비워 두면 단어 찾기만 씀
+const AI_PROXY="https://yeongdo-ai.keshanhea-3e9.workers.dev/";
+async function askProxy(raw){
+  const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),15000);
+  try{
+    const r=await fetch(AI_PROXY,{method:"POST",headers:{"Content-Type":"application/json"},signal:ctl.signal,
+      body:JSON.stringify({text:raw.slice(0,500),lang:state.lang,ships:CRUISES.map(c=>({id:c.id,name:c.name}))})});
+    return r.ok?await r.json():null;
+  }catch(e){return null}finally{clearTimeout(tm)}
+}
 async function askAI(){
   const raw=(state.aiText||"").trim();
   if(!raw||state.aiBusy)return;
   state.aiBusy=true;state.aiMsg="";render();
-  let res=null;
+  let res=null,j=null;
   if(sampleFn){
     const langName={ko:"Korean",en:"English",ja:"Japanese",zh:"Simplified Chinese"}[state.lang];
     const prompt=`A cruise passenger who just got off the ship at Busan's Yeongdo cruise terminal wrote this about their day:
@@ -52,15 +62,23 @@ Read it and return ONLY a JSON object with these keys. Only fill what they actua
 - weather: one of sun, rain, hot, cold, or null
 - ship: one of ${CRUISES.map(c=>`${c.id} (${c.name})`).join(", ")}, or null if not named
 - note: one warm sentence in ${langName}, under 30 words, saying what you understood they want for today. No place names.`;
-    try{
-      const j=await sampleFn.json(prompt,{modelTier:"quick"});
-      if(j&&typeof j==="object"){
-        const ok=(v,list)=>list.includes(v)?v:null;
-        res={a:{nat:ok(j.nat,["ja","zh","tw","us","kr","other"]),comp:ok(j.comp,["solo","couple","friends","family","care","both"]),
-          interests:Array.isArray(j.interests)?j.interests.filter(v=>["food","cafe","photo","view","culture","beauty","activity"].includes(v)):[],weather:ok(j.weather,["sun","rain","hot","cold"])},
-          ship:ok(j.ship,CRUISES.map(c=>c.id)),note:typeof j.note==="string"?j.note.slice(0,200):""};
-      }
-    }catch(e){res=null}
+    try{j=await sampleFn.json(prompt,{modelTier:"quick"})}catch(e){j=null}
+  }
+  // claude.ai 밖(GitHub Pages 등)에서는 Cloudflare 중계 서버(worker/)의 Workers AI에 물어봄
+  if(!(j&&typeof j==="object")&&AI_PROXY)j=await askProxy(raw);
+  if(j&&typeof j==="object"){
+    const ok=(v,list)=>list.includes(v)?v:null;
+    res={a:{nat:ok(j.nat,["ja","zh","tw","us","kr","other"]),comp:ok(j.comp,["solo","couple","friends","family","care","both"]),
+      interests:Array.isArray(j.interests)?j.interests.filter(v=>["food","cafe","photo","view","culture","beauty","activity"].includes(v)):[],weather:ok(j.weather,["sun","rain","hot","cold"])},
+      ship:ok(j.ship,CRUISES.map(c=>c.id)),note:typeof j.note==="string"?j.note.slice(0,200):""};
+    // AI가 놓친 건 단어 찾기 결과로 채움. 노약자·아이는 단어로 잡히면 AI 답에 더해 줌 (안전 쪽으로)
+    const loc=parseLocal(raw),lc=loc.a.comp,ac=res.a.comp;
+    for(const k of ["nat","weather"])if(!res.a[k])res.a[k]=loc.a[k];
+    if(!ac)res.a.comp=lc;
+    else if(lc==="both"||(hasCare(lc)&&hasKids(ac))||(hasKids(lc)&&hasCare(ac)&&ac!==lc))res.a.comp="both";
+    else if(hasCare(lc)&&!hasCare(ac))res.a.comp=lc;
+    if(!res.a.interests.length)res.a.interests=loc.a.interests;
+    if(!res.ship)res.ship=loc.ship;
   }
   if(!res){res=parseLocal(raw);state.aiMsg=t().ai_fail}
   state.a=fillDefaults(res.a);

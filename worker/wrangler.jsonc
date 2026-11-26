@@ -1,0 +1,14 @@
+// 영도 동선 "AI에게 말로 물어보기" 중계 서버 (Cloudflare Workers Free + Workers AI)
+// 배포: 이 폴더에서  npx wrangler login  →  npx wrangler deploy
+{
+  "name": "yeongdo-ai",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-01",
+  "ai": {
+    "binding": "AI" // Worker 안에서 env.AI 로 씀
+  },
+  "vars": {
+    // 이 주소에서 온 요청만 받음 (쉼표로 여러 개). 로컬 테스트 주소(localhost·127.0.0.1)는 코드에서 따로 허용
+    "ALLOWED_ORIGINS": "https://eunseo305.github.io"
+  }
+}
