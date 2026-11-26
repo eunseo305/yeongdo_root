@@ -9,6 +9,6 @@
   },
   "vars": {
     // 이 주소에서 온 요청만 받음 (쉼표로 여러 개). 로컬 테스트 주소(localhost·127.0.0.1)는 코드에서 따로 허용
-    "ALLOWED_ORIGINS": "https://eunseo305.github.io"
+    "ALLOWED_ORIGINS": "https://eunseo305.github.io,https://yeongdoroot.vercel.app"
   }
 }

@@ -8,7 +8,7 @@ const MAX_TEXT = 500;   // 글 길이 제한
 const MAX_SHIPS = 40;   // 크루즈 목록 길이 제한
 
 const NAT = ["ja", "zh", "tw", "us", "kr", "other"];
-const COMP = ["solo", "couple", "friends", "family", "care", "both"];
+const COMP = ["solo", "couple", "friends", "family", "care", "both", "fam"];
 const INTERESTS = ["food", "cafe", "photo", "view", "culture", "beauty", "activity"];
 const WEATHER = ["sun", "rain", "hot", "cold"];
 const LANG_NAME = { ko: "Korean", en: "English", ja: "Japanese", zh: "Simplified Chinese" };
@@ -39,7 +39,7 @@ function buildMessages(text, lang, ships) {
   const system = `You read what a cruise passenger who just got off the ship at Busan's Yeongdo cruise terminal wrote about their day, and fill a JSON object.
 Only fill what they actually said or clearly implied; do not guess (use null or [] instead).
 - nat: one of ${NAT.join(", ")}, or null if not said
-- comp: one of ${COMP.join(", ")}, or null (family = travelling with children; care = travelling with older adults or someone with limited mobility, e.g. elderly parents, wheelchair, trouble walking; both = children and older adults or someone with limited mobility together)
+- comp: one of ${COMP.join(", ")}, or null (family = travelling with children; care = travelling with older adults or someone with limited mobility, e.g. elderly parents, wheelchair, trouble walking; both = children and older adults or someone with limited mobility together; fam = travelling with family but no children and no older adults or limited mobility mentioned)
 - interests: array from ${INTERESTS.join(", ")} (beauty = shopping, cosmetics, Daiso, Olive Young, department store; activity = zipline, Danubi train, fishing village experience)
 - weather: one of ${WEATHER.join(", ")}, or null
 - ship: one of ${ships.length ? ships.map(s => `${s.id} (${s.name})`).join(", ") : "(none)"}, or null if not named
@@ -48,6 +48,7 @@ Rules:
 - interests: include only interests the text actually mentions. Do not add any that are not mentioned.
 - A market (시장, 市場, 市场) means food, not culture or beauty.
 - Mentioning parents, grandparents, elderly people, or not being able to walk much means comp = care (or both if children also come).
+- The value "family" means children only. The word family (가족, 家族, 家人) alone does not mean children: if no children, kids, son or daughter are mentioned, use fam (or care if older adults are mentioned).
 - Mentioning rain means weather = rain.
 The text may be in Korean, Japanese, Chinese or English.`;
   // 예시 한 쌍: 작은 모델이 규칙을 더 잘 따르게 함

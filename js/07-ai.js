@@ -57,7 +57,7 @@ async function askAI(){
 """${raw}"""
 Read it and return ONLY a JSON object with these keys. Only fill what they actually said or clearly implied; do not guess (use null or [] instead):
 - nat: one of ja, zh, tw, us, kr, other, or null if not said
-- comp: one of solo, couple, friends, family, care, both, or null (family = travelling with children; care = travelling with older adults or someone with limited mobility, e.g. elderly parents, wheelchair, trouble walking; both = children and older adults or someone with limited mobility together)
+- comp: one of solo, couple, friends, family, care, both, fam, or null (family = travelling with children; care = travelling with older adults or someone with limited mobility, e.g. elderly parents, wheelchair, trouble walking; both = children and older adults or someone with limited mobility together; fam = travelling with family but no children and no older adults or limited mobility mentioned)
 - interests: array from food, cafe, photo, view, culture, beauty, activity (beauty = shopping, cosmetics, Daiso, Olive Young, department store; activity = zipline, Danubi train, fishing village experience)
 - weather: one of sun, rain, hot, cold, or null
 - ship: one of ${CRUISES.map(c=>`${c.id} (${c.name})`).join(", ")}, or null if not named
@@ -75,8 +75,11 @@ Read it and return ONLY a JSON object with these keys. Only fill what they actua
     const loc=parseLocal(raw),lc=loc.a.comp,ac=res.a.comp;
     for(const k of ["nat","weather"])if(!res.a[k])res.a[k]=loc.a[k];
     if(!ac)res.a.comp=lc;
+    // AI가 "가족"을 아이 동반(family)으로 착각한 경우: 아이 단어가 없으면 단어 찾기 결과(그냥 가족 fam / 노약자 care)로
+    else if(ac==="family"&&(lc==="fam"||lc==="care"))res.a.comp=lc;
     else if(lc==="both"||(hasCare(lc)&&hasKids(ac))||(hasKids(lc)&&hasCare(ac)&&ac!==lc))res.a.comp="both";
     else if(hasCare(lc)&&!hasCare(ac))res.a.comp=lc;
+    else if(hasKids(lc)&&!hasKids(ac)&&!hasCare(ac))res.a.comp=lc; // AI가 가족(fam)·커플 등으로 봤어도 아이가 보이면 아이 동반
     if(!res.a.interests.length)res.a.interests=loc.a.interests;
     if(!res.ship)res.ship=loc.ship;
   }
