@@ -2,8 +2,8 @@
    담당: ② 화면 */
 
 const blankA=()=>({nat:null,comp:null,interests:[],weather:null});
-// 동행 "노약자·아이 동반"의 세부 선택: family=아이, care=노약자, both=둘 다 (state.a.mix=그 칸을 펼쳤는지)
-const MIXV=["family","care","both"];
+// 동행 "가족" 칸의 세부 선택: 아이·노약자는 따로 켜고 끔 → family=아이, care=노약자, both=둘 다, fam=해당없음 (state.a.mix=그 칸을 펼쳤는지)
+const MIXV=["family","care","both","fam"];
 const hasCare=c=>c==="care"||c==="both", hasKids=c=>c==="family"||c==="both";
 let state={resTab:"map",foodCat:"all",foodMore:false,mapFull:false,photosOn:false,photoBig:null,adsOn:false,adSel:null,lang:detectLang(),screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiBusy:false,aiMsg:"",aiFollow:null,fbSent:false,route:null,customPlaces:[],picking:null,addAt:null,editing:false};
 // route: 사용자가 고친 경로(장소 id 순서). null이면 자동 추천 경로

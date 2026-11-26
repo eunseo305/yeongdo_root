@@ -136,25 +136,36 @@ function qApply(blk,key,v){
   if(key==="interests"){const arr=state.a.interests;const j=arr.indexOf(v);j>=0?arr.splice(j,1):arr.push(v)}
   else if(key==="ship"){state.ship=v}
   else if(key==="comp"){
-    // "노약자·아이 동반"(mix)은 칸만 펼치고, 아래 아이/노약자/둘 다 중 하나를 골라야 답한 것으로 침
-    if(v==="mix"){state.a.mix=true;if(!MIXV.includes(state.a.comp))state.a.comp=null}
+    // "가족"(mix)은 칸만 펼침. 아래에서 아이·노약자(따로 켜고 끔, 둘 다 가능) 또는 해당없음을 골라야 답한 것으로 침
+    const c=state.a.comp;
+    if(v==="mix"){state.a.mix=true;if(!MIXV.includes(c))state.a.comp=null}
+    else if(v==="kid"||v==="old"){
+      let kid=hasKids(c),old=hasCare(c);
+      if(v==="kid")kid=!kid;else old=!old;
+      state.a.comp=kid&&old?"both":kid?"family":old?"care":null;state.a.mix=true;
+    }
     else{state.a.comp=v;state.a.mix=MIXV.includes(v)}
     const sub=blk.querySelector(".comp-sub");if(sub)sub.hidden=!state.a.mix;
   }
   else{state.a[key]=v}
   blk.querySelectorAll("[data-v]").forEach(o=>{
     const ov=o.dataset.v;
-    o.setAttribute("aria-pressed",key==="interests"?state.a.interests.includes(ov):key==="ship"?state.ship===ov:key==="comp"&&ov==="mix"?!!state.a.mix:state.a[key]===ov);
+    o.setAttribute("aria-pressed",key==="interests"?state.a.interests.includes(ov):key==="ship"?state.ship===ov:key==="comp"?compPressed(ov):state.a[key]===ov);
   });
 }
-// 동행 질문: 혼자·커플·친구·노약자/아이 동반 + (펼치면) 아이/노약자/둘 다
+// 동행 버튼이 눌린 상태인지: 아이·노약자는 따로, 가족(mix)은 칸이 펼쳐졌을 때
+function compPressed(k){
+  const c=state.a.comp;
+  return k==="mix"?(!!state.a.mix||MIXV.includes(c)):k==="kid"?hasKids(c):k==="old"?hasCare(c):c===k;
+}
+// 동행 질문: 혼자·커플·친구·가족 + (가족을 펼치면) 아이 / 노약자 (둘 다 고를 수 있음) / 해당없음
 function compOptsHTML(){
-  const x=t(),c=state.a.comp,mix=!!state.a.mix||MIXV.includes(c);
-  const btn=(k,l)=>`<button type="button" class="opt" id="comp-${k}" data-v="${k}" aria-pressed="${k==="mix"?mix:c===k}"><span>${l}</span></button>`;
+  const x=t(),mix=compPressed("mix");
+  const btn=(k,l)=>`<button type="button" class="opt" id="comp-${k}" data-v="${k}" aria-pressed="${compPressed(k)}"><span>${l}</span></button>`;
   return `<div class="options">${["solo","couple","friends"].map(k=>btn(k,x.comp[k])).join("")}${btn("mix",x.compMix)}</div>
     <div class="comp-sub" role="group" aria-labelledby="comp-sub-t"${mix?"":" hidden"}>
       <p id="comp-sub-t" class="comp-sub-t">${x.compSubQ}</p>
-      <div class="options three">${MIXV.map(k=>btn(k,x.compSub[k])).join("")}</div></div>`;
+      <div class="options three">${["kid","old","fam"].map(k=>btn(k,x.compSub[k])).join("")}</div></div>`;
 }
 
 function renderQ(s,a){
@@ -180,7 +191,8 @@ function renderQ(s,a){
     qApply(blk,key,v);
 
     // 맨 아래(가장 최근에 열린) 질문에 답했으면 다음 질문을 펼침
-    const next=()=>{if(i===state.q&&qFilled(key)&&i<qList().length-1)qRevealNext(key!=="interests")};
+    // 관심사와 가족의 아이·노약자는 더 고를 수 있게 자동 스크롤하지 않음
+    const next=()=>{if(i===state.q&&qFilled(key)&&i<qList().length-1)qRevealNext(key!=="interests"&&!(key==="comp"&&(v==="kid"||v==="old")))};
     qSync(a);
     // 노약자(노약자·둘 다)를 새로 고르면 어떤 점을 배려하는지 팝업으로 알려 주고, 닫은 뒤 다음 질문으로
     if(key==="comp"&&hasCare(state.a.comp)&&!hasCare(was))showCareInfo(b,next);else next();
@@ -255,7 +267,7 @@ function grid(items,key,multi){
     return `<button type="button" class="opt" id="${key}-${k}" data-v="${k}" aria-pressed="${on}"><span>${l}</span>${sub?`<small>${sub}</small>`:""}</button>`}).join("")}</div>`;
 }
 /* ---- 노약자 동반 안내 팝업 ----
-   동행에서 "노약자·아이 동반" → 노약자 또는 둘 다를 고르면 추천 동선에서 무엇을 배려하는지 보여 줍니다.
+   동행에서 "가족" → 노약자 또는 둘 다를 고르면 추천 동선에서 무엇을 배려하는지 보여 줍니다.
    목록은 실제 계산과 맞춰 두세요: js/09-engine.js(계단), js/05-travel.js(걷는 속도·택시), js/02-places.js(짚라인 체중 제한) */
 const CARE_T={
 ko:{h:"노약자 동반으로 이렇게 배려해요",ok:"확인",items:["계단이 많은 곳(흰여울문화마을, 조내기 고구마 역사공원 등)은 코스에서 빼요","짚라인은 체중 30~100kg인 분만 탈 수 있어요. 코스에 있으면 미리 확인해 주세요","걷는 속도를 느리게 잡아 이동 시간을 넉넉히 계산해요","걸어서 10분이 넘는 거리는 택시를 추천해요"]},

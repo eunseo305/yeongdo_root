@@ -10,7 +10,7 @@ how:"이렇게 진행돼요",h1:"누구와 왔는지 선택",h2:"타고 온 크�
 q_nat:"어느 나라에서 오셨어요?",q_comp:"누구와 함께 오셨어요?",q_int:"무엇에 관심 있으세요?",q_intS:"여러 개 고를 수 있어요",q_wx:"오늘 날씨는 어때요?",q_wxS:"날씨에 맞춰 실내·실외를 조절해요",q_ship:"타고 오신 크루즈는?",q_shipS:"하선·귀선 시간이 자동으로 들어가요",
 nat:{ja:"일본",zh:"중국",tw:"대만",us:"미국",kr:"한국",other:"기타"},
 
-comp:{solo:"혼자",couple:"커플·부부",friends:"친구",family:"아이 동반",care:"노약자 동반",both:"노약자·아이 동반"},compMix:"노약자·아이 동반",compSubQ:"누구와 함께인가요?",compSub:{family:"아이",care:"노약자",both:"둘 다"},
+comp:{solo:"혼자",couple:"커플·부부",friends:"친구",family:"아이 동반",care:"노약자 동반",both:"노약자·아이 동반",fam:"가족"},compMix:"가족",compSubQ:"함께 오신 분을 골라 주세요 (아이·노약자 둘 다 고를 수 있어요)",compSub:{kid:"아이",old:"노약자",fam:"해당없음"},
 int:{food:"음식",cafe:"카페",photo:"사진",view:"바다 풍경",culture:"문화·예술",beauty:"쇼핑·뷰티",activity:"액티비티"},
 intS:{food:"해산물, 시장",cafe:"바다 전망 카페",photo:"포토 스팟",view:"해안 절경",culture:"박물관, 예술마을",beauty:"다이소·올리브영·롯데백화점",activity:"짚라인, 다누비열차, 어촌체험"},
 wx:{sun:"맑음",rain:"비",hot:"더움",cold:"추움·바람"},env:{in:"실내",semi:"지붕 있음",out:"야외"},cnt:"곳",wxDay:"날씨 반영",wxCut:{rain:n=>`비 오는 날 미끄럽고 위험해서 뺀 곳: ${n}. 야외는 한 곳까지만 넣었어요.`,cold:n=>`바닷바람을 바로 맞는 곳이라 뺀 곳: ${n}. 야외는 두 곳까지만 넣었어요.`},wxTip:{rain:"우산을 챙기고, 장소 사이는 택시로 이동하세요.",hot:"물을 챙기고, 한낮에는 실내에서 쉬어 가세요.",cold:"바닷바람이 차요. 겉옷을 챙기세요."},
@@ -29,7 +29,7 @@ how:"How it works",h1:"Who you're with",h2:"Choose your cruise",h3:"Pick your in
 q_nat:"Where are you from?",q_comp:"Who are you travelling with?",q_int:"What are you into?",q_intS:"Choose as many as you like",q_wx:"How's the weather today?",q_wxS:"We balance indoor and outdoor stops",q_ship:"Which cruise did you arrive on?",q_shipS:"Your times ashore fill in automatically",
 nat:{ja:"Japan",zh:"China",tw:"Taiwan",us:"USA",kr:"Korea",other:"Other"},
 
-comp:{solo:"Solo",couple:"Couple",friends:"Friends",family:"With kids",care:"Older adults or limited mobility",both:"Kids and older adults"},compMix:"With kids or older adults",compSubQ:"Who is coming along?",compSub:{family:"Kids",care:"Older adults / limited mobility",both:"Both"},
+comp:{solo:"Solo",couple:"Couple",friends:"Friends",family:"With kids",care:"Older adults or limited mobility",both:"Kids and older adults",fam:"Family"},compMix:"Family",compSubQ:"Who is coming along? (you can pick both)",compSub:{kid:"Kids",old:"Older adults / limited mobility",fam:"Neither"},
 int:{food:"Food",cafe:"Cafés",photo:"Photos",view:"Sea views",culture:"Culture & art",beauty:"Shopping & beauty",activity:"Activities"},
 intS:{food:"Seafood, markets",cafe:"Ocean-view cafés",photo:"Photo spots",view:"Coastal cliffs",culture:"Museum, art village",beauty:"Daiso, Olive Young, Lotte",activity:"Zipline, Danubi train, fishing village"},
 wx:{sun:"Sunny",rain:"Rain",hot:"Hot",cold:"Cold & windy"},env:{in:"Indoor",semi:"Covered",out:"Outdoor"},cnt:"",wxDay:"Weather-adjusted",wxCut:{rain:n=>`Left out because they get slippery and unsafe in rain: ${n}. At most one outdoor stop.`,cold:n=>`Left out because they face the open sea wind: ${n}. At most two outdoor stops.`},wxTip:{rain:"Bring an umbrella and take a taxi between stops.",hot:"Carry water and rest indoors at midday.",cold:"The sea wind is cold. Bring a jacket."},
@@ -48,7 +48,7 @@ how:"進め方",h1:"同行者を選ぶ",h2:"ご乗船のクルーズを選ぶ",h
 q_nat:"どちらの国から？",q_comp:"どなたと一緒ですか？",q_int:"興味のあることは？",q_intS:"いくつでも選べます",q_wx:"今日の天気は？",q_wxS:"天気に合わせて屋内・屋外を調整します",q_ship:"ご乗船のクルーズは？",q_shipS:"下船・帰船時刻が自動で入ります",
 nat:{ja:"日本",zh:"中国",tw:"台湾",us:"アメリカ",kr:"韓国",other:"その他"},
 
-comp:{solo:"ひとり",couple:"カップル・夫婦",friends:"友人",family:"子ども連れ",care:"ご高齢・お体の不自由な方と一緒",both:"子ども・ご高齢の方と一緒"},compMix:"子ども・ご高齢の方と一緒",compSubQ:"同行される方は？",compSub:{family:"子ども",care:"ご高齢・お体の不自由な方",both:"両方"},
+comp:{solo:"ひとり",couple:"カップル・夫婦",friends:"友人",family:"子ども連れ",care:"ご高齢・お体の不自由な方と一緒",both:"子ども・ご高齢の方と一緒",fam:"家族"},compMix:"家族",compSubQ:"同行される方は？（両方選べます）",compSub:{kid:"子ども",old:"ご高齢・お体の不自由な方",fam:"該当なし"},
 int:{food:"グルメ",cafe:"カフェ",photo:"写真",view:"海の景色",culture:"文化・アート",beauty:"ショッピング・美容",activity:"アクティビティ"},
 intS:{food:"海鮮・市場",cafe:"オーシャンビュー",photo:"フォトスポット",view:"海岸の絶景",culture:"博物館・アート村",beauty:"ダイソー・オリーブヤング・ロッテ",activity:"ジップライン・ダヌビ列車・漁村体験"},
 wx:{sun:"晴れ",rain:"雨",hot:"暑い",cold:"寒い・風"},env:{in:"屋内",semi:"屋根あり",out:"屋外"},cnt:"か所",wxDay:"天気を反映",wxCut:{rain:n=>`雨の日は滑りやすく危ないため外した場所：${n}。屋外は1か所までです。`,cold:n=>`海風を直接受けるため外した場所：${n}。屋外は2か所までです。`},wxTip:{rain:"傘を持ち、移動はタクシーがおすすめです。",hot:"水分を持ち、日中は屋内で休みましょう。",cold:"海風が冷たいので上着をお持ちください。"},
@@ -67,7 +67,7 @@ how:"使用流程",h1:"选择同行人",h2:"选择乘坐的邮轮",h3:"感兴趣
 q_nat:"您来自哪里？",q_comp:"和谁一起来？",q_int:"您对什么感兴趣？",q_intS:"可多选",q_wx:"今天天气怎么样？",q_wxS:"根据天气调整室内外安排",q_ship:"您乘坐的邮轮是？",q_shipS:"上岸与返船时间将自动填入",
 nat:{ja:"日本",zh:"中国",tw:"台湾",us:"美国",kr:"韩国",other:"其他"},
 
-comp:{solo:"独自",couple:"情侣·夫妻",friends:"朋友",family:"带孩子",care:"带长辈或行动不便者",both:"带孩子和长辈"},compMix:"带孩子或长辈",compSubQ:"同行的是？",compSub:{family:"孩子",care:"长辈或行动不便者",both:"都有"},
+comp:{solo:"独自",couple:"情侣·夫妻",friends:"朋友",family:"带孩子",care:"带长辈或行动不便者",both:"带孩子和长辈",fam:"家人"},compMix:"家人",compSubQ:"同行的是？（可同时选择）",compSub:{kid:"孩子",old:"长辈或行动不便者",fam:"都不是"},
 int:{food:"美食",cafe:"咖啡馆",photo:"拍照",view:"海景",culture:"文化·艺术",beauty:"购物·美妆",activity:"户外活动"},
 intS:{food:"海鲜·市场",cafe:"海景咖啡馆",photo:"打卡点",view:"海岸风光",culture:"博物馆·艺术村",beauty:"大创·Olive Young·乐天",activity:"滑索·Danubi小火车·渔村体验"},
 wx:{sun:"晴",rain:"下雨",hot:"炎热",cold:"寒冷·有风"},env:{in:"室内",semi:"有遮蔽",out:"户外"},cnt:"处",wxDay:"已按天气调整",wxCut:{rain:n=>`雨天湿滑危险，已移除：${n}。户外最多安排1处。`,cold:n=>`直接受海风，已移除：${n}。户外最多安排2处。`},wxTip:{rain:"请带伞，景点之间建议乘出租车。",hot:"请带水，中午在室内休息。",cold:"海风很冷，请带外套。"},

@@ -13,7 +13,7 @@ const KW={
  comp:{care:["노약자","부모님","어르신","할머니","할아버지","노인","못 걸","무릎","휠체어","거동","장애","parents","elderly","senior","grandparent","can't walk","wheelchair","mobility","disab","両親","高齢","歩けな","車椅子","障害","父母","老人","长辈","走不","轮椅","残疾","行动不便"],
   family:["아이","애기","아들","딸","kid","child","son","daughter","子ども","子供","孩子","小孩"],
   couple:["남편","아내","와이프","여자친구","남자친구","부부","커플","husband","wife","partner","couple","夫","妻","彼氏","彼女","夫妻","老公","老婆","情侣"],
-  friends:["친구","friend","友","朋友"],solo:["혼자","alone","solo","myself","ひとり","一人","独自","自己"]},
+  friends:["친구","friend","友","朋友"],fam:["가족","family","家族","家人"],solo:["혼자","alone","solo","myself","ひとり","一人","独自","自己"]},
  weather:{rain:["비","rain","雨"],hot:["덥","더워","hot","暑","热"],cold:["춥","추워","바람","cold","wind","寒","风","冷"]},
  nat:{ja:["일본","japan","日本"],zh:["중국","china","中国"],tw:["대만","taiwan","台湾"],us:["미국","america","usa"],kr:["한국","korea","韓国","韩国"]}
 };
@@ -68,7 +68,7 @@ Read it and return ONLY a JSON object with these keys. Only fill what they actua
   if(!(j&&typeof j==="object")&&AI_PROXY)j=await askProxy(raw);
   if(j&&typeof j==="object"){
     const ok=(v,list)=>list.includes(v)?v:null;
-    res={a:{nat:ok(j.nat,["ja","zh","tw","us","kr","other"]),comp:ok(j.comp,["solo","couple","friends","family","care","both"]),
+    res={a:{nat:ok(j.nat,["ja","zh","tw","us","kr","other"]),comp:ok(j.comp,["solo","couple","friends","family","care","both","fam"]),
       interests:Array.isArray(j.interests)?j.interests.filter(v=>["food","cafe","photo","view","culture","beauty","activity"].includes(v)):[],weather:ok(j.weather,["sun","rain","hot","cold"])},
       ship:ok(j.ship,CRUISES.map(c=>c.id)),note:typeof j.note==="string"?j.note.slice(0,200):""};
     // AI가 놓친 건 단어 찾기 결과로 채움. 노약자·아이는 단어로 잡히면 AI 답에 더해 줌 (안전 쪽으로)
