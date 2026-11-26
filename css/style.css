@@ -162,7 +162,7 @@ button.chip:hover{filter:brightness(.95)}
 .adtoggle{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:3px 10px;font:600 12px var(--body);color:#e0442d;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .adtoggle[aria-pressed="false"]{color:var(--muted)}
 .adtoggle:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
-/* 공중화장실 버튼·마커 (js/13b-toilets.js). 보라색 = 화장실 (관광지 빨강·파랑, 광고 빨강, 맛집 초록과 구분) */
+/* 공중화장실 버튼·마커 (js/13b-toilets.js). 보라색 = 화장실 (관광지 빨강·파랑, 광고 빨강과 구분) */
 .map-btns{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
 .wctoggle[aria-pressed="false"]{color:var(--muted)}
 .wctoggle[aria-pressed="true"]{background:#7b4fd6;border-color:#7b4fd6;color:#fff}

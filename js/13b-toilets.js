@@ -146,7 +146,7 @@ function unfitWc(){
 }
 
 /* ---------- 그리기 ---------- */
-/* 약도(SVG)용: 보라색 둥근 네모 + 🚻 (관광지=숫자 원, 광고=빨강 AD, 맛집=초록 점과 구분) + 파란 내 위치 점 */
+/* 약도(SVG)용: 보라색 둥근 네모 + 🚻 (관광지=숫자 원, 광고=빨강 AD) + 파란 내 위치 점 */
 function wcSvg(){
   if(!wcOn||!wcList||!wcBase)return "";
   const k=(1/ZK).toFixed(3),L=state.lang;

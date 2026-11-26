@@ -1,7 +1,7 @@
 /* 공통 상태(state)와 도구 함수, 언어 버튼, 화면 전환(render), 첫 화면
    담당: ② 화면 */
 
-const blankA=()=>({nat:null,age:null,comp:null,interests:[],weather:null});
+const blankA=()=>({nat:null,comp:null,interests:[],weather:null});
 let state={resTab:"map",foodCat:"all",foodMore:false,mapFull:false,photosOn:false,photoBig:null,adsOn:true,adSel:null,lang:detectLang(),screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiBusy:false,aiMsg:"",fbSent:false,route:null,customPlaces:[],picking:null,addAt:null,editing:false};
 // route: 사용자가 고친 경로(장소 id 순서). null이면 자동 추천 경로
 // customPlaces: 사용자가 지도에서 직접 찍어 추가한 장소. picking: 위치 찍는 중인 장소 {name,dwell,at}
@@ -29,7 +29,7 @@ function renderLang(){
   document.documentElement.lang=state.lang==="zh"?"zh-CN":state.lang;
 }
 
-const QUESTIONS=["age","comp","ship","interests"];  // 나라(nat)·날씨(weather) 질문은 뺌. weather가 비어 있으면 맑음으로 계산
+const QUESTIONS=["comp","ship","interests"];  // 나라(nat)·연령(age)·날씨(weather) 질문은 뺌. weather가 비어 있으면 맑음으로 계산
 
 function render(){
   parkNaverMap(); // 화면을 바꾸기 전에 지도 상자를 보관함으로 옮김

@@ -46,22 +46,22 @@ let FOOD=[
 ].map(([n,c,d,r,rv,b,a,ll,h,off,bk],i)=>({i,n,c,d,r,rv,b:b||[],a:a||"",ll:ll||null,h:h||"",off:off||"",bk:bk||""}));
 const FCAT_ORDER=["cafe","sea","kr","pork","west","jp","cn","bakery","mil","snack","chick","bar"];
 const FT={
-ko:{h:n=>`영도 맛집 ${n}곳`,sub:"부산어디? 인기순 · ★ 네이버 평점",subApi:"한국관광공사 관광정보 · 동선에서 가까운 순",pin:"지도의 초록 점 = 동선 근처 맛집",srcApi:d=>`출처: 한국관광공사 TourAPI(공공데이터포털), ${d} 업데이트. 매일 새벽 자동으로 새로 받아와요. 평점은 제공되지 않아요.`,all:"전체",near:"동선 근처",more:n=>`${n}곳 더 보기`,less:"접기",rev:"리뷰",
+ko:{h:n=>`영도 맛집 ${n}곳`,sub:"부산어디? 인기순 · ★ 네이버 평점",subApi:"한국관광공사 관광정보 · 동선에서 가까운 순",srcApi:d=>`출처: 한국관광공사 TourAPI(공공데이터포털), ${d} 업데이트. 매일 새벽 자동으로 새로 받아와요. 평점은 제공되지 않아요.`,all:"전체",near:"동선 근처",more:n=>`${n}곳 더 보기`,less:"접기",rev:"리뷰",
  src:"출처: 부산어디?(busan-where.com) 영도 맛집 목록(2026-11-23) 중 주소가 확인된 36곳. 주소·영업시간·휴무는 2026-11-24에 검색한 정보라 바뀌었을 수 있어요. 가기 전에 네이버 지도에서 한 번 더 확인하세요. 번호는 가까운 동선 장소예요.",
  hr:{open:"영업",off:"휴무",bk:"브레이크",none:"영업시간 정보 없음"},
  cat:{cafe:"카페·디저트",sea:"해산물·회",kr:"한식",pork:"돼지국밥",west:"양식",jp:"일식·초밥",cn:"중식",bakery:"베이커리",mil:"밀면",snack:"분식",chick:"치킨·피자",bar:"주점"},
  badge:{safe:"안심식당",model:"모범음식점",bib:"빕 구르망"}},
-en:{h:n=>`${n} places to eat in Yeongdo`,sub:"Popularity order from Busan-where · ★ NAVER rating",subApi:"Korea Tourism Organization data · closest to your route first",pin:"Green dots on the map = places to eat near your route",srcApi:d=>`Source: Korea Tourism Organization TourAPI, updated ${d}. Refreshed automatically every morning. No ratings in this data.`,all:"All",near:"Near your route",more:n=>`Show ${n} more`,less:"Show less",rev:"reviews",
+en:{h:n=>`${n} places to eat in Yeongdo`,sub:"Popularity order from Busan-where · ★ NAVER rating",subApi:"Korea Tourism Organization data · closest to your route first",srcApi:d=>`Source: Korea Tourism Organization TourAPI, updated ${d}. Refreshed automatically every morning. No ratings in this data.`,all:"All",near:"Near your route",more:n=>`Show ${n} more`,less:"Show less",rev:"reviews",
  src:"Source: Busan-where (busan-where.com) Yeongdo restaurant list (23 Nov 2026), keeping the 36 places whose address we could confirm. Addresses, hours and closing days were looked up on 24 Nov 2026 and may change, so check NAVER Map before you go. Descriptions and hours are in Korean.",
  hr:{open:"Hours",off:"Closed",bk:"Break",none:"No opening-hours info"},
  cat:{cafe:"Café & dessert",sea:"Seafood & sashimi",kr:"Korean",pork:"Pork rice soup",west:"Western",jp:"Japanese",cn:"Chinese",bakery:"Bakery",mil:"Milmyeon noodles",snack:"Street food",chick:"Chicken & pizza",bar:"Bar"},
  badge:{safe:"Safe restaurant",model:"Model restaurant",bib:"Bib Gourmand"}},
-ja:{h:n=>`影島グルメ${n}店`,sub:"釜山オディ？人気順・★NAVER評価",subApi:"韓国観光公社データ・ルートに近い順",pin:"地図の緑の点＝ルート近くの店",srcApi:d=>`出典：韓国観光公社 TourAPI、${d}更新。毎朝自動で更新されます。評価はありません。`,all:"すべて",near:"ルート近く",more:n=>`あと${n}店を見る`,less:"閉じる",rev:"件",
+ja:{h:n=>`影島グルメ${n}店`,sub:"釜山オディ？人気順・★NAVER評価",subApi:"韓国観光公社データ・ルートに近い順",srcApi:d=>`出典：韓国観光公社 TourAPI、${d}更新。毎朝自動で更新されます。評価はありません。`,all:"すべて",near:"ルート近く",more:n=>`あと${n}店を見る`,less:"閉じる",rev:"件",
  src:"出典：釜山オディ？(busan-where.com) 影島グルメ一覧(2026年11月23日)のうち住所を確認できた36店。住所・営業時間・定休日は2026年11月24日に調べた情報で、変わることがあります。行く前にNAVER地図で確認してください。紹介文と営業時間は韓国語です。",
  hr:{open:"営業",off:"定休日",bk:"休憩",none:"営業時間の情報なし"},
  cat:{cafe:"カフェ・デザート",sea:"海鮮・刺身",kr:"韓国料理",pork:"テジクッパ",west:"洋食",jp:"和食・寿司",cn:"中華",bakery:"ベーカリー",mil:"ミルミョン",snack:"粉食",chick:"チキン・ピザ",bar:"居酒屋"},
  badge:{safe:"安心食堂",model:"模範飲食店",bib:"ビブグルマン"}},
-zh:{h:n=>`影岛美食${n}家`,sub:"釜山哪里？人气排序 · ★ NAVER评分",subApi:"韩国观光公社数据 · 按离路线远近排序",pin:"地图上的绿点＝路线附近餐厅",srcApi:d=>`来源：韩国观光公社 TourAPI，${d}更新。每天早上自动更新。无评分数据。`,all:"全部",near:"路线附近",more:n=>`再看${n}家`,less:"收起",rev:"条评价",
+zh:{h:n=>`影岛美食${n}家`,sub:"釜山哪里？人气排序 · ★ NAVER评分",subApi:"韩国观光公社数据 · 按离路线远近排序",srcApi:d=>`来源：韩国观光公社 TourAPI，${d}更新。每天早上自动更新。无评分数据。`,all:"全部",near:"路线附近",more:n=>`再看${n}家`,less:"收起",rev:"条评价",
  src:"来源：釜山哪里？(busan-where.com) 影岛美食列表（2026年11月23日）中能确认地址的36家。地址、营业时间和休息日为2026年11月24日查询的信息，可能有变，出发前请在NAVER地图再确认。介绍和营业时间为韩语。",
  hr:{open:"营业",off:"休息",bk:"休息时段",none:"无营业时间信息"},
  cat:{cafe:"咖啡·甜点",sea:"海鲜·生鱼片",kr:"韩餐",pork:"猪肉汤饭",west:"西餐",jp:"日料·寿司",cn:"中餐",bakery:"面包店",mil:"小麦冷面",snack:"小吃",chick:"炸鸡·披萨",bar:"酒馆"},
@@ -85,7 +85,7 @@ function foodHTML(r){
     ${f.a?`<span class="fad">${esc(f.a)}</span>`:""}
     ${foodSrc==="api"?"":`<span class="fhr">${f.h||f.off||f.bk?[f.h&&`${F.hr.open} ${esc(f.h)}`,f.off&&`${F.hr.off} ${esc(f.off)}`,f.bk&&`${F.hr.bk} ${esc(f.bk)}`].filter(Boolean).join(" · "):F.hr.none}</span>`}
     <span class="maps"><a href="https://map.naver.com/p/search/${q}" target="_blank" rel="noopener">${nv}</a></span></li>`};
-  return `<h2 style="font-size:19px">${F.h(FOOD.length)}</h2><p class="muted">${foodSrc==="api"?F.subApi:F.sub}${nearFoodsLL(r).length?` · ${F.pin}`:""}</p>
+  return `<h2 style="font-size:19px">${F.h(FOOD.length)}</h2><p class="muted">${foodSrc==="api"?F.subApi:F.sub}</p>
     <div class="fcats" role="group" aria-label="${esc(F.h(FOOD.length))}">${[["all",FOOD.length]].concat(cats).map(([c,n])=>`<button type="button" id="fcat-${c}" data-fc="${c}" aria-pressed="${state.foodCat===c}">${c==="all"?F.all:F.cat[c]} ${n}</button>`).join("")}</div>
     <ol class="flist">${shown.map(item).join("")}</ol>
     ${list.length>LIMIT?`<button type="button" class="fmore" id="foodMore">${state.foodMore?F.less:F.more(list.length-LIMIT)}</button>`:""}
@@ -96,19 +96,7 @@ function foodHTML(r){
    (scripts/fetch-foods.mjs). 형태: {updated, items:[{id,name,cat,addr,lat,lng,tel}]}
    불러오지 못하면 위의 기본 목록(FOOD, 부산어디? 중 36곳)을 그대로 씁니다. */
 const FOOD_API="foods.json";
-let foodSrc="sample",foodUpdated="",lastR=null,nFoods=[];
-function nearFoodsLL(r){
-  return FOOD.filter(f=>f.ll).map(f=>({f,nr:foodNear(f,r)})).filter(x=>x.nr).sort((a,b)=>a.nr.d-b.nr.d).slice(0,15);
-}
-function foodSvg(r){
-  return nearFoodsLL(r).map(({f})=>{const [x,y]=proj(...f.ll);
-    return `<g transform="translate(${x} ${y}) scale(${(1/ZK).toFixed(3)})"><title>${esc(f.n)}</title><circle r="5.5" fill="#2f8a5b" stroke="#fff" stroke-width="1.8"/></g>`}).join("");
-}
-function drawNaverFoods(r){
-  clearOverlays(nFoods);if(!nmapObj)return;const N=naver.maps;
-  nearFoodsLL(r).forEach(({f})=>nFoods.push(new N.Marker({map:nmapObj,position:new N.LatLng(...f.ll),zIndex:0,
-    icon:{content:`<div title="${esc(f.n)}" style="width:12px;height:12px;border-radius:50%;background:#2f8a5b;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)"></div>`,anchor:new N.Point(8,8)}})));
-}
+let foodSrc="sample",foodUpdated="",lastR=null;
 async function loadFoods(){
   try{
     const ctl=new AbortController();setTimeout(()=>ctl.abort(),5000);
@@ -119,7 +107,7 @@ async function loadFoods(){
     if(items.length<10)return;
     FOOD=items;foodSrc="api";foodUpdated=String(j.updated||"").slice(0,10);
     if(state.foodCat!=="all"&&!FOOD.some(f=>f.c===state.foodCat))state.foodCat="all";
-    if(state.screen==="result"&&lastR){const sec=document.getElementById("foodSec");if(sec){sec.innerHTML=foodHTML(lastR);wireFood(lastR)}refreshMap(lastR);if(nmapObj)drawNaverFoods(lastR)}
+    if(state.screen==="result"&&lastR){const sec=document.getElementById("foodSec");if(sec){sec.innerHTML=foodHTML(lastR);wireFood(lastR)}}
   }catch(e){}
 }
 function wireFood(r){

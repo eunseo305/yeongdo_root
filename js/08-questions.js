@@ -1,5 +1,5 @@
 /* 질문 화면 — 한 화면에서 질문이 차례로 펼쳐지는 방식
-   (연령·동행·관심사·크루즈, 날짜 선택 줄)
+   (동행·크루즈·관심사, 날짜 선택 줄)
    담당: ② 화면
 
    동작
@@ -30,16 +30,15 @@ function qFilled(key){
 
 /* ---- 참고 사진 디자인용 그림·아이콘 (2026-11-25) ---- */
 const QI={ // 질문 제목 앞 아이콘 (선 그림)
-  age:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
   comp:'<path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.3a3.5 3.5 0 0 1 0 6.4M18 14.3c2 .8 3.5 2.8 3.5 5.7"/>',
   ship:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M7.5 14h2M11 14h2M14.5 14h2M7.5 17.5h2M11 17.5h2"/>',
   interests:'<path d="M10 3l1.8 5.2L17 10l-5.2 1.8L10 17l-1.8-5.2L3 10l5.2-1.8zM18 14l.8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8z"/>'
 };
 const QHL={ // 질문 제목에서 파랗게 칠할 단어
-  ko:{age:"연령대",comp:"누구",interests:"관심",ship:"크루즈"},
-  en:{age:"age group",comp:"Who",interests:"What",ship:"cruise"},
-  ja:{age:"年代",comp:"どなた",interests:"興味",ship:"クルーズ"},
-  zh:{age:"年龄段",comp:"谁",interests:"感兴趣",ship:"邮轮"}};
+  ko:{comp:"누구",interests:"관심",ship:"크루즈"},
+  en:{comp:"Who",interests:"What",ship:"cruise"},
+  ja:{comp:"どなた",interests:"興味",ship:"クルーズ"},
+  zh:{comp:"谁",interests:"感兴趣",ship:"邮轮"}};
 const svgI=(p,sz=22)=>`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 // 크루즈 질문 오른쪽 위 그림: 다리 + 산 + 전망대 + 크루즈선 + 바다
 const SHIP_ART=`<svg class="ship-art" viewBox="0 0 240 120" aria-hidden="true">
@@ -83,7 +82,6 @@ function shipOptsHTML(){
 function qBody(key){
   const x=t();
   if(key==="nat")return{title:x.q_nat,opts:grid(Object.keys(x.nat).map(k=>[k,x.nat[k]]),"nat")};
-  if(key==="age")return{title:x.q_age,opts:grid(Object.keys(x.age).map(k=>[k,x.age[k]]),"age")};
   if(key==="comp")return{title:x.q_comp,opts:grid(Object.keys(x.comp).map(k=>[k,x.comp[k]]),"comp")};
   if(key==="interests")return{title:x.q_int,sub:x.q_intS,opts:grid(Object.keys(x.int).map(k=>[k,x.int[k],x.intS[k]]),"interests",true)};
   if(key==="ship")return{title:x.q_ship,sub:x.q_shipS,opts:shipOptsHTML()};
@@ -133,11 +131,14 @@ function renderQ(s,a){
     const blk=b.closest(".qblock"),key=blk.dataset.key,i=+blk.dataset.i,v=b.dataset.v;
 
     // 선택 표시만 갱신 (전체 다시 그리기 X)
+    const was=state.a[key];
     qApply(blk,key,v);
 
     // 맨 아래(가장 최근에 열린) 질문에 답했으면 다음 질문을 펼침
-    if(i===state.q&&qFilled(key)&&i<QUESTIONS.length-1)qRevealNext(key!=="interests");
+    const next=()=>{if(i===state.q&&qFilled(key)&&i<QUESTIONS.length-1)qRevealNext(key!=="interests")};
     qSync(a);
+    // 노약자 동반을 새로 고르면 어떤 점을 배려하는지 팝업으로 알려 주고, 닫은 뒤 다음 질문으로
+    if(key==="comp"&&v==="care"&&was!=="care")showCareInfo(b,next);else next();
   };
 
   stack.onchange=e=>{
@@ -196,4 +197,32 @@ function grid(items,key,multi){
   return `<div class="options">${items.map(([k,l,sub])=>{
     const on=multi?state.a.interests.includes(k):state.a[key]===k;
     return `<button type="button" class="opt" id="${key}-${k}" data-v="${k}" aria-pressed="${on}"><span>${l}</span>${sub?`<small>${sub}</small>`:""}</button>`}).join("")}</div>`;
+}
+/* ---- 노약자 동반 안내 팝업 ----
+   동행에서 "노약자 동반"(comp=care)을 고르면 추천 동선에서 무엇을 배려하는지 보여 줍니다.
+   목록은 실제 계산과 맞춰 두세요: js/09-engine.js(계단·짚라인), js/05-travel.js(걷는 속도·택시) */
+const CARE_T={
+ko:{h:"노약자 동반으로 이렇게 배려해요",ok:"확인",items:["계단이 많은 곳(흰여울문화마을, 조내기 고구마 역사공원 등)은 코스에서 빼요","짚라인처럼 몸에 무리가 가는 체험은 추천하지 않아요","걷는 속도를 느리게 잡아 이동 시간을 넉넉히 계산해요","걸어서 10분이 넘는 거리는 택시를 추천해요"]},
+en:{h:"How we adjust your route",ok:"OK",items:["Places with lots of stairs (Huinnyeoul Village, Jonaegi park and others) are left out","Physically demanding activities such as the zipline are not suggested","Walking times are worked out at a slower pace, so you have time to spare","Anything over a 10-minute walk is suggested by taxi"]},
+ja:{h:"このように配慮します",ok:"OK",items:["階段の多い場所（白瀬文化村、チョネギ公園など）はコースから外します","ジップラインなど体に負担のかかる体験はおすすめしません","歩く速さをゆっくりめにして、移動時間に余裕を持たせます","徒歩10分を超える区間はタクシーをおすすめします"]},
+zh:{h:"我们会这样照顾您的行程",ok:"知道了",items:["排除台阶较多的地方（白滩文化村、Jonaegi公园等）","不推荐滑索等体力消耗大的体验","按较慢的步行速度计算，留出充足的移动时间","步行超过10分钟的路段推荐乘出租车"]}};
+function showCareInfo(opener,onDone){
+  const C=CARE_T[state.lang]||CARE_T.en;
+  const chk='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;margin-top:1px"><circle cx="12" cy="12" r="10" fill="#1d6fe8"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const m=document.createElement("div");m.className="pmodal";
+  m.innerHTML=`<div class="pm-box" role="dialog" aria-modal="true" aria-labelledby="care-t">
+    <h2 id="care-t" style="font-size:19px">${C.h}</h2>
+    <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px">${C.items.map(s=>`<li style="display:flex;gap:10px;line-height:1.5">${chk}<span>${s}</span></li>`).join("")}</ul>
+    <div class="pm-act"><button class="btn" type="button" data-care="ok">${C.ok}</button></div></div>`;
+  document.body.appendChild(m);
+  const prevOv=document.body.style.overflow;document.body.style.overflow="hidden";
+  const close=()=>{
+    document.removeEventListener("keydown",onKey);document.body.style.overflow=prevOv;m.remove();
+    if(opener&&opener.isConnected)opener.focus();
+    if(onDone)onDone();
+  };
+  const onKey=e=>{if(e.key==="Escape"||e.key==="Tab"){e.preventDefault();if(e.key==="Escape")close()}};
+  document.addEventListener("keydown",onKey);
+  m.onclick=e=>{if(e.target===m||e.target.closest("[data-care]"))close()};
+  m.querySelector("[data-care]").focus();
 }

@@ -253,7 +253,6 @@ function sketchMap(r){
     <polyline points="${back}" fill="none" stroke="#0d4a5c" stroke-width="${f(2.5)}" stroke-dasharray="${f(5)} ${f(5)}" opacity=".7"/>
     <polyline points="${out}" fill="none" stroke="#e5533b" stroke-width="${f(3.5)}" stroke-linejoin="round" marker-mid="url(#marr)"/>
     ${adsSvg(r)}
-    ${foodSvg(r)}
     ${wcSvg()}
     ${marks}
     ${myLocSvg()}
@@ -348,7 +347,7 @@ function naverMap(r){
       const map=nmapObj;
       map.setSize(new N.Size(slot.clientWidth||nmapEl.offsetWidth||360,slot.clientHeight||320));
       // 이전 결과의 동선·핀·광고·맛집 표시 지우기
-      clearOverlays(nRoute);clearOverlays(nAds);clearOverlays(nFoods);clearOverlays(nPhotos);
+      clearOverlays(nRoute);clearOverlays(nAds);clearOverlays(nPhotos);
       nRoute.push(new N.Polyline({map,path,strokeWeight:5,strokeColor:"#e5533b",strokeOpacity:.9}));
       nRoute.push(new N.Polyline({map,path:[path[path.length-1],path[0]],strokeWeight:3,strokeColor:"#0d4a5c",strokeOpacity:.7,strokeStyle:"shortdash"}));
       path.forEach((p,i)=>nRoute.push(new N.Marker({map,position:p,icon:{content:`<div class="npin${i?"":" t"}">${i||"T"}</div>`,anchor:new N.Point(13,13)},zIndex:2})));
@@ -357,6 +356,6 @@ function naverMap(r){
       const fit=()=>{if(my!==mapToken||!nmapEl.isConnected)return;map.setSize(new N.Size(slot.clientWidth||360,slot.clientHeight||320));map.fitBounds(bounds)};
       fit();
       setTimeout(fit,300); // 한 번 더 크기를 맞춰서 회색 화면 방지
-      drawNaverAds(r);drawNaverFoods(r);drawNaverWc();drawNaverMe();drawNaverPhotos(r);
+      drawNaverAds(r);drawNaverWc();drawNaverMe();drawNaverPhotos(r);
     }).catch(()=>{if(my===mapToken)showSketch()}); // 실패하면 약도로 되돌림(지도는 버리지 않음)
 }

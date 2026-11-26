@@ -15,27 +15,23 @@ const WX_BLOCK={
 const HOT_NOON=["zipline","dongsam","jonaegi","isongdo","huinnyeoul"];
 function cruiseDow(){const d=state.cdate?new Date(state.cdate+"T00:00"):new Date();return isNaN(d)?new Date().getDay():d.getDay()}
 function score(p){
-  const {age,comp,nat,interests,weather}=state.a;
+  const {comp,nat,interests,weather}=state.a;
   if((p.out||p.shop)&&!interests.includes("beauty"))return -1;
   if(p.shop)return 12;
   // 날씨: 위험하거나 운영을 멈추는 곳은 아예 뺌
   if(WX_BLOCK[weather]?.includes(p.id))return -1;
   // 고른 크루즈 날짜에 쉬는 곳은 뺌 (날짜를 안 골랐으면 오늘 기준)
   if(p.closed&&p.closed.includes(cruiseDow()))return -1;
-  // 짚라인은 70대 이상에게 추천하지 않음
-  if(p.id==="zipline"&&age==="a70")return -1;
+  // 짚라인은 노약자 동반이면 추천하지 않음
+  if(p.id==="zipline"&&comp==="care")return -1;
   const m=p.tags.filter(g=>interests.includes(g)).length;
   let s=m?1+3*m:0.6;
-  if(p.stairs&&age==="a70")s-=5;
-  if(p.stairs&&age==="a50")s-=1.5;
+  if(p.stairs&&comp==="care")s-=5;
   if(p.stairs&&comp==="family")s-=1;
-  if(p.stairs&&comp==="group")s-=1;
   if(comp==="family"&&p.indoor)s+=2;
   if(comp==="family"&&(p.id==="dongsam"||p.id==="arte"))s+=1.5;
   if(comp==="couple"&&(p.tags.includes("cafe")||p.tags.includes("photo")))s+=1;
   if(comp==="friends"&&(p.tags.includes("food")||p.tags.includes("photo")||p.tags.includes("activity")))s+=1;
-  if(comp==="group"&&p.id==="dongsam")s-=1; // 단체는 체험 예약 인원이 맞지 않을 수 있음
-  if(age==="a50"&&p.id==="zipline")s-=1.5;
   if(nat==="ja"&&(p.id==="haenyeo"||p.id==="samjin"))s+=0.8;
   if((nat==="zh"||nat==="tw")&&(p.id==="namhang"||p.id==="lotte"))s+=0.8;
   if(nat==="us"&&p.tags.includes("culture"))s+=0.5;

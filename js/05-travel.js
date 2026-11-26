@@ -21,8 +21,8 @@ const COORD={T:[35.0808,129.0792],
 function km(a,b){const R=6371,r=Math.PI/180,[la1,lo1]=COORD[a],[la2,lo2]=COORD[b];const dl=(la2-la1)*r,dn=(lo2-lo1)*r;
   const h=Math.sin(dl/2)**2+Math.cos(la1*r)*Math.cos(la2*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(h))*1.35}
 function leg(a,b){
-  const {age,comp,weather}=state.a;
-  const d=km(a,b),slow=age==="a70";
+  const {comp,weather}=state.a;
+  const d=km(a,b),slow=comp==="care";
   const walk=Math.max(2,Math.round(d/(slow?3.2:4.2)*60));
   const taxi=Math.max(3,Math.round(d/22*60)+4);
   const bus=d<1.2?null:Math.round(d/15*60)+10;

@@ -217,7 +217,7 @@ function fmtDur(m,L){const h=Math.floor(m/60),n=m%60;
   if(L==="zh")return (h?h+"小时":"")+(n?n+"分钟":"");
   return (h?h+"시간 ":"")+(n?n+"분":"");}
 /* 선호도 다시 고르기 모달 (결과 화면 위에 뜸)
-   - 연령·동행: 하나 누르면 바로 반영하고 닫힘
+   - 동행: 하나 누르면 바로 반영하고 닫힘
    - 관심사: 여러 개 고른 뒤 "결과 보기"로 반영
    - 바깥 클릭 / Esc: 바꾼 것 취소 (이전 버튼은 없음) */
 function openPrefModal(key,s,a,opener){
@@ -232,7 +232,8 @@ function openPrefModal(key,s,a,opener){
   const close=apply=>{
     if(!apply)state.a=snap;
     document.removeEventListener("keydown",onKey);document.body.style.overflow=prevOv;m.remove();
-    if(apply){renderResult(s,a);const c=s.querySelector(`[data-edit="${key}"]`);if(c)c.focus()}else opener.focus();
+    if(apply){renderResult(s,a);const c=s.querySelector(`[data-edit="${key}"]`);if(c)c.focus();
+      if(key==="comp"&&state.a.comp==="care"&&snap.comp!=="care")showCareInfo(c)}else opener.focus();
   };
   const onKey=e=>{if(e.key==="Escape")close(false)};
   document.addEventListener("keydown",onKey);
@@ -257,7 +258,7 @@ function renderResult(s,a){
 
   // 선호도 칩: 누르면 모달로 그 항목만 다시 고름 (openPrefModal). 나라는 칩에서 뺌
   const chip=(k,v)=>`<button type="button" class="chip" data-edit="${k}" aria-haspopup="dialog">${esc(v)}</button>`;
-  const prof=[["age",x.age[state.a.age]],["comp",x.comp[state.a.comp]]].filter(([,v])=>v).map(([k,v])=>chip(k,v)).join("")+state.a.interests.map(k=>chip("interests",x.int[k])).join("");
+  const prof=[["comp",x.comp[state.a.comp]]].filter(([,v])=>v).map(([k,v])=>chip(k,v)).join("")+state.a.interests.map(k=>chip("interests",x.int[k])).join("");
   let tl=`<li class="tl"><span class="t">${hm(r.start)}</span><span class="rail"><span class="dot end"></span><span class="line"></span></span><div class="body"><strong>${x.disembark}</strong><span class="d">${r.c.name}</span>${addBtnHTML(0)}</div></li>`;
   if(state.addAt===0)tl+=addPanelHTML(r,0);
   r.sim.stops.forEach((st,i)=>{
