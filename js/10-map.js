@@ -144,13 +144,27 @@ function bannerHTML(){
   return `<aside class="banner" aria-label="${esc(lbl+": "+BANNER.name)}"><span class="lbl">${esc(lbl)}</span><b>${esc(BANNER.name)}</b><small>${esc(BANNER.sub[L]||BANNER.sub.en)}</small></aside>`;
 }
 /* ---------- 지도 아래 코스 순서 목록 (화장실 목록과 같은 모양) ---------- */
-const CRT={ko:{h:"코스 순서",stay:"머무름"},en:{h:"Route order",stay:"stay"},ja:{h:"コースの順番",stay:"滞在"},zh:{h:"路线顺序",stay:"停留"}};
+const CRT={ko:{h:"코스 순서",wc:"화장실",stay:"머무름"},en:{h:"Route order",wc:"Restrooms",stay:"stay"},ja:{h:"コースの順番",wc:"トイレ",stay:"滞在"},zh:{h:"路线顺序",wc:"厕所",stay:"停留"}};
+/* 지도 밑 탭: "course"(코스 순서) | "wc"(화장실). 결과 화면을 다시 그려도 고른 탭 유지 */
+let crTab="course";
+function subTabsHTML(r){
+  const L=state.lang,x=t(),C=CRT[L]||CRT.en;
+  const b=(k,label)=>`<button type="button" role="tab" id="subtab-${k}" data-subtab="${k}" aria-controls="${k==="wc"?"wcPanel":"coursePanel"}" aria-selected="${crTab===k}" tabindex="${crTab===k?0:-1}">${label}</button>`;
+  return `<div class="subtabs" role="tablist" aria-label="${esc(C.h+" / "+C.wc)}">${b("course",`🗺️ ${C.h} <small>${r.sim.stops.length}${x.cnt||""}</small>`)}${b("wc",`🚻 ${C.wc}`)}</div>`;
+}
+/* 탭 바꾸기. 화장실 탭을 처음 열면 지도의 '🚻 화장실 표시' 버튼을 누른 것과 같게 켬 */
+function setCrTab(k,auto){
+  crTab=k==="wc"?"wc":"course";
+  document.querySelectorAll("[data-subtab]").forEach(b=>{const on=b.dataset.subtab===crTab;b.setAttribute("aria-selected",String(on));b.tabIndex=on?0:-1});
+  const cp=document.getElementById("coursePanel"),wp=document.getElementById("wcPanel");
+  if(cp)cp.hidden=crTab!=="course";if(wp)wp.hidden=crTab!=="wc";
+  if(crTab==="wc"&&!auto&&typeof wcOn!=="undefined"&&!wcOn)document.getElementById("wcToggle")?.click(); // 불러오는 중이면 버튼이 disabled라 다시 안 눌림
+}
 const stopShort=p=>p.name[state.lang].split(" (")[0].split("（")[0];
 function courseListHTML(r){
   const L=state.lang,x=t(),C=CRT[L]||CRT.en;
   const row=(n,cls,name,sub,time,id)=>`<li><button type="button" class="crrow" data-crid="${esc(id)}" aria-pressed="false"><span class="n${cls}">${n}</span><span class="t"><b>${esc(name)}</b>${sub?`<small>${esc(sub)}</small>`:""}</span><span class="d">${time}</span></button></li>`;
   return `<div class="crpanel">
-    <p class="wch"><b>🗺️ ${C.h}</b><span class="muted">${r.sim.stops.length}${x.cnt||""}</span></p>
     <ol class="crlist">
       ${row("T"," term",TERM_NAME[L],x.disembark,hm(r.start),"T")}
       ${r.sim.stops.map((st,i)=>row(i+1,"",st.p.name[L],`${C.stay} ${st.p.dwell}${x.min}`,hm(st.at),st.p.id)).join("")}
@@ -159,6 +173,13 @@ function courseListHTML(r){
 }
 /* 코스 카드를 누르면: 화면을 지도까지 올리고, 네이버 지도를 그 장소 가운데로 옮겨 확대 (좌표는 COORD 값 그대로 씀) */
 function wireCourse(){
+  // 탭 버튼 (키보드 좌우 화살표로도 바꿈)
+  const tabs=[...document.querySelectorAll("[data-subtab]")];
+  tabs.forEach((b,i)=>{
+    b.onclick=()=>setCrTab(b.dataset.subtab);
+    b.onkeydown=e=>{const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;if(!d)return;
+      e.preventDefault();const nb=tabs[(i+d+tabs.length)%tabs.length];setCrTab(nb.dataset.subtab);nb.focus()};
+  });
   const btns=[...document.querySelectorAll("#coursePanel [data-crid]")];
   btns.forEach(b=>b.onclick=()=>{
     const ll=COORD[b.dataset.crid];if(!ll)return;

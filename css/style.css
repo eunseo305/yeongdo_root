@@ -157,6 +157,13 @@ button.chip:hover{filter:brightness(.95)}
 .banner .lbl{flex:none;font:700 10.5px var(--body);color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
 .banner b{flex:none;font-size:14px;font-weight:700}
 .banner small{flex:1;min-width:0;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 지도 밑 탭: 코스 순서 | 화장실 (결과 화면 위쪽 탭 .rtabs와 같은 알약 모양, 조금 작게) */
+.subtabs{display:flex;gap:6px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.subtabs button{flex:1;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;font:500 13.5px var(--body);color:var(--ink);cursor:pointer;min-height:36px;white-space:nowrap}
+.subtabs button small{font-size:11.5px;opacity:.8}
+.subtabs button[aria-selected="true"]{border-color:var(--sea);background:var(--sea);color:#fff;font-weight:700}
+.subtabs button:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
+.wcempty{font-size:13px;padding:6px 2px}
 /* 지도 아래 코스 순서 목록 (화장실 목록 .wclist와 같은 모양, 색만 동선 색) */
 .crpanel{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
 .crlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}

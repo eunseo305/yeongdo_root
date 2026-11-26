@@ -324,8 +324,9 @@ function renderResult(s,a){
     <div class="map-cap"><span id="mapCap">${MAPT[L].sketch}</span><span class="map-btns">${wcBtnHTML()}<button type="button" class="adtoggle" id="photoToggle" aria-pressed="${state.photosOn}" style="color:var(--sea)">${state.photosOn?MAPT[L].photoHide:MAPT[L].photoShow}</button></span></div>
   </section>
   ${bannerHTML()}
-  <div id="coursePanel">${courseListHTML(r)}</div>
-  <div id="wcPanel"></div>
+  ${subTabsHTML(r)}
+  <div id="coursePanel" role="tabpanel" aria-labelledby="subtab-course"${crTab!=="course"?" hidden":""}>${courseListHTML(r)}</div>
+  <div id="wcPanel" role="tabpanel" aria-labelledby="subtab-wc"${crTab!=="wc"?" hidden":""}></div>
   </div>
   <div class="rpanel" id="tab-tl" role="tabpanel" aria-labelledby="tabbtn-tl" hidden>
   <div class="edbar${state.editing?" on":""}">

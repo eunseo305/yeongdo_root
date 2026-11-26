@@ -11,15 +11,19 @@
 const WCT={
 ko:{show:"🚻 화장실 표시",hide:"🚻 화장실 숨기기",loading:"🚻 불러오는 중…",fail:"🚻 불러오지 못했어요",wc:"공중화장실",open:"개방",
   near:"가까운 공중화장실 5곳",me:"내 위치",byMe:"내 위치 기준 · 직선거리",byT:"크루즈터미널 기준 · 직선거리",
+  empty:"🚻 화장실 표시 버튼을 누르면 가까운 공중화장실 5곳이 여기 나와요.",
   noLoc:"위치를 확인할 수 없어 크루즈터미널 기준으로 보여 드려요.",far:"지금 영도에서 멀리 계셔서 크루즈터미널 기준으로 보여 드려요."},
 en:{show:"🚻 Show restrooms",hide:"🚻 Hide restrooms",loading:"🚻 Loading…",fail:"🚻 Couldn't load",wc:"Public restroom",open:"Open",
   near:"5 nearest public restrooms",me:"You are here",byMe:"From your location · straight-line",byT:"From the cruise terminal · straight-line",
+  empty:"Tap 🚻 Show restrooms to see the 5 nearest public restrooms here.",
   noLoc:"Couldn't get your location, so showing restrooms near the cruise terminal.",far:"You're far from Yeongdo, so showing restrooms near the cruise terminal."},
 ja:{show:"🚻 トイレ表示",hide:"🚻 トイレ非表示",loading:"🚻 読み込み中…",fail:"🚻 読み込めません",wc:"公衆トイレ",open:"開放",
   near:"近くの公衆トイレ5か所",me:"現在地",byMe:"現在地から・直線距離",byT:"クルーズターミナルから・直線距離",
+  empty:"「🚻 トイレ表示」を押すと、近くの公衆トイレ5か所がここに表示されます。",
   noLoc:"現在地を取得できないため、クルーズターミナル基準で表示しています。",far:"影島から離れているため、クルーズターミナル基準で表示しています。"},
 zh:{show:"🚻 显示厕所",hide:"🚻 隐藏厕所",loading:"🚻 加载中…",fail:"🚻 无法加载",wc:"公共厕所",open:"开放",
   near:"附近的5个公共厕所",me:"我的位置",byMe:"距我的位置·直线距离",byT:"距邮轮码头·直线距离",
+  empty:"点击“🚻 显示厕所”，这里会显示附近的5个公共厕所。",
   noLoc:"无法获取您的位置，按邮轮码头显示。",far:"您离影岛较远，按邮轮码头显示。"}};
 const WC_API="source/toilets.csv";
 /* 좌표가 잘못된 것으로 보여 지도에 표시하지 않는 번호 (원본 CSV는 그대로 둠)
@@ -135,10 +139,10 @@ function wcViewPts(){
   const dx=Math.max(...ps.map(p=>Math.abs(p[0]-c[0]))),dy=Math.max(...ps.map(p=>Math.abs(p[1]-c[1])));
   return [[c[0]-dx,c[1]-dy],[c[0]+dx,c[1]+dy]];
 }
-// 끌 때: 원래 동선 화면으로
-function unfitWc(){
+// 끌 때: 원래 동선 화면으로. keep=true(숨기기 버튼)면 네이버 지도는 확대된 화면 그대로 두고 화장실만 지움
+function unfitWc(keep){
   if(wcPrevFull!==null){state.mapFull=wcPrevFull;wcPrevFull=null;const zt=document.getElementById("zoomToggle");if(zt)zt.textContent=state.mapFull?MAPT[state.lang].zoom:MAPT[state.lang].full}
-  if(nmapObj&&lastR){
+  if(!keep&&nmapObj&&lastR){
     const N=naver.maps,path=["T",...lastR.sim.stops.map(st=>st.p.id)].map(id=>COORD[id]);
     const la=path.map(p=>p[0]),ln=path.map(p=>p[1]);
     nmapObj.fitBounds(new N.LatLngBounds(new N.LatLng(Math.min(...la),Math.min(...ln)),new N.LatLng(Math.max(...la),Math.max(...ln))));
@@ -188,7 +192,7 @@ function wcPanelHTML(){
 }
 function renderWcPanel(){
   const p=document.getElementById("wcPanel");if(!p)return;
-  p.innerHTML=wcPanelHTML();
+  p.innerHTML=wcPanelHTML()||`<p class="muted wcempty">${WCT[state.lang].empty}</p>`; // 꺼져 있으면 화장실 탭에 안내 한 줄
   p.querySelectorAll("[data-wcl]").forEach(b=>b.onclick=()=>{
     const id=b.dataset.wcl;wcSel=wcSel===id?null:id;
     const v=wcNear.find(x=>x.w.id===id);
@@ -226,12 +230,13 @@ function wireWc(r){
   renderWcPanel();
   const b=document.getElementById("wcToggle");if(!b)return;
   b.onclick=()=>{
-    if(wcOn){wcStop();unfitWc();refreshMap(r);syncWcBtn();return}
+    if(wcOn){wcStop();unfitWc(true);refreshMap(r);syncWcBtn();return}
     const tok=++wcTok;
     b.disabled=true;b.textContent=WCT[state.lang].loading;
     loadWc().then(()=>startWcWatch(tok,onWcMove)).then(()=>{
       if(tok!==wcTok)return;
       wcOn=true;fitWc();refreshMap(lastR||r);drawNaverWc();
+      if(typeof setCrTab==="function")setCrTab("wc",true); // 켜지면 지도 밑 탭을 화장실로
     }).catch(()=>{wcStop();const x=document.getElementById("wcToggle");if(x){x.textContent=WCT[state.lang].fail;setTimeout(syncWcBtn,2000)}})
       .finally(()=>{const x=document.getElementById("wcToggle");if(x)x.disabled=false;if(wcOn)syncWcBtn()});
   };
