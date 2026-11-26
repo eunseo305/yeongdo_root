@@ -28,10 +28,13 @@ function parseLocal(raw){
   for(const [k,arr] of Object.entries(KW.nat))if(!out.nat&&has(txt,arr))out.nat=k;
   return {a:out,ship:ship?ship.id:null,note:""};
 }
+// 필수 아닌 항목(나라·날씨)만 기본값으로 채움. 필수(누구랑 comp·크루즈 ship·관심사 interests)는 비워 두고 추가 질문으로 물어봄
 function fillDefaults(a){
   const byLang={ko:"kr",ja:"ja",zh:"zh",en:"us"};
-  return {nat:a.nat||byLang[state.lang],comp:a.comp||"couple",interests:a.interests&&a.interests.length?a.interests:["view","food"],weather:a.weather||"sun"};
+  return {nat:a.nat||byLang[state.lang],comp:a.comp||null,interests:a.interests&&a.interests.length?a.interests:[],weather:a.weather||"sun"};
 }
+// 꼭 알아야 하는 것 = 질문 화면의 질문(QUESTIONS). 그중 글에서 못 알아낸 것만 골라냄 (순서 = 질문 순서)
+function aiMissing(){return QUESTIONS.filter(k=>!qFilled(k))}
 async function askAI(){
   const raw=(state.aiText||"").trim();
   if(!raw||state.aiBusy)return;
@@ -41,7 +44,7 @@ async function askAI(){
     const langName={ko:"Korean",en:"English",ja:"Japanese",zh:"Simplified Chinese"}[state.lang];
     const prompt=`A cruise passenger who just got off the ship at Busan's Yeongdo cruise terminal wrote this about their day:
 """${raw}"""
-Read it and return ONLY a JSON object with these keys:
+Read it and return ONLY a JSON object with these keys. Only fill what they actually said or clearly implied; do not guess (use null or [] instead):
 - nat: one of ja, zh, tw, us, kr, other, or null if not said
 - comp: one of solo, couple, friends, family, care, or null (family = travelling with children; care = travelling with older adults or someone with limited mobility, e.g. elderly parents, wheelchair, trouble walking; prefer care if both apply)
 - interests: array from food, cafe, photo, view, culture, beauty, activity (beauty = shopping, cosmetics, Daiso, Olive Young, department store; activity = zipline, Danubi train, fishing village experience)
@@ -63,6 +66,11 @@ Read it and return ONLY a JSON object with these keys:
   state.ship=res.ship;
   state.aiNote=res.note||"";
   state.aiBusy=false;state.rating=0;state.fbSent=false;state.resTab="map";
-  if(state.ship){state.screen="result"}else{state.screen="q";state.q=QUESTIONS.indexOf("ship")}
+  // 필수 내용이 다 있으면 바로 결과, 빠졌으면 빠진 질문만 이어서 물어봄
+  const miss=aiMissing();
+  state.aiFollow=miss.length?miss:null;
+  state.screen=miss.length?"q":"result";
   render();
+  // 글에서 노약자 동반을 알아챘으면, 질문에서 고를 때처럼 어떤 점을 배려하는지 팝업으로 알려 줌
+  if(state.a.comp==="care")showCareInfo(null);
 }

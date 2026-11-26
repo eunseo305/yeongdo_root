@@ -322,5 +322,5 @@ function renderResult(s,a){
   s.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openPrefModal(b.dataset.edit,s,a,b));
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="againBtn" type="button">${x.again}</button>`;
   document.getElementById("backBtn").onclick=()=>{state.screen="q";state.q=QUESTIONS.length-1;render()};
-  document.getElementById("againBtn").onclick=()=>{wcStop();myLocReset();if(wcPrevFull!==null){state.mapFull=wcPrevFull;wcPrevFull=null}state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",fbSent:false,route:null,dwell:{},picking:null,addAt:null,editing:false,photoBig:null};render()};
+  document.getElementById("againBtn").onclick=()=>{wcStop();myLocReset();if(wcPrevFull!==null){state.mapFull=wcPrevFull;wcPrevFull=null}state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",aiFollow:null,fbSent:false,route:null,dwell:{},picking:null,addAt:null,editing:false,photoBig:null};render()};
 }

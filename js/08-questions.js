@@ -20,9 +20,36 @@
 .qnum{font-size:12px;font-weight:600;letter-spacing:.04em;opacity:.55}
 .qblock.enter{animation:qIn .45s cubic-bezier(.2,.8,.2,1) both}
 @keyframes qIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.qblock.enter{animation:none}}`;
+@media (prefers-reduced-motion:reduce){.qblock.enter{animation:none}}
+.qneed{align-self:flex-start;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--buoy);color:#fff}
+.qblock.need .qhead h2{color:var(--buoy)}
+.qneed[hidden]{display:none}`;
   document.head.appendChild(st);
 })();
+
+// 질문 순서: "AI에게 말로 물어보기"에서 빠진 필수 내용(state.aiFollow)이 있으면
+// 글에서 알아낸 질문(이미 골라져 있음)을 위에, 빠진 질문을 맨 아래에 둠. 아니면 원래 순서
+function qList(){
+  const miss=state.aiFollow;
+  if(!(miss&&miss.length))return QUESTIONS;
+  return [...QUESTIONS.filter(k=>!miss.includes(k)),...QUESTIONS.filter(k=>miss.includes(k))];
+}
+const qNeed=key=>!!(state.aiFollow&&state.aiFollow.includes(key));
+const QFOLLOW={
+  ko:{h:"거의 다 됐어요!",p:list=>`적어주신 내용으로 동선을 짜려면 <b>${list}</b>만 더 알려 주세요. 맨 아래에서 골라 주세요.`,
+    name:{comp:"누구랑",ship:"크루즈",interests:"관심사"},sep:"·",need:"아직 안 정했어요"},
+  en:{h:"Almost there!",p:list=>`To plan your route, just tell us <b>${list}</b>. Pick below.`,
+    name:{comp:"who you're with",ship:"your cruise",interests:"your interests"},sep:", ",need:"Not set yet"},
+  ja:{h:"あと少しです！",p:list=>`ルートを作るために、<b>${list}</b>だけ教えてください。下で選んでください。`,
+    name:{comp:"同行者",ship:"クルーズ",interests:"興味"},sep:"・",need:"まだ選んでいません"},
+  zh:{h:"马上就好！",p:list=>`为了安排路线，请再告诉我们<b>${list}</b>。请在下方选择。`,
+    name:{comp:"同行人",ship:"邮轮",interests:"兴趣"},sep:"、",need:"还没选"}};
+function qFollowHTML(){
+  if(!(state.aiFollow&&state.aiFollow.length))return "";
+  const F=QFOLLOW[state.lang]||QFOLLOW.en;
+  const list=state.aiFollow.map(k=>F.name[k]).join(F.sep);
+  return `<div class="ainote qfollow" role="note"><b>${F.h}</b><br>${state.aiNote?esc(state.aiNote)+" ":""}${F.p(list)}</div>`;
+}
 
 function qFilled(key){
   return key==="interests"?state.a.interests.length>0:key==="ship"?!!state.ship:!!state.a[key];
@@ -89,16 +116,19 @@ function qBody(key){
 }
 
 function qBlockHTML(i,enter){
-  const key=QUESTIONS[i],b=qBody(key);
+  const key=qList()[i],b=qBody(key);
   const w=(QHL[state.lang]||{})[key];
   const title=w&&b.title.includes(w)?b.title.replace(w,`<em>${w}</em>`):b.title;
-  return `<section class="qblock q-${key}${enter?" enter":""}" id="qb-${key}" data-key="${key}" data-i="${i}" aria-labelledby="qt-${key}">
+  // AI 글에서 빠진 질문이면 "아직 안 정했어요" 표시 (고르면 qSync에서 숨김)
+  const need=qNeed(key)&&!qFilled(key);
+  return `<section class="qblock q-${key}${enter?" enter":""}${need?" need":""}" id="qb-${key}" data-key="${key}" data-i="${i}" aria-labelledby="qt-${key}">
     ${key==="ship"?SHIP_ART:""}
-    <div class="qhead"><span class="qnum">${i+1} / ${QUESTIONS.length}</span><h2 id="qt-${key}"><span class="q-ic">${svgI(QI[key]||"",26)}</span><span>${title}</span></h2>${b.sub?`<p class="muted">${b.sub}</p>`:""}</div>${b.opts}</section>`;
+    ${qNeed(key)?`<span class="qneed" ${need?"":"hidden"}>${(QFOLLOW[state.lang]||QFOLLOW.en).need}</span>`:""}
+    <div class="qhead"><span class="qnum">${i+1} / ${qList().length}</span><h2 id="qt-${key}"><span class="q-ic">${svgI(QI[key]||"",26)}</span><span>${title}</span></h2>${b.sub?`<p class="muted">${b.sub}</p>`:""}</div>${b.opts}</section>`;
 }
 
 function qProgHTML(){
-  return QUESTIONS.map(k=>`<span class="${qFilled(k)?"on":""}"></span>`).join("");
+  return qList().map(k=>`<span class="${qFilled(k)?"on":""}"></span>`).join("");
 }
 
 // 선택값 반영 + 해당 블록의 눌림 표시만 갱신
@@ -114,12 +144,12 @@ function qApply(blk,key,v){
 
 function renderQ(s,a){
   // 어디까지 펼칠지: 첫 미응답 질문까지 (이미 답한 뒷 질문이 있으면 거기까지)
-  const fu=QUESTIONS.findIndex(k=>!qFilled(k));
-  let lf=-1;QUESTIONS.forEach((k,i)=>{if(qFilled(k))lf=i});
-  state.q=fu<0?QUESTIONS.length-1:Math.min(QUESTIONS.length-1,Math.max(fu,lf+1));
+  const fu=qList().findIndex(k=>!qFilled(k));
+  let lf=-1;qList().forEach((k,i)=>{if(qFilled(k))lf=i});
+  state.q=fu<0?qList().length-1:Math.min(qList().length-1,Math.max(fu,lf+1));
 
-  s.innerHTML=`<div class="progress" id="qProg" aria-hidden="true">${qProgHTML()}</div>
-    <div class="qstack" id="qStack">${QUESTIONS.slice(0,state.q+1).map((_,i)=>qBlockHTML(i,false)).join("")}</div>`;
+  s.innerHTML=`${qFollowHTML()}<div class="progress" id="qProg" aria-hidden="true">${qProgHTML()}</div>
+    <div class="qstack" id="qStack">${qList().slice(0,state.q+1).map((_,i)=>qBlockHTML(i,false)).join("")}</div>`;
 
   const stack=document.getElementById("qStack");
 
@@ -135,7 +165,7 @@ function renderQ(s,a){
     qApply(blk,key,v);
 
     // 맨 아래(가장 최근에 열린) 질문에 답했으면 다음 질문을 펼침
-    const next=()=>{if(i===state.q&&qFilled(key)&&i<QUESTIONS.length-1)qRevealNext(key!=="interests")};
+    const next=()=>{if(i===state.q&&qFilled(key)&&i<qList().length-1)qRevealNext(key!=="interests")};
     qSync(a);
     // 노약자 동반을 새로 고르면 어떤 점을 배려하는지 팝업으로 알려 주고, 닫은 뒤 다음 질문으로
     if(key==="comp"&&v==="care"&&was!=="care")showCareInfo(b,next);else next();
@@ -146,6 +176,13 @@ function renderQ(s,a){
   };
 
   qSync(a);
+
+  // AI 글에서 빠진 질문이 있으면 맨 아래 그 질문으로 내려가서 바로 고를 수 있게
+  if(state.aiFollow&&state.aiFollow.length){
+    const first=stack.querySelector(".qblock.need");
+    const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(first)setTimeout(()=>first.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"}),250);
+  }
 }
 
 function qRevealNext(scroll){
@@ -166,11 +203,15 @@ function qRefreshBlock(key){
 
 function qSync(a){
   const p=document.getElementById("qProg");if(p)p.innerHTML=qProgHTML();
-  const x=t(),done=QUESTIONS.every(qFilled);
+  document.querySelectorAll(".qblock").forEach(b=>{
+    const f=qFilled(b.dataset.key);b.classList.toggle("need",qNeed(b.dataset.key)&&!f);
+    const n=b.querySelector(".qneed");if(n)n.hidden=f;
+  });
+  const x=t(),done=qList().every(qFilled);
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="nextBtn" type="button" ${done?"":"disabled"}>${x.see}</button>`;
   document.getElementById("backBtn").onclick=()=>{state.screen="home";render()};
   document.getElementById("nextBtn").onclick=()=>{
-    if(!QUESTIONS.every(qFilled))return;
+    if(!qList().every(qFilled))return;
     state.screen="result";state.rating=0;state.fbSent=false;state.resTab="map";render();
   };
 }
