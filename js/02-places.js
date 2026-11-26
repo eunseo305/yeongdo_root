@@ -67,12 +67,12 @@ const PLACES=[
  d:{ko:"조선에 고구마가 처음 온 곳 · 언덕 위 공원과 역사기념관 · 월요일 휴관",en:"Where sweet potatoes first reached Korea · hillside park and memorial hall · closed Mondays",ja:"朝鮮にさつまいもが初めて伝わった地・丘の上の公園と記念館・月曜休館",zh:"红薯最早传入朝鲜之地 · 山坡公园和纪念馆 · 周一闭馆"}},
 
 /* ---------- 쇼핑·뷰티 ---------- */
-{id:"daiso",zone:"E",seq:8,dwell:30,tags:["beauty"],stairs:false,indoor:true,meal:false,shop:true,
- name:{ko:"다이소 (영도 동삼)",en:"Daiso (Yeongdo Dongsam)",ja:"ダイソー（影島・東三）",zh:"大创（影岛东三）"},
- d:{ko:"저렴한 K-뷰티 화장품, 간식, 기념품",en:"Budget K-beauty, snacks and souvenirs",ja:"プチプラK-ビューティー・お菓子・お土産",zh:"平价韩妆、零食和纪念品"}},
+{id:"daiso",zone:"W",seq:6.2,dwell:30,tags:["beauty"],stairs:false,indoor:true,meal:false,shop:true,open:600,close:1320,
+ name:{ko:"다이소 영도대교점",en:"Daiso Yeongdo Bridge",ja:"ダイソー 影島大橋店",zh:"大创 影岛大桥店"},
+ d:{ko:"저렴한 K-뷰티 화장품, 간식, 기념품 · 올리브영에서 걸어서 5분 · 10:00 개점",en:"Budget K-beauty, snacks and souvenirs · 5 min walk from Olive Young · opens 10:00",ja:"プチプラK-ビューティー・お菓子・お土産・オリーブヤングから徒歩5分・10:00開店",zh:"平价韩妆、零食和纪念品 · 距Olive Young步行5分钟 · 10:00开门"}},
 {id:"oliveyoung",zone:"W",seq:6,dwell:30,tags:["beauty"],stairs:false,indoor:true,meal:false,shop:true,open:630,close:1320,
  name:{ko:"올리브영 부산영도점",en:"Olive Young Busan Yeongdo",ja:"オリーブヤング 釜山影島店",zh:"Olive Young 釜山影岛店"},
- d:{ko:"K-뷰티 화장품, 영도대교 바로 앞 · 10:30 개점",en:"K-beauty by Yeongdo Bridge · opens 10:30",ja:"K-ビューティー、影島大橋のすぐ前・10:30開店",zh:"韩国美妆，影岛大桥旁 · 10:30开门"}},
+ d:{ko:"K-뷰티 화장품 · 대교로 16, 부산대교 앞 봉래교차로 근처 · 10:30 개점",en:"K-beauty · 16 Daegyo-ro, near Bongnae junction by Busan Bridge · opens 10:30",ja:"K-ビューティー・大橋路16、釜山大橋前の蓬莱交差点近く・10:30開店",zh:"韩国美妆 · 大桥路16号，釜山大桥前蓬莱路口附近 · 10:30开门"}},
 {id:"lotte",zone:"O",seq:1,dwell:80,tags:["beauty"],stairs:false,indoor:true,meal:false,out:true,shop:true,open:630,close:1200,
  name:{ko:"롯데백화점 광복점",en:"Lotte Department Store Gwangbok",ja:"ロッテ百貨店 光復店",zh:"乐天百货 光复店"},
  d:{ko:"영도대교 건너 바로 · 명품·K-뷰티·식당가 · 10:30 개점",en:"Just across Yeongdo Bridge · luxury, K-beauty, food hall · opens 10:30",ja:"影島大橋を渡ってすぐ・ブランド・K-ビューティー・レストラン街・10:30開店",zh:"过影岛大桥即到 · 名品·韩妆·美食街 · 10:30开门"}},
@@ -80,7 +80,7 @@ const PLACES=[
 /* ---------- 액티비티 ---------- */
 {id:"zipline",zone:"E",seq:5,dwell:40,tags:["activity","view"],stairs:false,meal:false,
  name:{ko:"태종대 오션 플라잉 (짚라인)",en:"Taejongdae Ocean Flying (zipline)",ja:"太宗台オーシャンフライング（ジップライン）",zh:"太宗台海洋飞翔（滑索）"},
- d:{ko:"바다 위를 나는 짚라인 · 야외, 비·강풍엔 운영 중단 · 운영시간은 현장 확인",en:"Zipline over the sea · outdoor, closed in rain or strong wind · check hours on site",ja:"海の上を飛ぶジップライン・屋外、雨・強風時は休止・営業時間は現地で確認",zh:"海上滑索 · 户外，雨天大风停运 · 营业时间请现场确认"}},
+ d:{ko:"바다 위를 나는 짚라인 · 체중 30~100kg만 탑승 가능 · 야외, 비·강풍엔 운영 중단 · 운영시간은 현장 확인",en:"Zipline over the sea · riders must weigh 30–100 kg · outdoor, closed in rain or strong wind · check hours on site",ja:"海の上を飛ぶジップライン・体重30〜100kgの方のみ・屋外、雨・強風時は休止・営業時間は現地で確認",zh:"海上滑索 · 仅限体重30~100公斤 · 户外，雨天大风停运 · 营业时间请现场确认"}},
 {id:"taejongdae",zone:"E",seq:6,dwell:90,tags:["view","photo","activity"],stairs:false,meal:false,open:560,close:1050,closed:[1],
  name:{ko:"태종대 다누비열차 (영도등대)",en:"Taejongdae Danubi train (lighthouse)",ja:"太宗台 ダヌビ列車（影島灯台）",zh:"太宗台 Danubi小火车（影岛灯塔）"},
  d:{ko:"열차로 절벽 해안과 전망대를 편하게 · 내리면 야외 · 월요일 운휴",en:"Ride the train past sea cliffs to the lookout · outdoor stops · no trains Mondays",ja:"列車で断崖と展望台へ・降りると屋外・月曜運休",zh:"乘小火车游览海崖和观景台 · 下车后为户外 · 周一停运"}},

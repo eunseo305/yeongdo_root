@@ -22,14 +22,13 @@ function score(p){
   if(WX_BLOCK[weather]?.includes(p.id))return -1;
   // 고른 크루즈 날짜에 쉬는 곳은 뺌 (날짜를 안 골랐으면 오늘 기준)
   if(p.closed&&p.closed.includes(cruiseDow()))return -1;
-  // 짚라인은 노약자 동반이면 추천하지 않음
-  if(p.id==="zipline"&&comp==="care")return -1;
   const m=p.tags.filter(g=>interests.includes(g)).length;
   let s=m?1+3*m:0.6;
-  if(p.stairs&&comp==="care")s-=5;
-  if(p.stairs&&comp==="family")s-=1;
-  if(comp==="family"&&p.indoor)s+=2;
-  if(comp==="family"&&(p.id==="dongsam"||p.id==="arte"))s+=1.5;
+  const care=hasCare(comp),kids=hasKids(comp); // 노약자·아이 동반 (둘 다면 둘 다 적용)
+  if(p.stairs&&care)return -1; // 노약자 동반: 계단 많은 곳은 아예 뺌 (안내 팝업과 맞춤)
+  if(p.stairs&&kids)s-=1;
+  if(kids&&p.indoor)s+=2;
+  if(kids&&(p.id==="dongsam"||p.id==="arte"))s+=1.5;
   if(comp==="couple"&&(p.tags.includes("cafe")||p.tags.includes("photo")))s+=1;
   if(comp==="friends"&&(p.tags.includes("food")||p.tags.includes("photo")||p.tags.includes("activity")))s+=1;
   if(nat==="ja"&&(p.id==="haenyeo"||p.id==="samjin"))s+=0.8;
@@ -92,7 +91,8 @@ function planWith(places){
     for(const x of pool){
       if(x.p.meal&&meal)continue;
       if(isOut(x.p)&&chosen.filter(isOut).length>=OUTMAX)continue;
-      const trial=chosen.concat(x.p).sort((a,b)=>ord.indexOf(a.zone)-ord.indexOf(b.zone)||a.seq-b.seq);
+      // 쇼핑(shop)은 짐이 무거워지니 코스 맨 끝에, 나머지는 구역 순서·seq 순서대로
+      const trial=chosen.concat(x.p).sort((a,b)=>(!!a.shop-!!b.shop)||ord.indexOf(a.zone)-ord.indexOf(b.zone)||a.seq-b.seq);
       const sm=simulate(trial,start);
       if(sm.end<=limit&&!sm.late){chosen=trial;if(x.p.meal)meal=true}
     }

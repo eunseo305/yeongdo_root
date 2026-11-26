@@ -24,6 +24,7 @@ function parseLocal(raw){
   CRUISES.forEach(c=>{txt=txt.split(c.name.toLowerCase()).join(" ")});
   for(const [k,arr] of Object.entries(KW.interests))if(has(txt,arr))out.interests.push(k);
   for(const [k,arr] of Object.entries(KW.comp))if(!out.comp&&has(txt,arr))out.comp=k;
+  if(has(txt,KW.comp.care)&&has(txt,KW.comp.family))out.comp="both"; // 노약자와 아이가 함께면 둘 다
   for(const [k,arr] of Object.entries(KW.weather))if(!out.weather&&has(txt,arr))out.weather=k;
   for(const [k,arr] of Object.entries(KW.nat))if(!out.nat&&has(txt,arr))out.nat=k;
   return {a:out,ship:ship?ship.id:null,note:""};
@@ -46,7 +47,7 @@ async function askAI(){
 """${raw}"""
 Read it and return ONLY a JSON object with these keys. Only fill what they actually said or clearly implied; do not guess (use null or [] instead):
 - nat: one of ja, zh, tw, us, kr, other, or null if not said
-- comp: one of solo, couple, friends, family, care, or null (family = travelling with children; care = travelling with older adults or someone with limited mobility, e.g. elderly parents, wheelchair, trouble walking; prefer care if both apply)
+- comp: one of solo, couple, friends, family, care, both, or null (family = travelling with children; care = travelling with older adults or someone with limited mobility, e.g. elderly parents, wheelchair, trouble walking; both = children and older adults or someone with limited mobility together)
 - interests: array from food, cafe, photo, view, culture, beauty, activity (beauty = shopping, cosmetics, Daiso, Olive Young, department store; activity = zipline, Danubi train, fishing village experience)
 - weather: one of sun, rain, hot, cold, or null
 - ship: one of ${CRUISES.map(c=>`${c.id} (${c.name})`).join(", ")}, or null if not named
@@ -55,7 +56,7 @@ Read it and return ONLY a JSON object with these keys. Only fill what they actua
       const j=await sampleFn.json(prompt,{modelTier:"quick"});
       if(j&&typeof j==="object"){
         const ok=(v,list)=>list.includes(v)?v:null;
-        res={a:{nat:ok(j.nat,["ja","zh","tw","us","kr","other"]),comp:ok(j.comp,["solo","couple","friends","family","care"]),
+        res={a:{nat:ok(j.nat,["ja","zh","tw","us","kr","other"]),comp:ok(j.comp,["solo","couple","friends","family","care","both"]),
           interests:Array.isArray(j.interests)?j.interests.filter(v=>["food","cafe","photo","view","culture","beauty","activity"].includes(v)):[],weather:ok(j.weather,["sun","rain","hot","cold"])},
           ship:ok(j.ship,CRUISES.map(c=>c.id)),note:typeof j.note==="string"?j.note.slice(0,200):""};
       }
@@ -72,5 +73,5 @@ Read it and return ONLY a JSON object with these keys. Only fill what they actua
   state.screen=miss.length?"q":"result";
   render();
   // 글에서 노약자 동반을 알아챘으면, 질문에서 고를 때처럼 어떤 점을 배려하는지 팝업으로 알려 줌
-  if(state.a.comp==="care")showCareInfo(null);
+  if(hasCare(state.a.comp))showCareInfo(null);
 }

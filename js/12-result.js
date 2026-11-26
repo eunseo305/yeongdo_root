@@ -233,7 +233,7 @@ function openPrefModal(key,s,a,opener){
     if(!apply)state.a=snap;
     document.removeEventListener("keydown",onKey);document.body.style.overflow=prevOv;m.remove();
     if(apply){renderResult(s,a);const c=s.querySelector(`[data-edit="${key}"]`);if(c)c.focus();
-      if(key==="comp"&&state.a.comp==="care"&&snap.comp!=="care")showCareInfo(c)}else opener.focus();
+      if(key==="comp"&&hasCare(state.a.comp)&&!hasCare(snap.comp))showCareInfo(c)}else opener.focus();
   };
   const onKey=e=>{if(e.key==="Escape")close(false)};
   document.addEventListener("keydown",onKey);
@@ -244,7 +244,7 @@ function openPrefModal(key,s,a,opener){
     if(pm)return pm.dataset.pm==="ok"?(qFilled(key)&&close(true)):close(false);
     const v=e.target.closest("[data-v]");if(!v)return;
     qApply(m.querySelector(".pm-body"),key,v.dataset.v);
-    if(key==="interests")ok();else close(true);
+    if(key==="interests")ok();else if(!(key==="comp"&&v.dataset.v==="mix"))close(true); // 노약자·아이 칸은 펼치기만
   };
   ok();
   (m.querySelector('[aria-pressed="true"]')||m.querySelector("[data-v]")).focus();

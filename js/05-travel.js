@@ -13,7 +13,7 @@ const COORD={T:[35.0808,129.0792],
  // 문화·예술
  museum:[35.0787,129.0803],arte:[35.0865,129.0759],jonaegi:[35.0853,129.0583],
  // 쇼핑·뷰티
- daiso:[35.0760,129.0719],oliveyoung:[35.0935,129.0375],lotte:[35.0971,129.0364],
+ daiso:[35.0913,129.0415],oliveyoung:[35.0932,129.0436],lotte:[35.0971,129.0364],
  // 액티비티
  zipline:[35.0620,129.0792],taejongdae:[35.0596,129.0800],dongsam:[35.0693,129.0807],
  // 예비 장소
@@ -22,7 +22,7 @@ function km(a,b){const R=6371,r=Math.PI/180,[la1,lo1]=COORD[a],[la2,lo2]=COORD[b
   const h=Math.sin(dl/2)**2+Math.cos(la1*r)*Math.cos(la2*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(h))*1.35}
 function leg(a,b){
   const {comp,weather}=state.a;
-  const d=km(a,b),slow=comp==="care";
+  const d=km(a,b),slow=hasCare(comp);
   const walk=Math.max(2,Math.round(d/(slow?3.2:4.2)*60));
   const taxi=Math.max(3,Math.round(d/22*60)+4);
   const bus=d<1.2?null:Math.round(d/15*60)+10;
@@ -30,7 +30,7 @@ function leg(a,b){
   let mode,why;
   if(walk<=lim){mode="walk";why="near"}
   else if(weather==="rain"){mode="taxi";why="rain"}
-  else if(slow||comp==="family"){mode="taxi";why="comfort"}
+  else if(slow||hasKids(comp)){mode="taxi";why="comfort"}
   else if(bus!==null&&bus-taxi<=10){mode="bus";why="cheap"}
   else{mode="taxi";why="fast"}
   return {d,walk,taxi,bus,mode,why,min:{walk,taxi,bus}[mode]};
