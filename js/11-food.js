@@ -46,22 +46,22 @@ let FOOD=[
 ].map(([n,c,d,r,rv,b,a,ll,h,off,bk],i)=>({i,n,c,d,r,rv,b:b||[],a:a||"",ll:ll||null,h:h||"",off:off||"",bk:bk||""}));
 const FCAT_ORDER=["cafe","sea","kr","pork","west","jp","cn","bakery","mil","snack","chick","bar"];
 const FT={
-ko:{h:n=>`영도 맛집 ${n}곳`,sub:"부산어디? 인기순 · ★ 네이버 평점",subApi:"한국관광공사 관광정보 · 동선에서 가까운 순",srcApi:d=>`출처: 한국관광공사 TourAPI(공공데이터포털), ${d} 업데이트. 매일 새벽 자동으로 새로 받아와요. 평점은 제공되지 않아요.`,all:"전체",near:"동선 근처",more:n=>`${n}곳 더 보기`,less:"접기",rev:"리뷰",
+ko:{h:n=>`영도 맛집 ${n}곳`,sub:"부산어디? 인기순 · ★ 네이버 평점",subApi:"한국관광공사 관광정보 · 동선에서 가까운 순",srcApi:d=>`출처: 한국관광공사 TourAPI(공공데이터포털), ${d} 업데이트. 매일 새벽 자동으로 새로 받아와요. 평점은 제공되지 않아요.`,all:"전체",near:"동선 근처",more:n=>`${n}곳 더 보기`,less:"접기",rev:"리뷰",add:"＋ 경로에 추가",inRoute:"✓ 경로에 있어요",addAria:n=>`${n} 경로에 추가`,ovP:(n,e,b)=>`${n}을(를) 넣으면 ${e}에 터미널에 돌아와요. 귀선 시간 ${b}보다 늦어요. 다시 뺄까요?`,undo:"네, 다시 뺄게요",
  src:"출처: 부산어디?(busan-where.com) 영도 맛집 목록(2026-11-23) 중 주소가 확인된 36곳. 주소·영업시간·휴무는 2026-11-24에 검색한 정보라 바뀌었을 수 있어요. 가기 전에 네이버 지도에서 한 번 더 확인하세요. 번호는 가까운 동선 장소예요.",
  hr:{open:"영업",off:"휴무",bk:"브레이크",none:"영업시간 정보 없음"},
  cat:{cafe:"카페·디저트",sea:"해산물·회",kr:"한식",pork:"돼지국밥",west:"양식",jp:"일식·초밥",cn:"중식",bakery:"베이커리",mil:"밀면",snack:"분식",chick:"치킨·피자",bar:"주점"},
  badge:{safe:"안심식당",model:"모범음식점",bib:"빕 구르망"}},
-en:{h:n=>`${n} places to eat in Yeongdo`,sub:"Popularity order from Busan-where · ★ NAVER rating",subApi:"Korea Tourism Organization data · closest to your route first",srcApi:d=>`Source: Korea Tourism Organization TourAPI, updated ${d}. Refreshed automatically every morning. No ratings in this data.`,all:"All",near:"Near your route",more:n=>`Show ${n} more`,less:"Show less",rev:"reviews",
+en:{h:n=>`${n} places to eat in Yeongdo`,sub:"Popularity order from Busan-where · ★ NAVER rating",subApi:"Korea Tourism Organization data · closest to your route first",srcApi:d=>`Source: Korea Tourism Organization TourAPI, updated ${d}. Refreshed automatically every morning. No ratings in this data.`,all:"All",near:"Near your route",more:n=>`Show ${n} more`,less:"Show less",rev:"reviews",add:"＋ Add to route",inRoute:"✓ On your route",addAria:n=>`Add ${n} to route`,ovP:(n,e,b)=>`With ${n} added you get back to the terminal at ${e}, after the all-aboard time of ${b}. Take it out again?`,undo:"Yes, take it out",
  src:"Source: Busan-where (busan-where.com) Yeongdo restaurant list (23 Nov 2026), keeping the 36 places whose address we could confirm. Addresses, hours and closing days were looked up on 24 Nov 2026 and may change, so check NAVER Map before you go. Descriptions and hours are in Korean.",
  hr:{open:"Hours",off:"Closed",bk:"Break",none:"No opening-hours info"},
  cat:{cafe:"Café & dessert",sea:"Seafood & sashimi",kr:"Korean",pork:"Pork rice soup",west:"Western",jp:"Japanese",cn:"Chinese",bakery:"Bakery",mil:"Milmyeon noodles",snack:"Street food",chick:"Chicken & pizza",bar:"Bar"},
  badge:{safe:"Safe restaurant",model:"Model restaurant",bib:"Bib Gourmand"}},
-ja:{h:n=>`影島グルメ${n}店`,sub:"釜山オディ？人気順・★NAVER評価",subApi:"韓国観光公社データ・ルートに近い順",srcApi:d=>`出典：韓国観光公社 TourAPI、${d}更新。毎朝自動で更新されます。評価はありません。`,all:"すべて",near:"ルート近く",more:n=>`あと${n}店を見る`,less:"閉じる",rev:"件",
+ja:{h:n=>`影島グルメ${n}店`,sub:"釜山オディ？人気順・★NAVER評価",subApi:"韓国観光公社データ・ルートに近い順",srcApi:d=>`出典：韓国観光公社 TourAPI、${d}更新。毎朝自動で更新されます。評価はありません。`,all:"すべて",near:"ルート近く",more:n=>`あと${n}店を見る`,less:"閉じる",rev:"件",add:"＋ ルートに追加",inRoute:"✓ ルートに入っています",addAria:n=>`${n}をルートに追加`,ovP:(n,e,b)=>`${n}を入れるとターミナルに${e}に戻ります。帰船時刻${b}より遅れます。外しますか？`,undo:"はい、外します",
  src:"出典：釜山オディ？(busan-where.com) 影島グルメ一覧(2026年11月23日)のうち住所を確認できた36店。住所・営業時間・定休日は2026年11月24日に調べた情報で、変わることがあります。行く前にNAVER地図で確認してください。紹介文と営業時間は韓国語です。",
  hr:{open:"営業",off:"定休日",bk:"休憩",none:"営業時間の情報なし"},
  cat:{cafe:"カフェ・デザート",sea:"海鮮・刺身",kr:"韓国料理",pork:"テジクッパ",west:"洋食",jp:"和食・寿司",cn:"中華",bakery:"ベーカリー",mil:"ミルミョン",snack:"粉食",chick:"チキン・ピザ",bar:"居酒屋"},
  badge:{safe:"安心食堂",model:"模範飲食店",bib:"ビブグルマン"}},
-zh:{h:n=>`影岛美食${n}家`,sub:"釜山哪里？人气排序 · ★ NAVER评分",subApi:"韩国观光公社数据 · 按离路线远近排序",srcApi:d=>`来源：韩国观光公社 TourAPI，${d}更新。每天早上自动更新。无评分数据。`,all:"全部",near:"路线附近",more:n=>`再看${n}家`,less:"收起",rev:"条评价",
+zh:{h:n=>`影岛美食${n}家`,sub:"釜山哪里？人气排序 · ★ NAVER评分",subApi:"韩国观光公社数据 · 按离路线远近排序",srcApi:d=>`来源：韩国观光公社 TourAPI，${d}更新。每天早上自动更新。无评分数据。`,all:"全部",near:"路线附近",more:n=>`再看${n}家`,less:"收起",rev:"条评价",add:"＋ 加入路线",inRoute:"✓ 已在路线中",addAria:n=>`将${n}加入路线`,ovP:(n,e,b)=>`加入${n}后将在${e}回到码头，晚于返船时间${b}。要移除吗？`,undo:"是的，移除",
  src:"来源：釜山哪里？(busan-where.com) 影岛美食列表（2026年11月23日）中能确认地址的36家。地址、营业时间和休息日为2026年11月24日查询的信息，可能有变，出发前请在NAVER地图再确认。介绍和营业时间为韩语。",
  hr:{open:"营业",off:"休息",bk:"休息时段",none:"无营业时间信息"},
  cat:{cafe:"咖啡·甜点",sea:"海鲜·生鱼片",kr:"韩餐",pork:"猪肉汤饭",west:"西餐",jp:"日料·寿司",cn:"中餐",bakery:"面包店",mil:"小麦冷面",snack:"小吃",chick:"炸鸡·披萨",bar:"酒馆"},
@@ -84,7 +84,7 @@ function foodHTML(r){
     ${f.d?`<span class="ds">${esc(f.d)}</span>`:""}
     ${f.a?`<span class="fad">${esc(f.a)}</span>`:""}
     ${foodSrc==="api"?"":`<span class="fhr">${f.h||f.off||f.bk?[f.h&&`${F.hr.open} ${esc(f.h)}`,f.off&&`${F.hr.off} ${esc(f.off)}`,f.bk&&`${F.hr.bk} ${esc(f.bk)}`].filter(Boolean).join(" · "):F.hr.none}</span>`}
-    <span class="maps"><a href="https://map.naver.com/p/search/${q}" target="_blank" rel="noopener">${nv}</a></span></li>`};
+    <span class="maps">${f.ll?(foodInRoute(f,r)?`<button type="button" class="fadd" disabled>${F.inRoute}</button>`:`<button type="button" class="fadd" data-fadd="${foodPid(f)}" aria-label="${esc(F.addAria(f.n))}">${F.add}</button>`):""}<a href="https://map.naver.com/p/search/${q}" target="_blank" rel="noopener">${nv}</a></span></li>`};
   return `<h2 style="font-size:19px">${F.h(FOOD.length)}</h2><p class="muted">${foodSrc==="api"?F.subApi:F.sub}</p>
     <div class="fcats" role="group" aria-label="${esc(F.h(FOOD.length))}">${[["all",FOOD.length]].concat(cats).map(([c,n])=>`<button type="button" id="fcat-${c}" data-fc="${c}" aria-pressed="${state.foodCat===c}">${c==="all"?F.all:F.cat[c]} ${n}</button>`).join("")}</div>
     <ol class="flist">${shown.map(item).join("")}</ol>
@@ -115,4 +115,41 @@ function wireFood(r){
   sec.querySelectorAll("[data-fc]").forEach(b=>b.onclick=()=>{state.foodCat=b.dataset.fc;state.foodMore=false;sec.innerHTML=foodHTML(r);wireFood(r)});
   const m=document.getElementById("foodMore");
   if(m)m.onclick=()=>{state.foodMore=!state.foodMore;sec.innerHTML=foodHTML(r);wireFood(r);if(!state.foodMore)sec.scrollIntoView({block:"start"})};
+  sec.querySelectorAll("[data-fadd]").forEach(b=>b.onclick=()=>{const f=FOOD.find(x=>x.ll&&foodPid(x)===b.dataset.fadd);if(f)addFoodToRoute(f,r)});
+}
+/* ---------- 맛집을 경로에 넣기 ----------
+   맛집 목록의 "＋ 경로에 추가"를 누르면 그 가게를 '내가 추가한 곳'(state.customPlaces)으로 만들어 경로에 넣습니다.
+   - 머무는 시간: 카페·베이커리 40분, 나머지 식당 60분 (식사로 침). 영업시간(f.h "10:00~22:00")이 있으면 열 때까지 기다리게 계산
+   - 넣는 자리: 쇼핑보다 앞에서, 터미널에 가장 빨리 돌아오는 자리 (insertBest, js/09-engine.js)
+   - 넣고 나서 귀선 시간을 넘기면 다시 뺄지 물어봄 */
+// 이미 경로에 있는지: 이 가게를 넣었거나, 같은 가게인 추천 장소(30m 안의 식당·카페, 예: 피아크·모모스·해녀촌)가 코스에 있으면
+function foodInRoute(f,r){const id=foodPid(f);return r.chosen.some(p=>p.id===id||(!p.custom&&(p.tags.includes("food")||p.tags.includes("cafe"))&&COORD[p.id]&&distM(f.ll,COORD[p.id])<30))}
+function foodPid(f){let h=0;for(const ch of f.n+"|"+(f.a||""))h=(h*31+ch.charCodeAt(0))|0;return "f"+(h>>>0).toString(36)}
+function foodHours(h){const m=/(\d{1,2}):(\d{2})\s*~\s*(\d{1,2}):(\d{2})/.exec(h||"");return m?{open:+m[1]*60+ +m[2],close:+m[3]*60+ +m[4]}:{}}
+function foodPlace(f){
+  const id=foodPid(f);let p=state.customPlaces.find(q=>q.id===id);
+  if(!p){
+    const LS=Object.keys(FT),cafe=f.c==="cafe"||f.c==="bakery";
+    p={id,zone:"C",seq:0,dwell:cafe?40:60,tags:[],stairs:false,meal:!cafe,custom:true,food:true,ll:f.ll.slice(),
+      name:Object.fromEntries(LS.map(k=>[k,f.n])),d:Object.fromEntries(LS.map(k=>[k,FT[k].cat[f.c]||""])),...foodHours(f.h)};
+    state.customPlaces.push(p);saveCustom();
+  }
+  COORD[id]=p.ll;return p;
+}
+function addFoodToRoute(f,r){
+  if(foodInRoute(f,r))return;
+  const p=foodPlace(f),ids=r.chosen.map(q=>q.id);
+  const shopAt=r.chosen.findIndex(q=>q.shop),wasOver=!!r.over;
+  state.route=insertBest(ids,p.id,r.start,shopAt<0?ids.length:shopAt);
+  state.addAt=null;state.resTab="tl";
+  const s=document.getElementById("screen"),a=document.getElementById("actions");
+  renderResult(s,a);
+  const show=()=>{const li=document.querySelector(`#tab-tl li.stop[data-id="${p.id}"]`);if(li){li.scrollIntoView({block:"center"});li.setAttribute("tabindex","-1");li.focus({preventScroll:true})}};
+  show();
+  const r2=lastR;if(!r2.over||wasOver)return;
+  const F=FT[state.lang]||FT.en,E=EDT[state.lang]||EDT.en;
+  askModal({title:E.ovT,body:F.ovP(f.n,hmD(r2.sim.end),hmD(r2.allAboard)),no:E.ovKeep,yes:F.undo},yes=>{
+    if(yes){state.route=state.route.filter(id=>id!==p.id);state.resTab="food";renderResult(s,a);document.querySelector(`[data-fadd="${p.id}"]`)?.focus()}
+    else show();
+  });
 }

@@ -124,6 +124,10 @@ button.chip:hover{filter:brightness(.95)}
 .maps{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .maps a{font-size:13px;color:var(--sea);border:1px solid var(--line);border-radius:999px;padding:6px 12px;text-decoration:none;min-height:32px;display:inline-flex;align-items:center}
 .maps a:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+/* 맛집 "＋ 경로에 추가" 버튼 (js/11-food.js) */
+.fadd{font:inherit;font-size:13px;font-weight:700;color:#fff;background:var(--sea);border:1px solid var(--sea);border-radius:999px;padding:6px 12px;min-height:32px;cursor:pointer}
+.fadd:disabled{color:var(--sea);background:transparent;cursor:default;font-weight:600}
+.fadd:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
 .tag-out{font-size:12px;background:#fbefd9;color:#8a5a14;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:2px}
 .card{border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}

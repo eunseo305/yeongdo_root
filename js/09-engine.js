@@ -111,10 +111,10 @@ function planWith(places){
 }
 // 기본 장소 + 사용자가 추가한 장소에서 id로 찾기
 function findPlace(id){return PLACES.find(p=>p.id===id)||state.customPlaces.find(p=>p.id===id)}
-// 새 장소를 넣었을 때 터미널 복귀가 가장 빠른 자리에 끼워 넣음
-function insertBest(ids,newId,start){
+// 새 장소를 넣었을 때 터미널 복귀가 가장 빠른 자리에 끼워 넣음 (maxAt: 이 순번보다 뒤에는 넣지 않음, 예: 쇼핑 앞까지만)
+function insertBest(ids,newId,start,maxAt=ids.length){
   let best=null;
-  for(let i=0;i<=ids.length;i++){
+  for(let i=0;i<=Math.min(ids.length,maxAt);i++){
     const trial=[...ids.slice(0,i),newId,...ids.slice(i)];
     const end=simulate(trial.map(findPlace),start).end;
     if(!best||end<best.end)best={trial,end};
