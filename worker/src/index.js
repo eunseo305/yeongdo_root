@@ -46,6 +46,7 @@ Only fill what they actually said or clearly implied; do not guess (use null or 
 - note: one warm sentence in ${LANG_NAME[lang] || "English"}, under 30 words, saying what you understood they want for today. No place names.${lang === "ko" ? " Write it in natural Korean using Hangul only (no Chinese characters)." : ""}
 Rules:
 - interests: include only interests the text actually mentions. Do not add any that are not mentioned.
+- A market (시장, 市場, 市场) means food, not culture or beauty.
 - Mentioning parents, grandparents, elderly people, or not being able to walk much means comp = care (or both if children also come).
 - Mentioning rain means weather = rain.
 The text may be in Korean, Japanese, Chinese or English.`;
