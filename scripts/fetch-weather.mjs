@@ -146,7 +146,11 @@ async function fetchMid() {
   let last;
   for (const tmFc of midBases()) {
     try {
-      const [ta, land] = await Promise.all([midCall("getMidTa", MID_TA, tmFc), midCall("getMidLandFcst", MID_LAND, tmFc)]);
+      // 기온·육상예보는 활용신청이 따로라서 하나가 막혀도(403) 다른 하나는 저장
+      const [rTa, rLand] = await Promise.allSettled([midCall("getMidTa", MID_TA, tmFc), midCall("getMidLandFcst", MID_LAND, tmFc)]);
+      for (const r of [rTa, rLand]) if (r.status === "rejected") console.warn(`  중기예보 ${tmFc} 일부 실패: ${r.reason.message}`);
+      if (rTa.status === "rejected" && rLand.status === "rejected") throw rTa.reason;
+      const ta = rTa.value || {}, land = rLand.value || {};
       const mid = {}, day = n => mid[plusDays(tmFc, n)] || (mid[plusDays(tmFc, n)] = {});
       for (const [k, v] of Object.entries(ta)) {
         const m = k.match(/^taM(in|ax)(\d+)$/); // taMin4Low 같은 범위 값은 무시

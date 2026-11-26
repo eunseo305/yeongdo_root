@@ -170,9 +170,11 @@ function midSummary(day){
   const ps=[m.p,m.pAm,m.pPm].filter(v=>typeof v==="number");
   const wfs=[m.wf,m.wfAm,m.wfPm].filter(Boolean);
   const tMax=typeof m.tmx==="number"?m.tmx:m.tmn,tMin=typeof m.tmn==="number"?m.tmn:m.tmx;
-  const s={status:"ok",mid:true,day,tMax,tMin,p:ps.length?Math.max(...ps):0,pAm:m.pAm,pPm:m.pPm,
+  // 강수확률·하늘상태(getMidLandFcst)는 없을 수 있음 → p:null, wf:"" 로 두고 기온만 보여줌
+  const s={status:"ok",mid:true,day,tMax,tMin,p:ps.length?Math.max(...ps):null,pAm:m.pAm,pPm:m.pPm,
     wf:wfs.find(wfWet)||m.wfPm||m.wf||m.wfAm||"",wet:wfs.some(wfWet)};
-  s.cat=s.p>=WX_RULE.rainProb||(s.wet&&s.p>=WX_RULE.wetProb)?"rain":s.tMax>=WX_RULE.hotTemp?"hot":s.tMax<=WX_RULE.midColdMax?"cold":"sun";
+  const p=s.p||0;
+  s.cat=p>=WX_RULE.rainProb||(s.wet&&p>=WX_RULE.wetProb)?"rain":s.tMax>=WX_RULE.hotTemp?"hot":s.tMax<=WX_RULE.midColdMax?"cold":"sun";
   return s;
 }
 // 고른 날짜 예보로 state.a.weather 를 채움. 예보가 없으면 그대로 둠 (엔진은 맑음으로 계산)
@@ -198,8 +200,8 @@ function wxBoxHTML(s){
     <div class="wxa-grid">
       ${cell(W.hi,Math.round(s.tMax)+"°")}
       ${cell(W.lo,Math.round(s.tMin)+"°")}
-      ${cell(W.probL,Math.round(s.p)+"%",ap)}
-      ${`<div><span>${W.sky}</span><strong class="wxa-wf">${esc(wfText(s.wf,L))}</strong></div>`}
+      ${cell(W.probL,s.p==null?"–":Math.round(s.p)+"%",ap)}
+      ${`<div><span>${W.sky}</span><strong class="wxa-wf">${s.wf?esc(wfText(s.wf,L)):"–"}</strong></div>`}
     </div>
     <span class="wxa-st">${WX_ICON[s.cat]} ${esc(W.cat[s.cat])}</span>
     <small>${W.srcMid}</small></div>`;
