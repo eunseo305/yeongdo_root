@@ -44,17 +44,22 @@ function score(p){
   s+=((RATING[p.id]??4.3)-4.3)*0.8;
   return s;
 }
+// 경로를 직접 고친 경우엔 사용자가 고른 교통수단(도보·택시·버스)을 씀. key = "출발id>도착id"
+function userLeg(a,b){
+  const lg=leg(a,b),key=a+">"+b,m=state.route&&state.legMode?.[key];
+  return m&&lg[m]!=null?{...lg,key,mode:m,why:"user",min:lg[m]}:{...lg,key};
+}
 function simulate(route,start){
   let tm=start,prev="T",late=false;const out=[];
   const hot=state.a.weather==="hot";
-  for(const p of route){const lg=leg(prev,p.id);tm+=lg.min;if(p.open&&tm<p.open)tm=p.open;
+  for(const p of route){const lg=userLeg(prev,p.id);tm+=lg.min;if(p.open&&tm<p.open)tm=p.open;
     // 경로를 직접 고친 경우엔 사용자가 바꾼 머무는 시간을 씀
     const dw=(state.route&&state.dwell?.[p.id])||p.dwell;
     // 닫기 전에 다 보고 나올 수 없거나, 더운 날 한낮에 야외 체험이면 이 순서는 못 씀
     if(p.close&&tm+dw>p.close)late=true;
     if(hot&&HOT_NOON.includes(p.id)&&tm<900&&tm+dw>720)late=true;
     out.push({p,at:tm,lg,dw});tm+=dw;prev=p.id}
-  const backLeg=leg(prev,"T");
+  const backLeg=userLeg(prev,"T");
   return {stops:out,end:tm+backLeg.min,leave:tm,back:backLeg.min,backLeg,late};
 }
 // 출항 몇 분 전까지 크루즈터미널에 돌아와 있어야 하는지

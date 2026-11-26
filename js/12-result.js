@@ -10,6 +10,7 @@ ko:{edit:"✏️ 경로 수정",done:"✓ 수정 완료",hint:"▲ 위로 · ▼
   myH:"또는 내가 원하는 장소",name:"장소 이름",dwell:"머무는 시간(분)",pick:"📍 지도에서 위치 찍기",picking:"지도에서 새 장소 위치를 눌러 주세요",cancel:"취소",reset:"추천 코스로 되돌리기",
   ovT:"귀선 시간을 넘겨요",ovP:(n,e,b)=>`${n}에 머무는 시간을 늘리면 ${e}에 터미널에 돌아와요. 귀선 시간 ${b}보다 늦어요. 일정을 변경할까요?`,ovFit:m=>`네, ${m}분으로 맞출게요`,ovBack:"네, 이전 시간으로 되돌릴게요",ovKeep:"아니요, 그대로 둘게요",
   doneP:(e,b)=>`지금 경로로는 ${e}에 터미널에 돌아와서 귀선 시간 ${b}을 넘겨요. 장소를 빼거나 머무는 시간을 줄여 주세요.`,doneFix:"경로 계속 고치기",doneKeep:"그래도 완료",
+  picked:"내가 고른 이동:",modeBack:"네, 이전 이동 수단으로 되돌릴게요",modeAria:"이동 수단 고르기",modeP:(e,b)=>`이동 수단을 바꾸면 ${e}에 터미널에 돌아와요. 귀선 시간 ${b}보다 늦어요. 이전 이동 수단으로 되돌릴까요?`,
   stay:"머무는 시간",less:n=>`${n} 머무는 시간 10분 줄이기`,more:n=>`${n} 머무는 시간 10분 늘리기`,stayAria:n=>`${n} 머무는 시간(분)`,
   course:"나만의 영도 코스",mine:"내가 추가한 곳",reason:"직접 고친 경로예요. 이동시간은 직선거리로 어림한 값이에요.",over:(e,b)=>`이 경로는 ${e}에 터미널에 돌아와요. 귀선 기한 ${b}보다 늦어요. 장소를 빼거나 머무는 시간을 줄여 주세요.`},
 en:{edit:"✏️ Edit route",done:"✓ Done",hint:"Use ▲ Up and ▼ Down to reorder and ✕ Remove to take a stop out. Tap ＋ Add a place here wherever you want another stop.",up:"Up",down:"Down",upAria:n=>`Move ${n} up`,downAria:n=>`Move ${n} down`,swipeDel:"Remove",delAria:n=>`Remove ${n}`,
@@ -17,6 +18,7 @@ en:{edit:"✏️ Edit route",done:"✓ Done",hint:"Use ▲ Up and ▼ Down to re
   myH:"Or add your own place",name:"Place name",dwell:"Time there (min)",pick:"📍 Pick on map",picking:"Tap the map where the new place is",cancel:"Cancel",reset:"Back to recommended route",
   ovT:"You'd miss all-aboard",ovP:(n,e,b)=>`With more time at ${n}, you'd get back to the terminal at ${e}, later than the ${b} all-aboard time. Change the schedule?`,ovFit:m=>`Yes, set it to ${m} min`,ovBack:"Yes, undo my change",ovKeep:"No, keep it",
   doneP:(e,b)=>`With this route you'd get back to the terminal at ${e}, past the ${b} all-aboard time. Remove a stop or shorten a visit.`,doneFix:"Keep editing",doneKeep:"Finish anyway",
+  picked:"Your pick:",modeBack:"Yes, switch back",modeAria:"Choose how to get there",modeP:(e,b)=>`With this change you'd get back to the terminal at ${e}, later than the ${b} all-aboard time. Go back to the previous way of getting there?`,
   stay:"Time there",less:n=>`10 min less at ${n}`,more:n=>`10 min more at ${n}`,stayAria:n=>`Minutes at ${n}`,
   course:"My Yeongdo route",mine:"Added by you",reason:"You edited this route. Travel times are estimated from straight-line distance.",over:(e,b)=>`This route gets you back at ${e}, later than the ${b} all-aboard deadline. Remove a stop or shorten a visit.`},
 ja:{edit:"✏️ ルート編集",done:"✓ 編集完了",hint:"▲ 上へ・▼ 下へで順番を変え、✕ 削除で外せます。追加したい位置の＋ ここに場所を追加を押してください。",up:"上へ",down:"下へ",upAria:n=>`${n}を1つ上へ`,downAria:n=>`${n}を1つ下へ`,swipeDel:"削除",delAria:n=>`${n}を削除`,
@@ -24,6 +26,7 @@ ja:{edit:"✏️ ルート編集",done:"✓ 編集完了",hint:"▲ 上へ・▼
   myH:"または行きたい場所",name:"場所の名前",dwell:"滞在時間（分）",pick:"📍 地図で位置を選ぶ",picking:"地図で新しい場所の位置をタップしてください",cancel:"キャンセル",reset:"おすすめルートに戻す",
   ovT:"帰船時刻を過ぎます",ovP:(n,e,b)=>`${n}の滞在を延ばすと、ターミナルに戻るのは${e}で、帰船時刻${b}より遅くなります。日程を変更しますか？`,ovFit:m=>`はい、${m}分にします`,ovBack:"はい、元の時間に戻します",ovKeep:"いいえ、このままにします",
   doneP:(e,b)=>`このルートではターミナルに戻るのが${e}で、帰船時刻${b}を過ぎます。場所を減らすか滞在を短くしてください。`,doneFix:"編集を続ける",doneKeep:"このまま完了",
+  picked:"自分で選んだ移動：",modeBack:"はい、前の移動手段に戻します",modeAria:"移動手段を選ぶ",modeP:(e,b)=>`移動手段を変えると、ターミナルに戻るのは${e}で、帰船時刻${b}より遅くなります。前の移動手段に戻しますか？`,
   stay:"滞在時間",less:n=>`${n}の滞在を10分減らす`,more:n=>`${n}の滞在を10分増やす`,stayAria:n=>`${n}の滞在時間（分）`,
   course:"わたしの影島ルート",mine:"自分で追加",reason:"手動で編集したルートです。移動時間は直線距離からの目安です。",over:(e,b)=>`このルートでは${e}にターミナルに戻ります。帰船期限${b}より遅いので、場所を減らすか滞在を短くしてください。`},
 zh:{edit:"✏️ 修改路线",done:"✓ 完成",hint:"用▲ 上移、▼ 下移调整顺序，用✕ 删除移除地点。想加地点的位置点击＋ 在此添加地点。",up:"上移",down:"下移",upAria:n=>`将${n}上移一位`,downAria:n=>`将${n}下移一位`,swipeDel:"删除",delAria:n=>`删除${n}`,
@@ -31,6 +34,7 @@ zh:{edit:"✏️ 修改路线",done:"✓ 完成",hint:"用▲ 上移、▼ 下�
   myH:"或添加想去的地点",name:"地点名称",dwell:"停留时间（分钟）",pick:"📍 在地图上选择位置",picking:"请在地图上点击新地点的位置",cancel:"取消",reset:"恢复推荐路线",
   ovT:"会错过登船时间",ovP:(n,e,b)=>`延长在${n}的停留后，将于${e}回到码头，晚于登船时间${b}。要调整行程吗？`,ovFit:m=>`是，改为${m}分钟`,ovBack:"是，恢复原来的时间",ovKeep:"不，保持不变",
   doneP:(e,b)=>`按当前路线将于${e}回到码头，超过登船时间${b}。请删减地点或缩短停留。`,doneFix:"继续修改",doneKeep:"仍然完成",
+  picked:"自选交通：",modeBack:"是，恢复之前的交通方式",modeAria:"选择交通方式",modeP:(e,b)=>`更换交通方式后，将于${e}回到码头，晚于登船时间${b}。要恢复之前的交通方式吗？`,
   stay:"停留时间",less:n=>`${n}停留减少10分钟`,more:n=>`${n}停留增加10分钟`,stayAria:n=>`${n}停留时间（分钟）`,
   course:"我的影岛路线",mine:"自己添加",reason:"这是手动修改的路线，交通时间按直线距离估算。",over:(e,b)=>`按此路线将于${e}回到码头，晚于${b}的登船期限。请删减地点或缩短停留。`}};
 // 내가 추가한 장소는 이 기기에 저장해 두고 다음에도 고를 수 있게 함
@@ -101,7 +105,7 @@ function wireEdit(r,s,a){
     document.getElementById("pickBar")?.scrollIntoView({block:"center"});
   };
   const rs=document.getElementById("edReset");
-  if(rs)rs.onclick=()=>{state.route=null;state.dwell={};state.addAt=null;renderResult(s,a)};
+  if(rs)rs.onclick=()=>{state.route=null;state.dwell={};state.legMode={};state.addAt=null;renderResult(s,a)};
 
   // 머무는 시간 바꾸기: − / + 는 10분씩, 칸에 직접 써도 됨 (5~240분)
   const setDwell=(id,m,sel)=>{
@@ -117,6 +121,19 @@ function wireEdit(r,s,a){
     const id=box.dataset.id,inp=box.querySelector(".dwin");
     box.querySelectorAll(".dwbtn").forEach(b=>b.onclick=()=>setDwell(id,(+inp.value||0)+ +b.dataset.d,`.dwbtn[data-d="${b.dataset.d}"]`));
     inp.onchange=()=>setDwell(id,+inp.value||30,".dwin");
+  });
+  // 도보·택시·버스 고르기. 바꿔서 귀선 시간을 새로 넘기면 되돌릴지 물어봄
+  s.querySelectorAll("#tab-tl .modebtn").forEach(b=>b.onclick=()=>{
+    const key=b.dataset.leg,md=b.dataset.mode,sel=`.modebtn[data-leg="${key}"][data-mode="${md}"]`;
+    const prev=state.legMode?.[key],wasOver=r.over;
+    const focus=()=>document.querySelector(`#tab-tl ${sel}`)?.focus();
+    state.legMode={...(state.legMode||{}),[key]:md};state.route=ids();state.addAt=null;renderResult(s,a);focus();
+    const r2=lastR;if(!r2.over||wasOver)return;
+    const E=EDT[state.lang]||EDT.en;
+    askModal({title:E.ovT,body:E.modeP(hmD(r2.sim.end),hmD(r2.allAboard)),no:E.ovKeep,yes:E.modeBack},yes=>{
+      if(yes){const lm={...state.legMode};if(prev)lm[key]=prev;else delete lm[key];state.legMode=lm;renderResult(s,a)}
+      focus();
+    });
   });
   const pc=document.getElementById("pickCancel");
   if(pc)pc.onclick=()=>{state.picking=null;state.resTab="tl";renderResult(s,a)};
@@ -208,8 +225,13 @@ function askModal({title,body,no,yes},done){
 }
 
 function legHTML(lg,x){
-  const m=k=>{const v=lg[k];const on=lg.mode===k;return `<span class="mode${on?" on":""}">${x.modes[k]} ${v===null?"—":v+x.min}</span>`};
-  return `<div class="leg"><div class="modes">${m("walk")}${m("taxi")}${m("bus")}</div><span class="move"><b>${x.recLbl} ${x.modes[lg.mode]}</b> · ${x.why[lg.why]}</span></div>`;
+  const E=EDT[state.lang]||EDT.en;
+  // 수정 중에는 도보·택시·버스를 눌러서 고를 수 있음 (버스가 없는 구간은 못 누름)
+  const m=k=>{const v=lg[k];const on=lg.mode===k,txt=`${x.modes[k]} ${v===null?"—":v+x.min}`;
+    return state.editing?`<button type="button" class="mode modebtn${on?" on":""}" data-leg="${lg.key}" data-mode="${k}" aria-pressed="${on}" ${v===null?"disabled":""}>${txt}</button>`
+      :`<span class="mode${on?" on":""}">${txt}</span>`};
+  const mv=lg.why==="user"?`<b>${E.picked} ${x.modes[lg.mode]}</b>`:`<b>${x.recLbl} ${x.modes[lg.mode]}</b> · ${x.why[lg.why]}`;
+  return `<div class="leg"><div class="modes" ${state.editing?`role="group" aria-label="${E.modeAria}"`:""}>${m("walk")}${m("taxi")}${m("bus")}</div><span class="move">${mv}</span></div>`;
 }
 function fmtDur(m,L){const h=Math.floor(m/60),n=m%60;
   if(L==="en")return (h?h+" h ":"")+(n?n+" min":"").trim();
@@ -322,5 +344,5 @@ function renderResult(s,a){
   s.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openPrefModal(b.dataset.edit,s,a,b));
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="againBtn" type="button">${x.again}</button>`;
   document.getElementById("backBtn").onclick=()=>{state.screen="q";state.q=QUESTIONS.length-1;render()};
-  document.getElementById("againBtn").onclick=()=>{wcStop();myLocReset();if(wcPrevFull!==null){state.mapFull=wcPrevFull;wcPrevFull=null}state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",aiFollow:null,fbSent:false,route:null,dwell:{},picking:null,addAt:null,editing:false,photoBig:null};render()};
+  document.getElementById("againBtn").onclick=()=>{wcStop();myLocReset();if(wcPrevFull!==null){state.mapFull=wcPrevFull;wcPrevFull=null}state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",aiFollow:null,fbSent:false,route:null,dwell:{},legMode:{},picking:null,addAt:null,editing:false,photoBig:null};render()};
 }
