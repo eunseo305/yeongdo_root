@@ -298,7 +298,13 @@ label.f{display:grid;gap:4px;font-size:14px;color:var(--muted)}
 .delbtn{width:100%;min-height:34px;padding:4px 2px;border:1px solid #f3c6bd;background:#fff7f5;border-radius:8px;font:700 12.5px/1.1 var(--body);color:#a7341f;cursor:pointer;white-space:nowrap}
 .delbtn:hover{background:#fdece8;border-color:#f3c6bd}
 .delbtn:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
-.addbtn:focus-visible,.edin:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.dwedit{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px;font:600 14px var(--body);color:var(--ink)}
+.dwlbl{flex-basis:100%;white-space:nowrap}
+.dwbtn{width:36px;height:36px;border:1px solid #c9dcf5;background:#eef5fe;border-radius:8px;font:700 18px/1 var(--body);color:var(--sea);cursor:pointer}
+.dwbtn:hover:not(:disabled){background:#dceafd;border-color:var(--sea)}
+.dwbtn:disabled{background:none;border-color:var(--line);color:#c3cad1;cursor:default}
+.dwin{width:4.2em;height:36px;border:1px solid var(--line);border-radius:8px;text-align:center;font:16px var(--body);color:var(--ink);background:#fff}
+.dwbtn:focus-visible,.dwin:focus-visible,.addbtn:focus-visible,.edin:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
 /* ＋ 여기에 장소 추가: 장소 사이에 넓고 눈에 띄게 */
 .addbtn{align-self:stretch;margin-top:10px;border:2px dashed var(--sea);background:#eef5fe;border-radius:12px;padding:10px 12px;font:700 14.5px var(--body);color:var(--sea);cursor:pointer;min-height:46px;text-align:center}
 .addbtn:hover{background:#dceafd;border-style:solid}

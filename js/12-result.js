@@ -8,18 +8,30 @@ const EDT={
 ko:{edit:"✏️ 경로 수정",done:"✓ 수정 완료",hint:"▲ 위로 · ▼ 아래로 버튼으로 순서를 바꾸고, ✕ 빼기 버튼으로 뺄 수 있어요. 장소를 더 넣고 싶은 자리에서 ＋ 여기에 장소 추가를 누르세요.",up:"위로",down:"아래로",upAria:n=>`${n} 한 칸 위로`,downAria:n=>`${n} 한 칸 아래로`,swipeDel:"빼기",delAria:n=>`${n} 빼기`,
   addHere:"＋ 여기에 장소 추가",addAria:n=>`${n}번째 자리에 장소 추가`,addAt:n=>`${n}번째 자리에 넣기`,close:"닫기",addH:"목록에서 고르기",add:"넣기",none:"넣을 수 있는 장소가 없어요",
   myH:"또는 내가 원하는 장소",name:"장소 이름",dwell:"머무는 시간(분)",pick:"📍 지도에서 위치 찍기",picking:"지도에서 새 장소 위치를 눌러 주세요",cancel:"취소",reset:"추천 코스로 되돌리기",
+  ovT:"귀선 시간을 넘겨요",ovP:(n,e,b)=>`${n}에 머무는 시간을 늘리면 ${e}에 터미널에 돌아와요. 귀선 시간 ${b}보다 늦어요. 일정을 변경할까요?`,ovFit:m=>`네, ${m}분으로 맞출게요`,ovBack:"네, 이전 시간으로 되돌릴게요",ovKeep:"아니요, 그대로 둘게요",
+  doneP:(e,b)=>`지금 경로로는 ${e}에 터미널에 돌아와서 귀선 시간 ${b}을 넘겨요. 장소를 빼거나 머무는 시간을 줄여 주세요.`,doneFix:"경로 계속 고치기",doneKeep:"그래도 완료",
+  stay:"머무는 시간",less:n=>`${n} 머무는 시간 10분 줄이기`,more:n=>`${n} 머무는 시간 10분 늘리기`,stayAria:n=>`${n} 머무는 시간(분)`,
   course:"나만의 영도 코스",mine:"내가 추가한 곳",reason:"직접 고친 경로예요. 이동시간은 직선거리로 어림한 값이에요.",over:(e,b)=>`이 경로는 ${e}에 터미널에 돌아와요. 귀선 기한 ${b}보다 늦어요. 장소를 빼거나 머무는 시간을 줄여 주세요.`},
 en:{edit:"✏️ Edit route",done:"✓ Done",hint:"Use ▲ Up and ▼ Down to reorder and ✕ Remove to take a stop out. Tap ＋ Add a place here wherever you want another stop.",up:"Up",down:"Down",upAria:n=>`Move ${n} up`,downAria:n=>`Move ${n} down`,swipeDel:"Remove",delAria:n=>`Remove ${n}`,
   addHere:"＋ Add a place here",addAria:n=>`Add a place at position ${n}`,addAt:n=>`Add at position ${n}`,close:"Close",addH:"Pick from the list",add:"Add",none:"No more places to add",
   myH:"Or add your own place",name:"Place name",dwell:"Time there (min)",pick:"📍 Pick on map",picking:"Tap the map where the new place is",cancel:"Cancel",reset:"Back to recommended route",
+  ovT:"You'd miss all-aboard",ovP:(n,e,b)=>`With more time at ${n}, you'd get back to the terminal at ${e}, later than the ${b} all-aboard time. Change the schedule?`,ovFit:m=>`Yes, set it to ${m} min`,ovBack:"Yes, undo my change",ovKeep:"No, keep it",
+  doneP:(e,b)=>`With this route you'd get back to the terminal at ${e}, past the ${b} all-aboard time. Remove a stop or shorten a visit.`,doneFix:"Keep editing",doneKeep:"Finish anyway",
+  stay:"Time there",less:n=>`10 min less at ${n}`,more:n=>`10 min more at ${n}`,stayAria:n=>`Minutes at ${n}`,
   course:"My Yeongdo route",mine:"Added by you",reason:"You edited this route. Travel times are estimated from straight-line distance.",over:(e,b)=>`This route gets you back at ${e}, later than the ${b} all-aboard deadline. Remove a stop or shorten a visit.`},
 ja:{edit:"✏️ ルート編集",done:"✓ 編集完了",hint:"▲ 上へ・▼ 下へで順番を変え、✕ 削除で外せます。追加したい位置の＋ ここに場所を追加を押してください。",up:"上へ",down:"下へ",upAria:n=>`${n}を1つ上へ`,downAria:n=>`${n}を1つ下へ`,swipeDel:"削除",delAria:n=>`${n}を削除`,
   addHere:"＋ ここに場所を追加",addAria:n=>`${n}番目に場所を追加`,addAt:n=>`${n}番目に追加`,close:"閉じる",addH:"リストから選ぶ",add:"追加",none:"追加できる場所がありません",
   myH:"または行きたい場所",name:"場所の名前",dwell:"滞在時間（分）",pick:"📍 地図で位置を選ぶ",picking:"地図で新しい場所の位置をタップしてください",cancel:"キャンセル",reset:"おすすめルートに戻す",
+  ovT:"帰船時刻を過ぎます",ovP:(n,e,b)=>`${n}の滞在を延ばすと、ターミナルに戻るのは${e}で、帰船時刻${b}より遅くなります。日程を変更しますか？`,ovFit:m=>`はい、${m}分にします`,ovBack:"はい、元の時間に戻します",ovKeep:"いいえ、このままにします",
+  doneP:(e,b)=>`このルートではターミナルに戻るのが${e}で、帰船時刻${b}を過ぎます。場所を減らすか滞在を短くしてください。`,doneFix:"編集を続ける",doneKeep:"このまま完了",
+  stay:"滞在時間",less:n=>`${n}の滞在を10分減らす`,more:n=>`${n}の滞在を10分増やす`,stayAria:n=>`${n}の滞在時間（分）`,
   course:"わたしの影島ルート",mine:"自分で追加",reason:"手動で編集したルートです。移動時間は直線距離からの目安です。",over:(e,b)=>`このルートでは${e}にターミナルに戻ります。帰船期限${b}より遅いので、場所を減らすか滞在を短くしてください。`},
 zh:{edit:"✏️ 修改路线",done:"✓ 完成",hint:"用▲ 上移、▼ 下移调整顺序，用✕ 删除移除地点。想加地点的位置点击＋ 在此添加地点。",up:"上移",down:"下移",upAria:n=>`将${n}上移一位`,downAria:n=>`将${n}下移一位`,swipeDel:"删除",delAria:n=>`删除${n}`,
   addHere:"＋ 在此添加地点",addAria:n=>`在第${n}个位置添加地点`,addAt:n=>`添加到第${n}个位置`,close:"关闭",addH:"从列表选择",add:"添加",none:"没有可添加的地点",
   myH:"或添加想去的地点",name:"地点名称",dwell:"停留时间（分钟）",pick:"📍 在地图上选择位置",picking:"请在地图上点击新地点的位置",cancel:"取消",reset:"恢复推荐路线",
+  ovT:"会错过登船时间",ovP:(n,e,b)=>`延长在${n}的停留后，将于${e}回到码头，晚于登船时间${b}。要调整行程吗？`,ovFit:m=>`是，改为${m}分钟`,ovBack:"是，恢复原来的时间",ovKeep:"不，保持不变",
+  doneP:(e,b)=>`按当前路线将于${e}回到码头，超过登船时间${b}。请删减地点或缩短停留。`,doneFix:"继续修改",doneKeep:"仍然完成",
+  stay:"停留时间",less:n=>`${n}停留减少10分钟`,more:n=>`${n}停留增加10分钟`,stayAria:n=>`${n}停留时间（分钟）`,
   course:"我的影岛路线",mine:"自己添加",reason:"这是手动修改的路线，交通时间按直线距离估算。",over:(e,b)=>`按此路线将于${e}回到码头，晚于${b}的登船期限。请删减地点或缩短停留。`}};
 // 내가 추가한 장소는 이 기기에 저장해 두고 다음에도 고를 수 있게 함
 function saveCustom(){try{localStorage.setItem("yd-custom",JSON.stringify(state.customPlaces))}catch(e){}}
@@ -89,13 +101,38 @@ function wireEdit(r,s,a){
     document.getElementById("pickBar")?.scrollIntoView({block:"center"});
   };
   const rs=document.getElementById("edReset");
-  if(rs)rs.onclick=()=>{state.route=null;state.addAt=null;renderResult(s,a)};
+  if(rs)rs.onclick=()=>{state.route=null;state.dwell={};state.addAt=null;renderResult(s,a)};
+
+  // 머무는 시간 바꾸기: − / + 는 10분씩, 칸에 직접 써도 됨 (5~240분)
+  const setDwell=(id,m,sel)=>{
+    const old=r.sim.stops.find(st=>st.p.id===id)?.dw,wasOver=r.over;
+    const nv=Math.min(240,Math.max(5,Math.round(m)));
+    state.dwell={...(state.dwell||{}),[id]:nv};
+    commit(ids(),id,sel);
+    // 시간을 늘려서 귀선 시간을 새로 넘기게 되면 팝업으로 물어봄
+    const r2=lastR;
+    if(r2.over&&!wasOver&&nv>old)overPopup(id,old,nv,r2,s,a,sel);
+  };
+  s.querySelectorAll("#tab-tl .dwedit").forEach(box=>{
+    const id=box.dataset.id,inp=box.querySelector(".dwin");
+    box.querySelectorAll(".dwbtn").forEach(b=>b.onclick=()=>setDwell(id,(+inp.value||0)+ +b.dataset.d,`.dwbtn[data-d="${b.dataset.d}"]`));
+    inp.onchange=()=>setDwell(id,+inp.value||30,".dwin");
+  });
   const pc=document.getElementById("pickCancel");
   if(pc)pc.onclick=()=>{state.picking=null;state.resTab="tl";renderResult(s,a)};
 
   // ✏️ 경로 수정 / 완료
   const tg=document.getElementById("edToggle");
-  if(tg)tg.onclick=()=>{state.editing=!state.editing;state.addAt=null;renderResult(s,a);document.getElementById("edToggle")?.focus()};
+  const toggle=()=>{state.editing=!state.editing;state.addAt=null;renderResult(s,a);document.getElementById("edToggle")?.focus()};
+  if(tg)tg.onclick=()=>{
+    // 수정 완료를 누를 때 귀선 시간을 넘기는 경로면 팝업으로 알려 줌
+    if(!state.editing||!r.over)return toggle();
+    const L=state.lang,E=EDT[L]||EDT.en;
+    askModal({title:E.ovT,body:E.doneP(hmD(r.sim.end),hmD(r.allAboard)),no:E.doneKeep,yes:E.doneFix},yes=>{
+      if(yes)return document.querySelector("#tab-tl li.stop .dwin")?.focus(); // 계속 고치기
+      toggle(); // 그래도 완료
+    });
+  };
 
   // 수정 중일 때만 ▲ 위로 · ▼ 아래로 · ✕ 빼기 연결 (수정 중이 아니면 버튼이 없음)
   s.querySelectorAll("#tab-tl .timeline.editing li.stop").forEach(li=>{
@@ -137,6 +174,37 @@ function wireEdit(r,s,a){
     const q=pt.matrixTransform(svg.getScreenCTM().inverse());
     pickAt(MB.lat0-q.y/MB.H*(MB.lat0-MB.lat1),MB.lng0+q.x/MB.W*(MB.lng1-MB.lng0));
   };
+}
+
+/* 머무는 시간을 늘려 귀선 시간을 넘길 때 뜨는 팝업
+   - 네: 귀선 시간에 딱 맞는 시간으로 줄임 (5분 아래로 내려가야 하면 이전 시간으로 되돌림)
+   - 아니요 / 바깥 클릭 / Esc: 바꾼 시간 그대로 둠 (빨간 경고는 계속 보임) */
+function overPopup(id,old,nv,r,s,a,sel){
+  const L=state.lang,E=EDT[L]||EDT.en,p=findPlace(id);
+  const fit=Math.floor((nv-(r.sim.end-r.allAboard))/5)*5;
+  const useFit=fit>=5&&fit>=old,to=useFit?fit:old;
+  askModal({title:E.ovT,body:E.ovP(p.name[L],hmD(r.sim.end),hmD(r.allAboard)),no:E.ovKeep,yes:useFit?E.ovFit(to):E.ovBack},yes=>{
+    if(yes){state.dwell={...state.dwell,[id]:to};renderResult(s,a)}
+    const li=document.querySelector(`#tab-tl li.stop[data-id="${id}"]`);
+    (li?.querySelector(`${sel}:not(:disabled)`)||li?.querySelector(".dwin"))?.focus();
+  });
+}
+// 귀선 경고 팝업 공통 틀: 아니요 / 바깥 클릭 / Esc → done(false), 네 → done(true)
+function askModal({title,body,no,yes},done){
+  const m=document.createElement("div");m.className="pmodal";
+  m.innerHTML=`<div class="pm-box" role="alertdialog" aria-modal="true" aria-labelledby="ov-t" aria-describedby="ov-p">
+    <div class="qhead"><h2 id="ov-t">⚠️ ${esc(title)}</h2><p class="muted" id="ov-p">${esc(body)}</p></div>
+    <div class="pm-act"><button class="btn ghost" type="button" data-ov="no">${esc(no)}</button><button class="btn" type="button" data-ov="yes">${esc(yes)}</button></div></div>`;
+  document.body.appendChild(m);
+  const prevOv=document.body.style.overflow;document.body.style.overflow="hidden";
+  const close=v=>{document.removeEventListener("keydown",onKey);document.body.style.overflow=prevOv;m.remove();done(v)};
+  const onKey=e=>{if(e.key==="Escape")close(false)};
+  document.addEventListener("keydown",onKey);
+  m.onclick=e=>{
+    if(e.target===m)return close(false);
+    const b=e.target.closest("[data-ov]");if(b)close(b.dataset.ov==="yes");
+  };
+  m.querySelector('[data-ov="yes"]').focus();
 }
 
 function legHTML(lg,x){
@@ -192,15 +260,18 @@ function renderResult(s,a){
   const prof=[["age",x.age[state.a.age]],["comp",x.comp[state.a.comp]]].filter(([,v])=>v).map(([k,v])=>chip(k,v)).join("")+state.a.interests.map(k=>chip("interests",x.int[k])).join("");
   let tl=`<li class="tl"><span class="t">${hm(r.start)}</span><span class="rail"><span class="dot end"></span><span class="line"></span></span><div class="body"><strong>${x.disembark}</strong><span class="d">${r.c.name}</span>${addBtnHTML(0)}</div></li>`;
   if(state.addAt===0)tl+=addPanelHTML(r,0);
-  const nearAll=nearAds(r);
   r.sim.stops.forEach((st,i)=>{
     tl+=`<li class="tl stop" data-i="${i}" data-id="${st.p.id}"><span class="swipedel" aria-hidden="true">${E.swipeDel}</span><span class="t">${hm(st.at)}</span><span class="rail"><span class="dot"></span><span class="line"></span></span><div class="body">
       ${legHTML(st.lg,x)}
       <strong>${i+1}. ${esc(st.p.name[L])}${st.p.out?`<span class="tag-out">${x.outside}</span>`:""}</strong>
       ${st.p.custom?"":`<span class="rt" aria-label="${x.rtAria} ${placeRating(st.p.id).avg}/5"><span class="st">★</span> ${placeRating(st.p.id).avg} <small>(${placeRating(st.p.id).n})</small></span>`}
-      <span class="d">${st.p.custom?"":`<span class="envb ${ENV[st.p.id]||"out"}">${x.env[ENV[st.p.id]||"out"]}</span> `}${esc(st.p.d[L])} · ${st.p.dwell}${x.min}</span>
+      <span class="d">${st.p.custom?"":`<span class="envb ${ENV[st.p.id]||"out"}">${x.env[ENV[st.p.id]||"out"]}</span> `}${esc(st.p.d[L])}${state.editing?"":` · ${st.dw}${x.min}`}</span>
+      ${state.editing?`<span class="dwedit" data-id="${st.p.id}"><span class="dwlbl">${E.stay}</span>
+        <button type="button" class="dwbtn" data-d="-10" aria-label="${esc(E.less(st.p.name[L]))}" ${st.dw<=5?"disabled":""}>−</button>
+        <input class="dwin" type="number" inputmode="numeric" min="5" max="240" step="5" value="${st.dw}" aria-label="${esc(E.stayAria(st.p.name[L]))}">
+        <span>${x.min}</span>
+        <button type="button" class="dwbtn" data-d="10" aria-label="${esc(E.more(st.p.name[L]))}" ${st.dw>=240?"disabled":""}>＋</button></span>`:""}
       ${mapLinks(st.p,L)}
-      ${state.adsOn?(()=>{const g=nearAll.filter(v=>v.i===i);return g.length?`<span class="adnear"><b>${ADT[L].nearStop}</b>${g.map(v=>`<button type="button" data-ad="${v.a.id}"><span class="dot"></span>${esc(adName(v.a,L))} · ${ADT[L].walkN(v.walk)}</button>`).join("")}</span>`:""})():""}
       ${addBtnHTML(i+1)}</div>
       ${state.editing?`<span class="edtools">
         <button type="button" class="mvbtn" data-mv="-1" aria-label="${esc(E.upAria(st.p.name[L]))}" ${i===0?"disabled":""}>▲ ${E.up}</button>
@@ -249,5 +320,5 @@ function renderResult(s,a){
   s.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openPrefModal(b.dataset.edit,s,a,b));
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="againBtn" type="button">${x.again}</button>`;
   document.getElementById("backBtn").onclick=()=>{state.screen="q";state.q=QUESTIONS.length-1;render()};
-  document.getElementById("againBtn").onclick=()=>{wcStop();myLocReset();if(wcPrevFull!==null){state.mapFull=wcPrevFull;wcPrevFull=null}state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",fbSent:false,route:null,picking:null,addAt:null,editing:false,photoBig:null};render()};
+  document.getElementById("againBtn").onclick=()=>{wcStop();myLocReset();if(wcPrevFull!==null){state.mapFull=wcPrevFull;wcPrevFull=null}state={...state,screen:"home",q:0,a:blankA(),ship:null,rating:0,aiText:"",aiNote:"",aiMsg:"",fbSent:false,route:null,dwell:{},picking:null,addAt:null,editing:false,photoBig:null};render()};
 }

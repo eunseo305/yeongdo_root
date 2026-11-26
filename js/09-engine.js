@@ -53,10 +53,12 @@ function simulate(route,start){
   let tm=start,prev="T",late=false;const out=[];
   const hot=state.a.weather==="hot";
   for(const p of route){const lg=leg(prev,p.id);tm+=lg.min;if(p.open&&tm<p.open)tm=p.open;
+    // 경로를 직접 고친 경우엔 사용자가 바꾼 머무는 시간을 씀
+    const dw=(state.route&&state.dwell?.[p.id])||p.dwell;
     // 닫기 전에 다 보고 나올 수 없거나, 더운 날 한낮에 야외 체험이면 이 순서는 못 씀
-    if(p.close&&tm+p.dwell>p.close)late=true;
-    if(hot&&HOT_NOON.includes(p.id)&&tm<900&&tm+p.dwell>720)late=true;
-    out.push({p,at:tm,lg});tm+=p.dwell;prev=p.id}
+    if(p.close&&tm+dw>p.close)late=true;
+    if(hot&&HOT_NOON.includes(p.id)&&tm<900&&tm+dw>720)late=true;
+    out.push({p,at:tm,lg,dw});tm+=dw;prev=p.id}
   const backLeg=leg(prev,"T");
   return {stops:out,end:tm+backLeg.min,leave:tm,back:backLeg.min,backLeg,late};
 }
