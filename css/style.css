@@ -168,10 +168,11 @@ button.chip:hover{filter:brightness(.95)}
 .wctoggle[aria-pressed="true"]{background:#7b4fd6;border-color:#7b4fd6;color:#fff}
 .wctoggle:disabled{opacity:.6;cursor:wait}
 .wc-pin{cursor:pointer}
-.nwc{display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.nwc{position:relative;width:20px;height:20px;cursor:pointer}
 .nwc .ic{width:20px;height:20px;border-radius:5px;background:#7b4fd6;border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35);display:grid;place-items:center;font-size:11px;line-height:1}
 .nwc.on .ic{border-color:#191f28}
-.nwc .nm{font:600 11.5px var(--body);color:#4a2a9a;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;margin-top:2px;white-space:nowrap}
+/* 이름표는 상자 밖에 띄움 → 상자가 늘 20×20이라 🚻 아이콘이 좌표(anchor 10,10) 위에 그대로 있음 */
+.nwc .nm{position:absolute;top:100%;left:50%;transform:translateX(-50%);font:600 11.5px var(--body);color:#4a2a9a;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;margin-top:2px;white-space:nowrap}
 @media (max-width:380px){.map-btns .adtoggle{padding:3px 8px;font-size:11.5px}}
 /* 내 위치 버튼 (js/13c-myloc.js): 지도 오른쪽 위 동그란 ⌖ 버튼 */
 .mapbox{position:relative}
