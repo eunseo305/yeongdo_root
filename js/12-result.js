@@ -299,10 +299,11 @@ function renderResult(s,a){
     <div id="nmap"></div>
     <div id="smap">${sketchMap(r)}</div>
     ${myLocBtnHTML()}
-    <div class="map-cap"><span id="mapCap">${MAPT[L].sketch}</span><span class="map-btns">${wcBtnHTML()}<button type="button" class="adtoggle" id="photoToggle" aria-pressed="${state.photosOn}" style="color:var(--sea)">${state.photosOn?MAPT[L].photoHide:MAPT[L].photoShow}</button><button type="button" class="adtoggle" id="adToggle" aria-pressed="${state.adsOn}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="5" fill="currentColor"/></svg>${ADT[L].toggle}</button></span></div>
+    <div class="map-cap"><span id="mapCap">${MAPT[L].sketch}</span><span class="map-btns">${wcBtnHTML()}<button type="button" class="adtoggle" id="photoToggle" aria-pressed="${state.photosOn}" style="color:var(--sea)">${state.photosOn?MAPT[L].photoHide:MAPT[L].photoShow}</button></span></div>
   </section>
+  ${bannerHTML()}
+  <div id="coursePanel">${courseListHTML(r)}</div>
   <div id="wcPanel"></div>
-  <div id="adPanel">${adPanelHTML(r)}</div>
   </div>
   <div class="rpanel" id="tab-tl" role="tabpanel" aria-labelledby="tabbtn-tl" hidden>
   <div class="edbar${state.editing?" on":""}">
@@ -317,7 +318,7 @@ function renderResult(s,a){
   <section class="card" id="foodSec">${foodHTML(r)}</section>
   </div>
   <p class="demo">${x.demo}</p>`;
-  lastR=r;naverMap(r);wireAds(r);wireWc(r);wireMyLoc(r);wireFood(r);wireTabs();wireEdit(r,s,a);
+  lastR=r;naverMap(r);wireAds(r);wireWc(r);wireCourse();wireMyLoc(r);wireFood(r);wireTabs();wireEdit(r,s,a);
   s.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openPrefModal(b.dataset.edit,s,a,b));
   a.innerHTML=`<button class="btn ghost" id="backBtn" type="button">${x.back}</button><button class="btn" id="againBtn" type="button">${x.again}</button>`;
   document.getElementById("backBtn").onclick=()=>{state.screen="q";state.q=QUESTIONS.length-1;render()};

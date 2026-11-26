@@ -134,6 +134,42 @@ function adPanelHTML(r){
     <div id="adCard">${state.adSel?adCardHTML(state.adSel,r):`<p class="muted">${A.tap}</p>`}</div>
     <p class="demo" style="text-align:left">${A.sample}</p></div>`;
 }
+/* ---------- 배너 광고 (코스 지도와 코스 순서 사이, 1개) ----------
+   지금은 더미 데이터(시연용). 실제 광고를 받으면 BANNER 값만 바꾸면 됨.
+   글자만 있는 배너이고 로고·링크는 없음 (실제 광고주 자료를 받으면 넣기) */
+const BANNER={name:"CJ올리브네트웍스",
+  sub:{ko:"배너 광고 자리 · 시연용 예시",en:"Banner ad slot · sample only",ja:"バナー広告枠・デモ用の例",zh:"横幅广告位·演示样例"}};
+function bannerHTML(){
+  const L=state.lang,lbl=(ADT[L]||ADT.en).ad;
+  return `<aside class="banner" aria-label="${esc(lbl+": "+BANNER.name)}"><span class="lbl">${esc(lbl)}</span><b>${esc(BANNER.name)}</b><small>${esc(BANNER.sub[L]||BANNER.sub.en)}</small></aside>`;
+}
+/* ---------- 지도 아래 코스 순서 목록 (화장실 목록과 같은 모양) ---------- */
+const CRT={ko:{h:"코스 순서",stay:"머무름"},en:{h:"Route order",stay:"stay"},ja:{h:"コースの順番",stay:"滞在"},zh:{h:"路线顺序",stay:"停留"}};
+const stopShort=p=>p.name[state.lang].split(" (")[0].split("（")[0];
+function courseListHTML(r){
+  const L=state.lang,x=t(),C=CRT[L]||CRT.en;
+  const row=(n,cls,name,sub,time,id)=>`<li><button type="button" class="crrow" data-crid="${esc(id)}" aria-pressed="false"><span class="n${cls}">${n}</span><span class="t"><b>${esc(name)}</b>${sub?`<small>${esc(sub)}</small>`:""}</span><span class="d">${time}</span></button></li>`;
+  return `<div class="crpanel">
+    <p class="wch"><b>🗺️ ${C.h}</b><span class="muted">${r.sim.stops.length}${x.cnt||""}</span></p>
+    <ol class="crlist">
+      ${row("T"," term",TERM_NAME[L],x.disembark,hm(r.start),"T")}
+      ${r.sim.stops.map((st,i)=>row(i+1,"",st.p.name[L],`${C.stay} ${st.p.dwell}${x.min}`,hm(st.at),st.p.id)).join("")}
+      ${row("T"," term",TERM_NAME[L],x.terminal,hm(r.sim.end),"T")}
+    </ol></div>`;
+}
+/* 코스 카드를 누르면: 화면을 지도까지 올리고, 네이버 지도를 그 장소 가운데로 옮겨 확대 (좌표는 COORD 값 그대로 씀) */
+function wireCourse(){
+  const btns=[...document.querySelectorAll("#coursePanel [data-crid]")];
+  btns.forEach(b=>b.onclick=()=>{
+    const ll=COORD[b.dataset.crid];if(!ll)return;
+    btns.forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+    document.querySelector(".mapbox")?.scrollIntoView({block:"center",behavior:"smooth"});
+    if(nmapObj&&document.getElementById("nmap")?.style.display!=="none"){
+      const c=new naver.maps.LatLng(...ll),z=Math.max(nmapObj.getZoom(),16);
+      if(typeof nmapObj.morph==="function")nmapObj.morph(c,z);else{nmapObj.setZoom(z);nmapObj.setCenter(c)}
+    }
+  });
+}
 function refreshMap(r){
   const sm=document.getElementById("smap");if(sm)sm.innerHTML=sketchMap(r);
   const ap=document.getElementById("adPanel");if(ap)ap.innerHTML=adPanelHTML(r);
@@ -350,7 +386,9 @@ function naverMap(r){
       clearOverlays(nRoute);clearOverlays(nAds);clearOverlays(nPhotos);
       nRoute.push(new N.Polyline({map,path,strokeWeight:5,strokeColor:"#e5533b",strokeOpacity:.9}));
       nRoute.push(new N.Polyline({map,path:[path[path.length-1],path[0]],strokeWeight:3,strokeColor:"#0d4a5c",strokeOpacity:.7,strokeStyle:"shortdash"}));
-      path.forEach((p,i)=>nRoute.push(new N.Marker({map,position:p,icon:{content:`<div class="npin${i?"":" t"}">${i||"T"}</div>`,anchor:new N.Point(13,13)},zIndex:2})));
+      // 번호 핀 + 오른쪽 이름표 (이름표는 상자 밖에 띄워서 핀 상자는 26×26 그대로 → anchor 13,13이 좌표에 정확히 맞음)
+      const pinName=i=>i?stopShort(r.sim.stops[i-1].p):TERM_NAME[state.lang];
+      path.forEach((p,i)=>nRoute.push(new N.Marker({map,position:p,icon:{content:`<div class="npw"><div class="npin${i?"":" t"}">${i||"T"}</div><span class="npl">${esc(pinName(i))}</span></div>`,anchor:new N.Point(13,13)},zIndex:2})));
       const lats=path.map(p=>p.lat()),lngs=path.map(p=>p.lng());
       const bounds=new N.LatLngBounds(new N.LatLng(Math.min(...lats),Math.min(...lngs)),new N.LatLng(Math.max(...lats),Math.max(...lngs)));
       const fit=()=>{if(my!==mapToken||!nmapEl.isConnected)return;map.setSize(new N.Size(slot.clientWidth||360,slot.clientHeight||320));map.fitBounds(bounds)};
