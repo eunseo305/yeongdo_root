@@ -3,6 +3,7 @@
 
    - 기상청 API허브 단기예보(getVilageFcst): 시간별 예보 약 3일치 → hourly
    - 기상청 API허브 초단기실황(getUltraSrtNcst): 지금 관측값 → now
+   - 기상청 API허브 중기예보(getMidTa·getMidLandFcst): 4~10일 뒤 하루 예보 → mid
    - 인증키는 환경변수 KMA_AUTH_KEY (GitHub Secrets)에서만 읽고, 파일·로그에는 절대 쓰지 않습니다.
    - 오늘 이미 지난 시간의 예보는 이전 weather.json에서 가져와 함께 남깁니다.
 
@@ -98,6 +99,75 @@ function pcpMm(v) {
 }
 const num = v => { const n = parseFloat(v); return Number.isFinite(n) ? n : null; };
 
+/* ---------- 중기예보 (4~10일 뒤) ----------
+   단기예보(getVilageFcst)는 약 3일 뒤까지만 있어서, 그 뒤 날짜는 중기예보로 채웁니다.
+   - getMidTa: 일 최저·최고 기온 (taMin4, taMax4 … taMin10, taMax10)
+   - getMidLandFcst: 강수확률·하늘상태 (4~7일은 오전/오후 rnSt4Am·wf4Am…, 8~10일은 하루 rnSt8·wf8)
+   - 발표: 매일 06시·18시 (KST). N일 뒤 = 발표일 + N일
+   - API허브에서 "중기예보 조회서비스"도 활용신청해야 합니다. 안 되어 있으면(403) 중기예보만 건너뜁니다. */
+const MID = "https://apihub.kma.go.kr/api/typ02/openApi/MidFcstInfoService";
+const MID_LAND = "11H20000"; // 육상예보 구역: 부산·울산·경남
+const MID_TA = "11H20201";   // 기온 지점: 부산
+
+function midBases() {
+  const t = new Date(kstNow().getTime() - 30 * 60e3), out = []; // 발표 30분 뒤부터 조회
+  for (let back = 0; out.length < 3 && back < 48; back++) {
+    const d = new Date(t.getTime() - back * 3600e3), h = d.getUTCHours();
+    if (h === 6 || h === 18) {
+      const b = ymd(d) + pad(h) + "00";
+      if (!out.includes(b)) out.push(b);
+    }
+  }
+  return out;
+}
+async function midCall(op, regId, tmFc) {
+  const q = new URLSearchParams({ pageNo: "1", numOfRows: "10", dataType: "JSON", regId, tmFc, authKey: KEY });
+  const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 20000);
+  let res;
+  try { res = await fetch(`${MID}/${op}?${q}`, { signal: ctl.signal }); }
+  finally { clearTimeout(tm); }
+  const text = await res.text();
+  if (res.status === 401 || res.status === 403) throw new Error(`${op}: 인증키 또는 활용신청 문제 (${res.status})`);
+  if (!res.ok) throw new Error(`${op}: HTTP ${res.status}`);
+  let j;
+  try { j = JSON.parse(text); } catch { throw new Error(`${op}: JSON이 아닌 응답 (${text.slice(0, 80).replace(/\s+/g, " ")})`); }
+  const h = j?.response?.header;
+  if (h?.resultCode !== "00") throw new Error(`${op}: ${h?.resultCode} ${h?.resultMsg}`);
+  const item = j.response.body?.items?.item?.[0];
+  if (!item) throw new Error(`${op}: 자료 없음`);
+  return item;
+}
+// 발표일(YYYYMMDD) + n일 → "YYYY-MM-DD"
+const plusDays = (tmFc, n) => {
+  const d = new Date(Date.UTC(+tmFc.slice(0, 4), +tmFc.slice(4, 6) - 1, +tmFc.slice(6, 8) + n));
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+};
+async function fetchMid() {
+  let last;
+  for (const tmFc of midBases()) {
+    try {
+      const [ta, land] = await Promise.all([midCall("getMidTa", MID_TA, tmFc), midCall("getMidLandFcst", MID_LAND, tmFc)]);
+      const mid = {}, day = n => mid[plusDays(tmFc, n)] || (mid[plusDays(tmFc, n)] = {});
+      for (const [k, v] of Object.entries(ta)) {
+        const m = k.match(/^taM(in|ax)(\d+)$/); // taMin4Low 같은 범위 값은 무시
+        if (m && num(v) != null) day(+m[2])[m[1] === "in" ? "tmn" : "tmx"] = num(v);
+      }
+      for (const [k, v] of Object.entries(land)) {
+        let m = k.match(/^rnSt(\d+)(Am|Pm)?$/);
+        if (m && num(v) != null) { day(+m[1])["p" + (m[2] || "")] = num(v); continue; }
+        m = k.match(/^wf(\d+)(Am|Pm)?$/);
+        if (m && v) day(+m[1])["wf" + (m[2] || "")] = String(v).trim();
+      }
+      if (!Object.keys(mid).length) throw new Error("중기예보: 값 없음");
+      return { tmFc, mid };
+    } catch (e) {
+      last = e; console.warn(`  중기예보 ${tmFc} 실패: ${e.message}`);
+      if (/401|403/.test(e.message)) break;
+    }
+  }
+  throw last || new Error("중기예보: 자료 없음");
+}
+
 async function main() {
   console.log(`격자 nx=${nx}, ny=${ny}`);
   let prev = null;
@@ -178,17 +248,31 @@ async function main() {
     }
   } catch (e) { console.warn(`초단기실황 건너뜀: ${e.message}`); now = prev?.now || null; }
 
+  // 3) 중기예보 (4~10일 뒤, 하루 단위) — 실패하면 이전 파일 값을 남김
+  let mid = {}, midBase = null;
+  try {
+    const m = await fetchMid();
+    mid = m.mid; midBase = `${m.tmFc.slice(0, 4)}-${m.tmFc.slice(4, 6)}-${m.tmFc.slice(6, 8)}T${m.tmFc.slice(8, 10)}:00`;
+  } catch (e) {
+    console.warn(`중기예보 건너뜀: ${e.message}`);
+    if (prev?.mid) for (const [k, v] of Object.entries(prev.mid)) if (k >= today) mid[k] = v;
+    midBase = prev?.midBase || null;
+  }
+  const midSorted = Object.fromEntries(Object.entries(mid).sort(([a], [b]) => a.localeCompare(b)));
+
   const out = {
     updated: new Date().toISOString(),
-    source: "기상청 API허브 단기예보·초단기실황",
+    source: "기상청 API허브 단기예보·초단기실황·중기예보",
     grid: { nx, ny },
     base: key(vf.base.date, vf.base.time),
     now,
     daily: dailySorted,
-    hourly: sorted
+    hourly: sorted,
+    midBase,
+    mid: midSorted
   };
   await writeFile(OUT, JSON.stringify(out) + "\n");
-  console.log(`저장: 예보 ${Object.keys(sorted).length}시간 (발표 ${out.base}), 실황 ${now?.at || "없음"}`);
+  console.log(`저장: 예보 ${Object.keys(sorted).length}시간 (발표 ${out.base}), 실황 ${now?.at || "없음"}, 중기 ${Object.keys(midSorted).join(", ") || "없음"} (발표 ${midBase || "-"})`);
 }
 
 main().catch(e => { console.error(e.message); process.exit(1); });
