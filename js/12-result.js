@@ -9,7 +9,7 @@
    - 맨 아래 '＋ 장소 추가': 쇼핑 앞에 넣음 (넣은 뒤 ☰로 옮기면 됨)
    (EDT의 edit·done·doneP 등은 예전 '경로 수정' 버튼 문구라 지금은 안 씀) ---------- */
 const EDT={
-ko:{dragAria:n=>`${n} 순서 바꾸기. 끌어서 옮기거나 위·아래 화살표 키를 누르세요`,addPlace:"＋ 장소 추가",edit:"✏️ 경로 수정",done:"✓ 수정 완료",hint:"☰를 끌어서 순서를 바꿀 수 있어요. 머무는 시간은 숫자를 눌러 바로 고치세요. 왼쪽으로 밀거나 ✕를 누르면 빠져요.",up:"위로",down:"아래로",upAria:n=>`${n} 한 칸 위로`,downAria:n=>`${n} 한 칸 아래로`,swipeDel:"빼기",delAria:n=>`${n} 빼기`,
+ko:{mySel:"내 선택 · 눌러서 바꿀 수 있어요",chipAria:v=>`${v} — 눌러서 바꾸기`,dragAria:n=>`${n} 순서 바꾸기. 끌어서 옮기거나 위·아래 화살표 키를 누르세요`,addPlace:"＋ 장소 추가",edit:"✏️ 경로 수정",done:"✓ 수정 완료",hint:"☰를 끌어서 순서를 바꿀 수 있어요. 머무는 시간은 숫자를 눌러 바로 고치세요. 왼쪽으로 밀거나 ✕를 누르면 빠져요.",up:"위로",down:"아래로",upAria:n=>`${n} 한 칸 위로`,downAria:n=>`${n} 한 칸 아래로`,swipeDel:"빼기",delAria:n=>`${n} 빼기`,
   addHere:"＋ 여기에 장소 추가",addAria:n=>`${n}번째 자리에 장소 추가`,addAt:n=>`${n}번째 자리에 넣기`,close:"닫기",addH:"목록에서 고르기",add:"넣기",none:"넣을 수 있는 장소가 없어요",
   myH:"또는 내가 원하는 장소",name:"장소 이름",dwell:"머무는 시간(분)",pick:"📍 지도에서 위치 찍기",picking:"지도에서 새 장소 위치를 눌러 주세요",cancel:"취소",reset:"추천 코스로 되돌리기",
   ovT:"귀선 시간을 넘겨요",ovP:(n,e,b)=>`${n}에 머무는 시간을 늘리면 ${e}에 터미널에 돌아와요. 귀선 시간 ${b}보다 늦어요. 일정을 변경할까요?`,ovFit:m=>`네, ${m}분으로 맞출게요`,ovBack:"네, 이전 시간으로 되돌릴게요",ovKeep:"아니요, 그대로 둘게요",
@@ -17,7 +17,7 @@ ko:{dragAria:n=>`${n} 순서 바꾸기. 끌어서 옮기거나 위·아래 화�
   picked:"내가 고른 이동:",modeBack:"네, 이전 이동 수단으로 되돌릴게요",modeAria:"이동 수단 고르기",modeP:(e,b)=>`이동 수단을 바꾸면 ${e}에 터미널에 돌아와요. 귀선 시간 ${b}보다 늦어요. 이전 이동 수단으로 되돌릴까요?`,
   stay:"머무는 시간",less:n=>`${n} 머무는 시간 10분 줄이기`,more:n=>`${n} 머무는 시간 10분 늘리기`,stayAria:n=>`${n} 머무는 시간(분)`,
   course:"나만의 영도 코스",mine:"내가 추가한 곳",reason:"직접 고친 경로예요. 이동시간은 직선거리로 어림한 값이에요.",over:(e,b)=>`이 경로는 ${e}에 터미널에 돌아와요. 귀선 기한 ${b}보다 늦어요. 장소를 빼거나 머무는 시간을 줄여 주세요.`},
-en:{dragAria:n=>`Reorder ${n}. Drag it, or press the up and down arrow keys`,addPlace:"＋ Add a place",edit:"✏️ Edit route",done:"✓ Done",hint:"Drag ☰ to reorder. Tap the minutes to type a new stay time. Swipe left or tap ✕ to remove a stop.",up:"Up",down:"Down",upAria:n=>`Move ${n} up`,downAria:n=>`Move ${n} down`,swipeDel:"Remove",delAria:n=>`Remove ${n}`,
+en:{mySel:"Your choices · tap to change",chipAria:v=>`${v} — tap to change`,dragAria:n=>`Reorder ${n}. Drag it, or press the up and down arrow keys`,addPlace:"＋ Add a place",edit:"✏️ Edit route",done:"✓ Done",hint:"Drag ☰ to reorder. Tap the minutes to type a new stay time. Swipe left or tap ✕ to remove a stop.",up:"Up",down:"Down",upAria:n=>`Move ${n} up`,downAria:n=>`Move ${n} down`,swipeDel:"Remove",delAria:n=>`Remove ${n}`,
   addHere:"＋ Add a place here",addAria:n=>`Add a place at position ${n}`,addAt:n=>`Add at position ${n}`,close:"Close",addH:"Pick from the list",add:"Add",none:"No more places to add",
   myH:"Or add your own place",name:"Place name",dwell:"Time there (min)",pick:"📍 Pick on map",picking:"Tap the map where the new place is",cancel:"Cancel",reset:"Back to recommended route",
   ovT:"You'd miss all-aboard",ovP:(n,e,b)=>`With more time at ${n}, you'd get back to the terminal at ${e}, later than the ${b} all-aboard time. Change the schedule?`,ovFit:m=>`Yes, set it to ${m} min`,ovBack:"Yes, undo my change",ovKeep:"No, keep it",
@@ -25,7 +25,7 @@ en:{dragAria:n=>`Reorder ${n}. Drag it, or press the up and down arrow keys`,add
   picked:"Your pick:",modeBack:"Yes, switch back",modeAria:"Choose how to get there",modeP:(e,b)=>`With this change you'd get back to the terminal at ${e}, later than the ${b} all-aboard time. Go back to the previous way of getting there?`,
   stay:"Time there",less:n=>`10 min less at ${n}`,more:n=>`10 min more at ${n}`,stayAria:n=>`Minutes at ${n}`,
   course:"My Yeongdo route",mine:"Added by you",reason:"You edited this route. Travel times are estimated from straight-line distance.",over:(e,b)=>`This route gets you back at ${e}, later than the ${b} all-aboard deadline. Remove a stop or shorten a visit.`},
-ja:{dragAria:n=>`${n}の順番を変える。ドラッグするか上下の矢印キーで動かせます`,addPlace:"＋ 場所を追加",edit:"✏️ ルート編集",done:"✓ 編集完了",hint:"☰をドラッグして順番を変えられます。滞在時間は数字をタップしてすぐ入力できます。左にスワイプするか✕で外せます。",up:"上へ",down:"下へ",upAria:n=>`${n}を1つ上へ`,downAria:n=>`${n}を1つ下へ`,swipeDel:"削除",delAria:n=>`${n}を削除`,
+ja:{mySel:"選んだ条件・タップで変更できます",chipAria:v=>`${v}（タップで変更）`,dragAria:n=>`${n}の順番を変える。ドラッグするか上下の矢印キーで動かせます`,addPlace:"＋ 場所を追加",edit:"✏️ ルート編集",done:"✓ 編集完了",hint:"☰をドラッグして順番を変えられます。滞在時間は数字をタップしてすぐ入力できます。左にスワイプするか✕で外せます。",up:"上へ",down:"下へ",upAria:n=>`${n}を1つ上へ`,downAria:n=>`${n}を1つ下へ`,swipeDel:"削除",delAria:n=>`${n}を削除`,
   addHere:"＋ ここに場所を追加",addAria:n=>`${n}番目に場所を追加`,addAt:n=>`${n}番目に追加`,close:"閉じる",addH:"リストから選ぶ",add:"追加",none:"追加できる場所がありません",
   myH:"または行きたい場所",name:"場所の名前",dwell:"滞在時間（分）",pick:"📍 地図で位置を選ぶ",picking:"地図で新しい場所の位置をタップしてください",cancel:"キャンセル",reset:"おすすめルートに戻す",
   ovT:"帰船時刻を過ぎます",ovP:(n,e,b)=>`${n}の滞在を延ばすと、ターミナルに戻るのは${e}で、帰船時刻${b}より遅くなります。日程を変更しますか？`,ovFit:m=>`はい、${m}分にします`,ovBack:"はい、元の時間に戻します",ovKeep:"いいえ、このままにします",
@@ -33,7 +33,7 @@ ja:{dragAria:n=>`${n}の順番を変える。ドラッグするか上下の矢�
   picked:"自分で選んだ移動：",modeBack:"はい、前の移動手段に戻します",modeAria:"移動手段を選ぶ",modeP:(e,b)=>`移動手段を変えると、ターミナルに戻るのは${e}で、帰船時刻${b}より遅くなります。前の移動手段に戻しますか？`,
   stay:"滞在時間",less:n=>`${n}の滞在を10分減らす`,more:n=>`${n}の滞在を10分増やす`,stayAria:n=>`${n}の滞在時間（分）`,
   course:"わたしの影島ルート",mine:"自分で追加",reason:"手動で編集したルートです。移動時間は直線距離からの目安です。",over:(e,b)=>`このルートでは${e}にターミナルに戻ります。帰船期限${b}より遅いので、場所を減らすか滞在を短くしてください。`},
-zh:{dragAria:n=>`调整${n}的顺序：拖动，或按上下方向键`,addPlace:"＋ 添加地点",edit:"✏️ 修改路线",done:"✓ 完成",hint:"拖动☰调整顺序。点击分钟数可直接输入停留时间。向左滑动或点击✕可移除。",up:"上移",down:"下移",upAria:n=>`将${n}上移一位`,downAria:n=>`将${n}下移一位`,swipeDel:"删除",delAria:n=>`删除${n}`,
+zh:{mySel:"我的选择 · 点击可修改",chipAria:v=>`${v}（点击修改）`,dragAria:n=>`调整${n}的顺序：拖动，或按上下方向键`,addPlace:"＋ 添加地点",edit:"✏️ 修改路线",done:"✓ 完成",hint:"拖动☰调整顺序。点击分钟数可直接输入停留时间。向左滑动或点击✕可移除。",up:"上移",down:"下移",upAria:n=>`将${n}上移一位`,downAria:n=>`将${n}下移一位`,swipeDel:"删除",delAria:n=>`删除${n}`,
   addHere:"＋ 在此添加地点",addAria:n=>`在第${n}个位置添加地点`,addAt:n=>`添加到第${n}个位置`,close:"关闭",addH:"从列表选择",add:"添加",none:"没有可添加的地点",
   myH:"或添加想去的地点",name:"地点名称",dwell:"停留时间（分钟）",pick:"📍 在地图上选择位置",picking:"请在地图上点击新地点的位置",cancel:"取消",reset:"恢复推荐路线",
   ovT:"会错过登船时间",ovP:(n,e,b)=>`延长在${n}的停留后，将于${e}回到码头，晚于登船时间${b}。要调整行程吗？`,ovFit:m=>`是，改为${m}分钟`,ovBack:"是，恢复原来的时间",ovKeep:"不，保持不变",
@@ -301,7 +301,9 @@ function renderResult(s,a){
   const E=EDT[L]||EDT.en;
 
   // 선호도 칩: 누르면 모달로 그 항목만 다시 고름 (openPrefModal). 나라는 칩에서 뺌
-  const chip=(k,v)=>`<button type="button" class="chip" data-edit="${k}" aria-haspopup="dialog">${esc(v)}</button>`;
+  // 터미널 도착 기한 카드 밑 '내 선택' 상자에 보임. 앞의 ▾로 눌러서 바꿀 수 있다는 걸 알려 줌
+  const caret='<svg class="chip-caret" width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 3.5h8L6 9z" fill="currentColor"/></svg>';
+  const chip=(k,v)=>`<button type="button" class="chip" data-edit="${k}" aria-haspopup="dialog" aria-label="${esc(E.chipAria(v))}">${caret}${esc(v)}</button>`;
   const prof=[["comp",x.comp[state.a.comp]]].filter(([,v])=>v).map(([k,v])=>chip(k,v)).join("")+state.a.interests.map(k=>chip("interests",x.int[k])).join("");
   // 장소 하나 = 카드 하나. ☰ 손잡이로 끌어서 순서 바꾸기, 머무는 시간 숫자 칸은 누르면 바로 입력
   const addAt=addPosOf(r),nStop=r.sim.stops.length;
@@ -331,11 +333,12 @@ function renderResult(s,a){
     <p class="muted">${x.resultT} · ${state.cdate&&ALLC.length?(()=>{const x=new Date(state.cdate+"T00:00"),D=DT[L];return D.fmt(x.getMonth()+1,x.getDate(),D.wd[x.getDay()])+" · "})():""}${esc(r.c.name)} · ${hmD(r.c.arr)}–${hmD(r.c.dep)}</p>
     <div class="course-name">${r.custom?E.course:x.course[ordKey]}</div>
     ${W?(()=>{const c={in:0,semi:0,out:0};r.chosen.forEach(p=>c[ENV[p.id]||"out"]++);return `<div class="wxbar ${W}"><b>${x.wxDay} · ${esc(x.wx[W])}</b><span>${x.env.in} ${c.in}${x.cnt} · ${x.env.semi} ${c.semi}${x.cnt} · ${x.env.out} ${c.out}${x.cnt}</span></div>`})():""}
-    <div class="chips">${prof}</div>
   </div>
   ${state.aiNote?`<div class="ainote"><b>${x.aiSays}</b><br>${esc(state.aiNote)}</div>`:""}
   ${state.aiMsg&&!state.aiNote?`<p class="muted">${esc(state.aiMsg)}</p>`:""}
-  <div class="alert" role="note"><span>${x.leaveBy} <strong>${hmD(r.sim.leave)}</strong> · ${x.returnBy} <strong>${hmD(r.allAboard)}</strong></span><span class="muted">${x.alertP} (${x.dep} ${hmD(r.c.dep)})</span>${(()=>{const sp=r.allAboard-r.sim.end;return !r.none&&sp>=20?`<span class="spare"><b>${x.spare(fmtDur(sp,L))}</b> ${x.spareTip}</span>`:""})()}${r.over?`<span class="over" role="alert">${E.over(hmD(r.sim.end),hmD(r.allAboard))}</span>`:""}</div>
+  <div class="alert" role="note"><span>${x.leaveBy} <strong>${hmD(r.sim.leave)}</strong> · ${x.returnBy} <strong>${hmD(r.allAboard)}</strong></span><span class="muted">${x.alertP} (${x.dep} ${hmD(r.c.dep)})</span>${(()=>{const sp=r.allAboard-r.sim.end;return !r.none&&sp>=20?`<span class="spare"><b>${x.spare(fmtDur(sp,L))}</b> ${x.spareTip}</span>`:""})()}${r.over?`<span class="over" role="alert">${E.over(hmD(r.sim.end),hmD(r.allAboard))}</span>`:""}
+  </div>
+  <section class="mysel" aria-labelledby="myselT"><p class="mysel-t" id="myselT">${E.mySel}</p><div class="chips">${prof}</div></section>
   <nav class="rtabs" id="rtabs" role="tablist" aria-label="${(TABT[L]||TABT.en).aria}">${TAB_KEYS.map(k=>`<button type="button" role="tab" id="tabbtn-${k}" data-tab="${k}" aria-controls="tab-${k}">${(TABT[L]||TABT.en)[k]}</button>`).join("")}</nav>
   <div class="rpanel" id="tab-map" role="tabpanel" aria-labelledby="tabbtn-map">
   ${state.picking?`<div class="pickbar" id="pickBar" role="status"><span><b>${esc(state.picking.name)}</b> · ${E.picking}</span><button type="button" class="adtoggle" id="pickCancel" style="color:var(--sea)">${E.cancel}</button></div>`:""}

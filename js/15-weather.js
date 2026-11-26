@@ -224,8 +224,9 @@ function wxBoxHTML(s){
   renderResult=function(s,a){
     const info=applyAutoWeather();
     origRender(s,a);
-    const chips=s.querySelector(".chips");
-    if(chips)chips.insertAdjacentHTML("beforebegin",wxBoxHTML(info));
+    // 위쪽 머리말의 "날씨 반영" 줄(없으면 코스 이름) 바로 밑에 끼워 넣음 (내 선택 칩은 터미널 도착 기한 카드 밑 상자로 옮겨 감)
+    const at=s.querySelector(".wxbar")||s.querySelector(".course-name");
+    if(at)at.insertAdjacentHTML("afterend",wxBoxHTML(info));
   };
 })();
 
