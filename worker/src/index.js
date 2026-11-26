@@ -10,7 +10,6 @@ const MAX_SHIPS = 40;   // 크루즈 목록 길이 제한
 const NAT = ["ja", "zh", "tw", "us", "kr", "other"];
 const COMP = ["solo", "couple", "friends", "family", "care", "both", "fam"];
 const INTERESTS = ["food", "cafe", "photo", "view", "culture", "beauty", "activity"];
-const WEATHER = ["sun", "rain", "hot", "cold"];
 const LANG_NAME = { ko: "Korean", en: "English", ja: "Japanese", zh: "Simplified Chinese" };
 
 function allowedOrigin(req, env) {
@@ -41,7 +40,6 @@ Only fill what they actually said or clearly implied; do not guess (use null or 
 - nat: one of ${NAT.join(", ")}, or null if not said
 - comp: one of ${COMP.join(", ")}, or null (family = travelling with children; care = travelling with older adults or someone with limited mobility, e.g. elderly parents, wheelchair, trouble walking; both = children and older adults or someone with limited mobility together; fam = travelling with family but no children and no older adults or limited mobility mentioned)
 - interests: array from ${INTERESTS.join(", ")} (beauty = shopping, cosmetics, Daiso, Olive Young, department store; activity = zipline, Danubi train, fishing village experience)
-- weather: one of ${WEATHER.join(", ")}, or null
 - ship: one of ${ships.length ? ships.map(s => `${s.id} (${s.name})`).join(", ") : "(none)"}, or null if not named
 - note: one warm sentence in ${LANG_NAME[lang] || "English"}, under 30 words, saying what you understood they want for today. No place names.${lang === "ko" ? " Write it in natural Korean using Hangul only (no Chinese characters)." : ""}
 Rules:
@@ -49,11 +47,10 @@ Rules:
 - A market (시장, 市場, 市场) means food, not culture or beauty.
 - Mentioning parents, grandparents, elderly people, or not being able to walk much means comp = care (or both if children also come).
 - The value "family" means children only. The word family (가족, 家族, 家人) alone does not mean children: if no children, kids, son or daughter are mentioned, use fam (or care if older adults are mentioned).
-- Mentioning rain means weather = rain.
 The text may be in Korean, Japanese, Chinese or English.`;
   // 예시 한 쌍: 작은 모델이 규칙을 더 잘 따르게 함
-  const exUser = "부모님이랑 왔어요. 해산물 좋아하고 많이 못 걸어요. 비가 와요.";
-  const exAnswer = JSON.stringify({ nat: null, comp: "care", interests: ["food"], weather: "rain", ship: null, note: lang === "ko" ? "부모님과 무리 없이 다니며 맛있는 해산물을 즐기는 하루를 원하시는군요." : "You'd like an easy day with your parents enjoying seafood." });
+  const exUser = "부모님이랑 왔어요. 해산물 좋아하고 많이 못 걸어요.";
+  const exAnswer = JSON.stringify({ nat: null, comp: "care", interests: ["food"], ship: null, note: lang === "ko" ? "부모님과 무리 없이 다니며 맛있는 해산물을 즐기는 하루를 원하시는군요." : "You'd like an easy day with your parents enjoying seafood." });
   return [
     { role: "system", content: system },
     { role: "user", content: exUser },
@@ -68,11 +65,10 @@ const SCHEMA = {
     nat: { type: ["string", "null"] },
     comp: { type: ["string", "null"] },
     interests: { type: "array", items: { type: "string" } },
-    weather: { type: ["string", "null"] },
     ship: { type: ["string", "null"] },
     note: { type: "string" },
   },
-  required: ["nat", "comp", "interests", "weather", "ship", "note"],
+  required: ["nat", "comp", "interests", "ship", "note"],
 };
 
 // 모델 답을 허용된 값만 남겨서 정리 (페이지에서도 한 번 더 검사함)
@@ -82,7 +78,6 @@ function clean(j, ships) {
     nat: ok(j.nat, NAT),
     comp: ok(j.comp, COMP),
     interests: Array.isArray(j.interests) ? [...new Set(j.interests.filter(v => INTERESTS.includes(v)))] : [],
-    weather: ok(j.weather, WEATHER),
     ship: ok(j.ship, ships.map(s => s.id)),
     note: typeof j.note === "string" ? j.note.slice(0, 200) : "",
   };

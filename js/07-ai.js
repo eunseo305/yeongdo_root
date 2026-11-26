@@ -14,7 +14,6 @@ const KW={
   family:["아이","애기","아들","딸","kid","child","son","daughter","子ども","子供","孩子","小孩"],
   couple:["남편","아내","와이프","여자친구","남자친구","부부","커플","husband","wife","partner","couple","夫","妻","彼氏","彼女","夫妻","老公","老婆","情侣"],
   friends:["친구","friend","友","朋友"],fam:["가족","family","家族","家人"],solo:["혼자","alone","solo","myself","ひとり","一人","独自","自己"]},
- weather:{rain:["비","rain","雨"],hot:["덥","더워","hot","暑","热"],cold:["춥","추워","바람","cold","wind","寒","风","冷"]},
  nat:{ja:["일본","japan","日本"],zh:["중국","china","中国"],tw:["대만","taiwan","台湾"],us:["미국","america","usa"],kr:["한국","korea","韓国","韩国"]}
 };
 function has(txt,arr){return arr.some(w=>txt.includes(w.toLowerCase()))}
@@ -25,14 +24,13 @@ function parseLocal(raw){
   for(const [k,arr] of Object.entries(KW.interests))if(has(txt,arr))out.interests.push(k);
   for(const [k,arr] of Object.entries(KW.comp))if(!out.comp&&has(txt,arr))out.comp=k;
   if(has(txt,KW.comp.care)&&has(txt,KW.comp.family))out.comp="both"; // 노약자와 아이가 함께면 둘 다
-  for(const [k,arr] of Object.entries(KW.weather))if(!out.weather&&has(txt,arr))out.weather=k;
   for(const [k,arr] of Object.entries(KW.nat))if(!out.nat&&has(txt,arr))out.nat=k;
   return {a:out,ship:ship?ship.id:null,note:""};
 }
-// 필수 아닌 항목(나라·날씨)만 기본값으로 채움. 필수(누구랑 comp·크루즈 ship·관심사 interests)는 비워 두고 추가 질문으로 물어봄
+// 필수 아닌 항목(나라)만 기본값으로 채움. 날씨는 글에서 읽지 않고 기상청 예보로 정함(15-weather.js, 예보 없으면 맑음으로 계산). 필수(누구랑 comp·크루즈 ship·관심사 interests)는 비워 두고 추가 질문으로 물어봄
 function fillDefaults(a){
   const byLang={ko:"kr",ja:"ja",zh:"zh",en:"us"};
-  return {nat:a.nat||byLang[state.lang],comp:a.comp||null,interests:a.interests&&a.interests.length?a.interests:[],weather:a.weather||"sun"};
+  return {nat:a.nat||byLang[state.lang],comp:a.comp||null,interests:a.interests&&a.interests.length?a.interests:[],weather:null};
 }
 // 꼭 알아야 하는 것 = 질문 화면의 질문(QUESTIONS). 그중 글에서 못 알아낸 것만 골라냄 (순서 = 질문 순서)
 function aiMissing(){return QUESTIONS.filter(k=>!qFilled(k))}
@@ -59,7 +57,6 @@ Read it and return ONLY a JSON object with these keys. Only fill what they actua
 - nat: one of ja, zh, tw, us, kr, other, or null if not said
 - comp: one of solo, couple, friends, family, care, both, fam, or null (family = travelling with children; care = travelling with older adults or someone with limited mobility, e.g. elderly parents, wheelchair, trouble walking; both = children and older adults or someone with limited mobility together; fam = travelling with family but no children and no older adults or limited mobility mentioned)
 - interests: array from food, cafe, photo, view, culture, beauty, activity (beauty = shopping, cosmetics, Daiso, Olive Young, department store; activity = zipline, Danubi train, fishing village experience)
-- weather: one of sun, rain, hot, cold, or null
 - ship: one of ${CRUISES.map(c=>`${c.id} (${c.name})`).join(", ")}, or null if not named
 - note: one warm sentence in ${langName}, under 30 words, saying what you understood they want for today. No place names.`;
     try{j=await sampleFn.json(prompt,{modelTier:"quick"})}catch(e){j=null}
@@ -69,11 +66,11 @@ Read it and return ONLY a JSON object with these keys. Only fill what they actua
   if(j&&typeof j==="object"){
     const ok=(v,list)=>list.includes(v)?v:null;
     res={a:{nat:ok(j.nat,["ja","zh","tw","us","kr","other"]),comp:ok(j.comp,["solo","couple","friends","family","care","both","fam"]),
-      interests:Array.isArray(j.interests)?j.interests.filter(v=>["food","cafe","photo","view","culture","beauty","activity"].includes(v)):[],weather:ok(j.weather,["sun","rain","hot","cold"])},
+      interests:Array.isArray(j.interests)?j.interests.filter(v=>["food","cafe","photo","view","culture","beauty","activity"].includes(v)):[],weather:null},
       ship:ok(j.ship,CRUISES.map(c=>c.id)),note:typeof j.note==="string"?j.note.slice(0,200):""};
     // AI가 놓친 건 단어 찾기 결과로 채움. 노약자·아이는 단어로 잡히면 AI 답에 더해 줌 (안전 쪽으로)
     const loc=parseLocal(raw),lc=loc.a.comp,ac=res.a.comp;
-    for(const k of ["nat","weather"])if(!res.a[k])res.a[k]=loc.a[k];
+    if(!res.a.nat)res.a.nat=loc.a.nat;
     if(!ac)res.a.comp=lc;
     // AI가 "가족"을 아이 동반(family)으로 착각한 경우: 아이 단어가 없으면 단어 찾기 결과(그냥 가족 fam / 노약자 care)로
     else if(ac==="family"&&(lc==="fam"||lc==="care"))res.a.comp=lc;
