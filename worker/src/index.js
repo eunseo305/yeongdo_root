@@ -27,8 +27,9 @@ function reply(body, status, origin) {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Access-Control-Allow-Origin": origin || "null",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Cache-Control": "no-store",
       "Vary": "Origin",
     },
   });
@@ -83,12 +84,118 @@ function clean(j, ships) {
   };
 }
 
+/* ---------- 이용 기록 모으기 (관리자 페이지용) ----------
+   D1 데이터베이스(env.DB)에 저장. 표는 처음 요청 때 자동으로 만듦.
+   이름·연락처 같은 개인정보는 받지 않음. sid = 기기마다 만든 무작위 번호 */
+
+const SCHEMA_SQL = [
+  `CREATE TABLE IF NOT EXISTS visits (id INTEGER PRIMARY KEY AUTOINCREMENT, sid TEXT, lang TEXT, src TEXT, ts INTEGER)`,
+  `CREATE TABLE IF NOT EXISTS plans (id TEXT PRIMARY KEY, sid TEXT, lang TEXT, ship TEXT, ship_name TEXT, cdate TEXT,
+     comp TEXT, interests TEXT, weather TEXT, ai INTEGER, custom INTEGER, over INTEGER, stops TEXT,
+     start_min INTEGER, end_min INTEGER, created INTEGER, updated INTEGER)`,
+  `CREATE TABLE IF NOT EXISTS reviews (id INTEGER PRIMARY KEY AUTOINCREMENT, sid TEXT, lang TEXT, place TEXT, stars INTEGER, text TEXT, ts INTEGER)`,
+  `CREATE INDEX IF NOT EXISTS visits_ts ON visits(ts)`,
+  `CREATE INDEX IF NOT EXISTS plans_updated ON plans(updated)`,
+];
+let schemaReady = null;
+function ensureSchema(env) {
+  if (!schemaReady) schemaReady = env.DB.batch(SCHEMA_SQL.map(q => env.DB.prepare(q))).catch(e => { schemaReady = null; throw e; });
+  return schemaReady;
+}
+
+const ID_RE = /^[a-z0-9_-]{1,40}$/i;
+const str = (v, n) => (typeof v === "string" ? v.slice(0, n) : null);
+const id = v => (typeof v === "string" && ID_RE.test(v) ? v : null);
+const int = (v, lo, hi) => (Number.isFinite(v) ? Math.max(lo, Math.min(hi, Math.round(v))) : null);
+const LANGS = Object.keys(LANG_NAME);
+
+async function handleLog(req, env, origin) {
+  if (!env.DB) return reply({ error: "no_db" }, 503, origin);
+  let b;
+  try { b = JSON.parse(await req.text()); } catch { return reply({ error: "bad_json" }, 400, origin); }
+  const sid = id(b.sid);
+  const lang = LANGS.includes(b.lang) ? b.lang : null;
+  const now = Date.now();
+  await ensureSchema(env);
+
+  if (b.type === "visit") {
+    await env.DB.prepare("INSERT INTO visits (sid, lang, src, ts) VALUES (?, ?, ?, ?)")
+      .bind(sid, lang, str(b.src, 40), now).run();
+  } else if (b.type === "plan") {
+    const pid = id(b.id);
+    if (!pid) return reply({ error: "bad_id" }, 400, origin);
+    const stops = (Array.isArray(b.stops) ? b.stops : []).slice(0, 30)
+      .map(s => ({ id: id(s && s.id), dw: int(s && s.dw, 0, 600), ...(s && s.id === "food" ? { name: str(s.name, 40) } : {}) }))
+      .filter(s => s.id);
+    const interests = (Array.isArray(b.interests) ? b.interests : []).filter(v => INTERESTS.includes(v));
+    await env.DB.prepare(`INSERT INTO plans (id, sid, lang, ship, ship_name, cdate, comp, interests, weather, ai, custom, over, stops, start_min, end_min, created, updated)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET lang=excluded.lang, ship=excluded.ship, ship_name=excluded.ship_name, cdate=excluded.cdate,
+        comp=excluded.comp, interests=excluded.interests, weather=excluded.weather, ai=excluded.ai, custom=excluded.custom,
+        over=excluded.over, stops=excluded.stops, start_min=excluded.start_min, end_min=excluded.end_min, updated=excluded.updated`)
+      .bind(pid, sid, lang, id(b.ship), str(b.shipName, 60), str(b.cdate, 10),
+        COMP.includes(b.comp) ? b.comp : null, JSON.stringify(interests), str(b.weather, 10),
+        b.ai ? 1 : 0, b.custom ? 1 : 0, b.over ? 1 : 0, JSON.stringify(stops),
+        int(b.start, 0, 2880), int(b.end, 0, 2880), now, now).run();
+  } else if (b.type === "review") {
+    const stars = int(b.stars, 1, 5);
+    if (!stars) return reply({ error: "bad_stars" }, 400, origin);
+    await env.DB.prepare("INSERT INTO reviews (sid, lang, place, stars, text, ts) VALUES (?, ?, ?, ?, ?, ?)")
+      .bind(sid, lang, id(b.place), stars, str(b.text, 300), now).run();
+  } else {
+    return reply({ error: "bad_type" }, 400, origin);
+  }
+  return reply({ ok: true }, 200, origin);
+}
+
+// 비밀번호 비교: 길이와 상관없이 끝까지 비교 (시간 차이로 맞히기 어렵게)
+function sameText(a, b) {
+  const x = new TextEncoder().encode(a), y = new TextEncoder().encode(b);
+  let d = x.length ^ y.length;
+  for (let i = 0; i < Math.max(x.length, y.length); i++) d |= (x[i] || 0) ^ (y[i] || 0);
+  return d === 0;
+}
+
+async function handleStats(req, env, origin) {
+  if (!env.ADMIN_TOKEN) return reply({ error: "no_admin_token" }, 503, origin);
+  const auth = req.headers.get("Authorization") || "";
+  if (!sameText(auth, "Bearer " + env.ADMIN_TOKEN)) return reply({ error: "unauthorized" }, 401, origin);
+  if (!env.DB) return reply({ error: "no_db" }, 503, origin);
+  await ensureSchema(env);
+
+  const days = int(Number(new URL(req.url).searchParams.get("days")) || 30, 1, 365);
+  const since = Date.now() - days * 864e5;
+  const KST = 9 * 3600 * 1000;
+  const [byDay, byHour, byLang, totals, plans, reviews] = await env.DB.batch([
+    env.DB.prepare(`SELECT date((ts + ?) / 1000, 'unixepoch') AS d, COUNT(*) AS n, COUNT(DISTINCT sid) AS u FROM visits WHERE ts >= ? GROUP BY d ORDER BY d`).bind(KST, since),
+    env.DB.prepare(`SELECT CAST(strftime('%H', (ts + ?) / 1000, 'unixepoch') AS INTEGER) AS h, COUNT(*) AS n FROM visits WHERE ts >= ? GROUP BY h ORDER BY h`).bind(KST, since),
+    env.DB.prepare(`SELECT lang, COUNT(*) AS n FROM visits WHERE ts >= ? GROUP BY lang ORDER BY n DESC`).bind(since),
+    env.DB.prepare(`SELECT COUNT(*) AS n, COUNT(DISTINCT sid) AS u FROM visits WHERE ts >= ?`).bind(since),
+    env.DB.prepare(`SELECT id, sid, lang, ship, ship_name, cdate, comp, interests, weather, ai, custom, over, stops, start_min, end_min, created, updated
+      FROM plans WHERE updated >= ? ORDER BY updated DESC LIMIT 5000`).bind(since),
+    env.DB.prepare(`SELECT lang, place, stars, text, ts FROM reviews WHERE ts >= ? ORDER BY ts DESC LIMIT 300`).bind(since),
+  ]);
+  return reply({
+    days, since,
+    visits: { total: totals.results[0].n, users: totals.results[0].u, byDay: byDay.results, byHour: byHour.results, byLang: byLang.results },
+    plans: plans.results.map(p => ({ ...p, interests: JSON.parse(p.interests || "[]"), stops: JSON.parse(p.stops || "[]") })),
+    reviews: reviews.results,
+  }, 200, origin);
+}
+
 export default {
   async fetch(req, env) {
     const origin = allowedOrigin(req, env);
     if (req.method === "OPTIONS") return reply({}, origin ? 204 : 403, origin);
     if (!origin) return reply({ error: "origin" }, 403, null);
-    if (req.method !== "POST") return reply({ error: "method" }, 405, origin);
+    const path = new URL(req.url).pathname;
+    try {
+      if (path === "/log" && req.method === "POST") return await handleLog(req, env, origin);
+      if (path === "/admin/stats" && req.method === "GET") return await handleStats(req, env, origin);
+    } catch (e) {
+      return reply({ error: "server", detail: String(e && e.message || e).slice(0, 200) }, 500, origin);
+    }
+    if (path !== "/" || req.method !== "POST") return reply({ error: "method" }, 405, origin);
 
     let body;
     try { body = await req.json(); } catch { return reply({ error: "bad_json" }, 400, origin); }

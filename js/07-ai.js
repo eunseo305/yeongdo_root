@@ -35,7 +35,7 @@ function fillDefaults(a){
 // 꼭 알아야 하는 것 = 질문 화면의 질문(QUESTIONS). 그중 글에서 못 알아낸 것만 골라냄 (순서 = 질문 순서)
 function aiMissing(){return QUESTIONS.filter(k=>!qFilled(k))}
 // Cloudflare 중계 서버 주소 (worker/ 폴더를 배포하면 나오는 https://yeongdo-ai.<계정>.workers.dev). 비워 두면 단어 찾기만 씀
-const AI_PROXY="https://yeongdo-ai.keshanhea-3e9.workers.dev/";
+const AI_PROXY="https://yeongdo-ai.yeongdoroot.workers.dev/";
 async function askProxy(raw){
   const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),15000);
   try{

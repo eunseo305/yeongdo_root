@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>영도 루트 관리자</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f8fd;--paper:#fff;--ink:#13203a;--muted:#5d6b80;--line:#e1e9f3;--grid:#eef2f7;
+  --sea:#1d6fe8;--sea-soft:#b9d4fa;--navy:#0b2350;--tint:#e8f2ff;--bad:#c2410c;
+  font-family:"Noto Sans KR",system-ui,sans-serif;color-scheme:light;
+}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+header{background:var(--navy);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{font-size:18px;margin:0;font-weight:800}
+header h1 small{font-weight:500;opacity:.7;margin-left:8px;font-size:13px}
+header .sp{flex:1}
+header select,header button{font:inherit;font-size:13px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;padding:6px 10px;cursor:pointer}
+header select option{color:var(--ink)}
+header a{color:#cfe3ff;font-size:13px}
+main{max-width:1180px;margin:0 auto;padding:24px;display:flex;flex-direction:column;gap:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.card h2{font-size:15px;margin:0 0 4px;font-weight:700}
+.card .sub{color:var(--muted);font-size:12.5px;margin:0 0 14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.kpi .n{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.kpi .l{color:var(--muted);font-size:12.5px}
+.kpi .h{color:var(--muted);font-size:11.5px;margin-top:2px}
+/* 세로 막대 (일별·시간대별) */
+.cols{display:flex;align-items:flex-end;gap:3px;height:170px;border-bottom:1px solid var(--line);padding-top:8px;position:relative}
+.cols .c{flex:1;height:100%;display:flex;align-items:flex-end;cursor:default}
+.cols .c b{display:block;width:100%;background:var(--sea);border-radius:4px 4px 0 0;min-height:1px}
+.cols .c.dim b{background:var(--sea-soft)}
+.cols .c:hover b{filter:brightness(.88)}
+.xlab{display:flex;gap:3px;color:var(--muted);font-size:11px;margin-top:4px;font-variant-numeric:tabular-nums}
+.xlab span{flex:1;width:0;text-align:center;white-space:nowrap;overflow:visible}
+.gl{position:absolute;left:0;right:0;border-top:1px dashed var(--grid);pointer-events:none}
+.gl span{position:absolute;right:0;top:-16px;font-size:10.5px;color:var(--muted)}
+/* 가로 막대 */
+.hb{display:grid;grid-template-columns:minmax(90px,150px) 1fr 56px;gap:6px 10px;align-items:center}
+.hb .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb .tr{height:14px;background:var(--grid);border-radius:4px;overflow:hidden}
+.hb .tr b{display:block;height:100%;background:var(--sea);border-radius:0 4px 4px 0}
+.hb .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.hb .v small{font-weight:400;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:500;font-size:12px;background:#f8fafd;position:sticky;top:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl{max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:99px;background:var(--tint);color:var(--sea);margin-right:3px;white-space:nowrap}
+.tag.bad{background:#fff1e8;color:var(--bad)}
+.up{color:var(--bad)}.down{color:var(--sea)}
+.empty{color:var(--muted);padding:18px 0;text-align:center}
+.rv{border-top:1px solid var(--line);padding:10px 0}
+.rv:first-child{border-top:0}
+.rv .meta{color:var(--muted);font-size:12px}
+.login{max-width:380px;margin:60px auto;display:flex;flex-direction:column;gap:12px}
+.login input{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.btn{font:inherit;font-weight:700;background:var(--sea);color:#fff;border:0;border-radius:10px;padding:10px 14px;cursor:pointer}
+.btn.ghost{background:var(--tint);color:var(--sea)}
+.err{color:var(--bad);font-size:13px;min-height:1em;margin:0}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#tip{position:fixed;pointer-events:none;background:var(--navy);color:#fff;font-size:12px;padding:6px 9px;border-radius:8px;white-space:pre;z-index:9;display:none;box-shadow:0 4px 14px rgba(11,35,80,.25)}
+</style>
+</head>
+<body>
+<header>
+  <h1>영도 루트 관리자<small>이용 통계</small></h1>
+  <span class="sp"></span>
+  <span id="hdrCtl" hidden>
+    <select id="days" aria-label="기간">
+      <option value="1">오늘</option><option value="7">최근 7일</option><option value="30" selected>최근 30일</option><option value="90">최근 90일</option><option value="365">최근 1년</option>
+    </select>
+    <button type="button" id="reload">새로고침</button>
+    <button type="button" id="logout">로그아웃</button>
+  </span>
+  <a href="../" target="_blank" rel="noopener">관광객 화면 ↗</a>
+</header>
+<main id="main"></main>
+<div id="tip" role="tooltip"></div>
+
+<!-- 장소 이름·선택지 이름은 관광객 화면과 같은 파일에서 가져옴 -->
+<script src="../js/01-text.js"></script>
+<script src="../js/02-places.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

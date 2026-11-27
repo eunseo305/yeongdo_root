@@ -7,6 +7,12 @@
   "ai": {
     "binding": "AI" // Worker 안에서 env.AI 로 씀
   },
+  // 이용 기록 저장소 (관리자 페이지에서 봄). 2026-11-27 만듦 (npx wrangler d1 create yeongdo-stats)
+  // 표(visits·plans·reviews)는 Worker가 처음 요청 때 자동으로 만듦
+  "d1_databases": [
+    { "binding": "DB", "database_name": "yeongdo-stats", "database_id": "04f6f9e0-f0e9-4a23-825d-b9a66df09520" }
+  ],
+  // 관리자 비밀번호는 코드에 쓰지 않고 Secret으로:  npx wrangler secret put ADMIN_TOKEN
   "vars": {
     // 이 주소에서 온 요청만 받음 (쉼표로 여러 개). 로컬 테스트 주소(localhost·127.0.0.1)는 코드에서 따로 허용
     "ALLOWED_ORIGINS": "https://eunseo305.github.io,https://yeongdoroot.vercel.app"

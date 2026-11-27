@@ -40,7 +40,6 @@ function render(){
   const s=document.getElementById("screen"),a=document.getElementById("actions");
   if(state.screen==="home"){renderHome(s,a)}
   else if(state.screen==="q"){renderQ(s,a)}
-  else if(state.screen==="ops"){renderOps(s,a)}
   else{renderResult(s,a)}
   window.scrollTo({top:0});
 }
@@ -79,11 +78,9 @@ function renderHome(s,a){
   <button class="btn sea ai-go" id="aiBtn" type="button" ${state.aiBusy?"disabled":""}><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3l1.8 5.2L17 10l-5.2 1.8L10 17l-1.8-5.2L3 10l5.2-1.8zM18 2l.8 2.2L21 5l-2.2.8L18 8l-.8-2.2L15 5l2.2-.8z" fill="#fff"/></svg>${state.aiBusy?x.ai_wait:x.ai_btn}</button>
   ${state.aiMsg?`<p class="muted">${esc(state.aiMsg)}</p>`:""}
   </div>
-</section>
-<button type="button" class="link" id="opsLink">${x.ops}</button>`;
+</section>`;
   a.innerHTML=`<button class="btn" id="startBtn" type="button">${x.start}</button>`;
   document.getElementById("startBtn").onclick=()=>{state.screen="q";state.q=0;state.aiNote="";state.aiFollow=null;render()};
-  document.getElementById("opsLink").onclick=()=>{state.screen="ops";render()};
   const ta=document.getElementById("aiText");
   ta.oninput=()=>{state.aiText=ta.value};
   // 예시 버튼: 누르면 입력칸 끝에 그 말을 붙임
