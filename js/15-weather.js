@@ -169,12 +169,15 @@ function midSummary(day){
   if(!m||typeof m.tmx!=="number"&&typeof m.tmn!=="number")return null;
   const ps=[m.p,m.pAm,m.pPm].filter(v=>typeof v==="number");
   const wfs=[m.wf,m.wfAm,m.wfPm].filter(Boolean);
-  const tMax=typeof m.tmx==="number"?m.tmx:m.tmn,tMin=typeof m.tmn==="number"?m.tmn:m.tmx;
+  // 최고·최저 중 없는 값은 다른 값으로 채우지 않고 null 로 둠 (채우면 최고·최저가 같게 보임)
+  const tMax=typeof m.tmx==="number"?m.tmx:null,tMin=typeof m.tmn==="number"?m.tmn:null;
   // 강수확률·하늘상태(getMidLandFcst)는 없을 수 있음 → p:null, wf:"" 로 두고 기온만 보여줌
   const s={status:"ok",mid:true,day,tMax,tMin,p:ps.length?Math.max(...ps):null,pAm:m.pAm,pPm:m.pPm,
     wf:wfs.find(wfWet)||m.wfPm||m.wf||m.wfAm||"",wet:wfs.some(wfWet)};
   const p=s.p||0;
-  s.cat=p>=WX_RULE.rainProb||(s.wet&&p>=WX_RULE.wetProb)?"rain":s.tMax>=WX_RULE.hotTemp?"hot":s.tMax<=WX_RULE.midColdMax?"cold":"sun";
+  // 분류는 있는 기온으로만 (null 을 비교하면 0 으로 바뀌어 "추움"이 되므로 최고가 없으면 최저로 판단)
+  const hi=tMax??tMin;
+  s.cat=p>=WX_RULE.rainProb||(s.wet&&p>=WX_RULE.wetProb)?"rain":hi>=WX_RULE.hotTemp?"hot":hi<=WX_RULE.midColdMax?"cold":"sun";
   return s;
 }
 // 고른 날짜 예보로 state.a.weather 를 채움. 예보가 없으면 그대로 둠 (엔진은 맑음으로 계산)
@@ -198,8 +201,8 @@ function wxBoxHTML(s){
     const ap=typeof s.pAm==="number"&&typeof s.pPm==="number"?`${W.am} ${Math.round(s.pAm)} · ${W.pm} ${Math.round(s.pPm)}`:"";
     return `<div class="wxauto" role="note">${head}
     <div class="wxa-grid">
-      ${cell(W.hi,Math.round(s.tMax)+"°")}
-      ${cell(W.lo,Math.round(s.tMin)+"°")}
+      ${cell(W.hi,s.tMax==null?"–":Math.round(s.tMax)+"°")}
+      ${cell(W.lo,s.tMin==null?"–":Math.round(s.tMin)+"°")}
       ${cell(W.probL,s.p==null?"–":Math.round(s.p)+"%",ap)}
       ${`<div><span>${W.sky}</span><strong class="wxa-wf">${s.wf?esc(wfText(s.wf,L)):"–"}</strong></div>`}
     </div>
