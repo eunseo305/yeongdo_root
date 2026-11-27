@@ -50,13 +50,12 @@ function renderHome(s,a){
   // 제목의 마지막 덩어리(알차게·sail·たっぷり 등)에 형광펜 밑줄
   const hm1=x.heroT.match(/^(.*[\s、，,])(\S+)$/);
   const heroT=hm1?`${hm1[1]}<em class="hl">${hm1[2]}</em>`:x.heroT;
-  // 예시 버튼 아이콘: 가족, 포크·나이프, 우산, 시계
+  // 예시 버튼 아이콘: 가족, 포크·나이프, 시계
   const CHIP_IC=['<path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.3a3.5 3.5 0 0 1 0 6.4M18 14.3c2 .8 3.5 2.8 3.5 5.7"/>',
     '<path d="M6 3v7a2 2 0 0 0 2 2v9M10 3v7a2 2 0 0 1-2 2M6 3v5M8 3v5M17 21V3c-2 0-3.5 2.5-3.5 6s1.5 4 3.5 4"/>',
     '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'];
   s.innerHTML=`
 <section class="hero">
-  <span class="qr-tag"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM18 18h3v3h-3z" fill="none" stroke="#fff" stroke-width="2"/></svg>${x.qr}</span>
   <h1>${heroT}</h1>
   <p>${x.heroP}</p>
   <svg class="hero-art" viewBox="0 0 400 110" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
@@ -69,8 +68,7 @@ function renderHome(s,a){
     <path d="M0 90c60-16 130-14 200 4s140 10 200-6v22H0z" fill="#a9cff8"/>
     <path d="M0 100c70-10 150-8 210 2s130 4 190-4v12H0z" fill="#7fb6f2"/>
   </svg>
-</section>
-<section class="aibox">
+  <div class="aibox">
   <h2><span class="ai-ic"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3l1.8 5.2L17 10l-5.2 1.8L10 17l-1.8-5.2L3 10l5.2-1.8zM18 2l.8 2.2L21 5l-2.2.8L18 8l-.8-2.2L15 5l2.2-.8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>${x.ai_h}</h2>
   <label for="aiText" class="muted" style="position:absolute;left:-9999px">${x.ai_h}</label>
   <div class="ai-field">
@@ -80,16 +78,7 @@ function renderHome(s,a){
   <div class="ai-chips">${(x.ai_chips||[]).map((c,i)=>`<button type="button" data-chip="${esc(c)}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${CHIP_IC[i]||""}</svg>${esc(c)}</button>`).join("")}</div>
   <button class="btn sea ai-go" id="aiBtn" type="button" ${state.aiBusy?"disabled":""}><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3l1.8 5.2L17 10l-5.2 1.8L10 17l-1.8-5.2L3 10l5.2-1.8zM18 2l.8 2.2L21 5l-2.2.8L18 8l-.8-2.2L15 5l2.2-.8z" fill="#fff"/></svg>${state.aiBusy?x.ai_wait:x.ai_btn}</button>
   ${state.aiMsg?`<p class="muted">${esc(state.aiMsg)}</p>`:""}
-</section>
-<div class="or">${x.or}</div>
-<section style="display:flex;flex-direction:column;gap:12px">
-  <h2>${x.how}</h2>
-  <ol class="steps-list">
-    <li><b>1</b><span>${x.h1}</span></li>
-    <li><b>2</b><span>${x.h2}</span></li>
-    <li><b>3</b><span>${x.h3}</span></li>
-    <li><b>4</b><span>${x.h4}</span></li>
-  </ol>
+  </div>
 </section>
 <button type="button" class="link" id="opsLink">${x.ops}</button>`;
   a.innerHTML=`<button class="btn" id="startBtn" type="button">${x.start}</button>`;

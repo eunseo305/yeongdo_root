@@ -148,6 +148,8 @@ html[data-skin="a"] .hero p{font-size:15.5px;line-height:1.7;color:#4a5870}
 html[data-skin="a"] .hero-art{position:absolute;left:0;right:0;bottom:0;width:100%;height:110px;pointer-events:none}
 
 html[data-skin="a"] .aibox{border-radius:24px;padding:22px 18px;gap:14px}
+/* 첫 화면: 제목 카드 안에 AI 입력을 합침 → 안쪽 상자는 테두리·그림자 없이, 위에 얇은 구분선만 */
+html[data-skin] .hero .aibox{position:relative;z-index:1;background:none;box-shadow:none;border:0;border-radius:0;padding:18px 0 0;margin-top:4px;border-top:1px solid var(--line)}
 html[data-skin="a"] .aibox h2{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900;letter-spacing:-.8px}
 html[data-skin="a"] .ai-ic{flex:none;width:36px;height:36px;border-radius:50%;background:var(--tint);color:var(--sea);display:grid;place-items:center}
 html[data-skin="a"] .ai-field{position:relative}
