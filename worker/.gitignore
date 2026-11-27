@@ -1,0 +1,3 @@
+# wrangler(배포 도구)가 만드는 임시 폴더
+.wrangler/
+node_modules/
