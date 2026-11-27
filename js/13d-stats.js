@@ -6,7 +6,16 @@
 
 const STATS_URL=(typeof AI_PROXY==="string"&&AI_PROXY)?AI_PROXY.replace(/\/+$/,"")+"/log":"";
 // Live Server(로컬)에서 테스트한 기록이 통계에 섞이지 않게 꺼 둠. 로컬에서 켜려면 주소 끝에 ?stats=1
-const STATS_ON=!!STATS_URL&&(!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)||/[?&]stats=1/.test(location.search));
+// 관리자 페이지에서 로그인하고 넘어온 탭이면(같은 탭의 sessionStorage에 관리자 표시가 있음) 관리자 모드:
+// 위에 "관리자 페이지로 돌아가기" 줄을 보여 주고, 관리자가 둘러본 기록은 통계에 넣지 않음. 일반 손님에게는 안 보임
+const STATS_ADMIN=(()=>{try{return !!sessionStorage.getItem("yd-admin")}catch(e){return false}})();
+if(STATS_ADMIN){
+  const bar=document.createElement("div");
+  bar.style.cssText="background:#0b2350;color:#fff;font-size:13px;padding:8px 14px;display:flex;justify-content:center;align-items:center;gap:10px";
+  bar.innerHTML='<span style="opacity:.75">관리자 모드 · 이 화면의 기록은 통계에 넣지 않아요</span><a href="admin/" style="color:#fff;font-weight:700;background:rgba(255,255,255,.16);padding:4px 10px;border-radius:99px;text-decoration:none">← 관리자 페이지</a>';
+  document.body.prepend(bar);
+}
+const STATS_ON=!STATS_ADMIN&&!!STATS_URL&&(!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)||/[?&]stats=1/.test(location.search));
 const statsRid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,10);
 const statsSid=(()=>{try{let v=localStorage.getItem("yd-sid");if(!v){v=statsRid();localStorage.setItem("yd-sid",v)}return v}catch(e){return statsRid()}})();
 
